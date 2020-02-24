@@ -15,7 +15,9 @@ const functions = {
         return num1 - num2;
     }
 
-    
+    // isEven: (num) => {
+    //     return false;
+    // }
 };
 
 export default functions;
