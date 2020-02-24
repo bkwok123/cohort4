@@ -31,7 +31,7 @@ For the following instructions use your command line. In Windows, it could be do
 
 1. Clone this repository. In your command line move to the directory that you would like to use as your base code directory. For the course it must be 'code'. This command will add a directory called 'reference' below the directory you are in.
 ```sh
-git clone https://github.com/larryevolveu/reference.git
+git clone https://github.com/bkwok123/cohort4.git
 ```
 
 This repository has a number of projects within it. Each folder is a project. See the README.md in each folder for further instructions. 
