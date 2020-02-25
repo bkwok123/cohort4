@@ -31,7 +31,21 @@ const syntaxfunctions = {
 
     concatenate: (str1, str2) => {
         return str1.concat(str2);
+    },
+
+    findmax: (array) => {
+        var i;
+        var max = -Infinity;
+        for (i = 0; i < array.length; i++) {
+          if (array[i] > max) {
+            max = array[i];
+          }
+        }
+        
+        return max;
     }
+
+      
 };
 
 export default syntaxfunctions;
