@@ -22,3 +22,16 @@
 // Objects / Dictionaries
 // declare object
 // lookup key to retrieve value
+
+const syntaxfunctions = {
+    
+    multiply: (num1, num2) => {
+        return num1 * num2;
+    },
+
+    concatenate: (str1, str2) => {
+        return str1.concat(str2);
+    }
+};
+
+export default syntaxfunctions;
