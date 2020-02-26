@@ -34,8 +34,8 @@ const syntaxfunctions = {
     },
 
     findmax: (array) => {
-        var i;
-        var max = -Infinity;
+        let i;
+        let max = -Infinity;
         for (i = 0; i < array.length; i++) {
           if (array[i] > max) {
             max = array[i];
@@ -43,8 +43,20 @@ const syntaxfunctions = {
         }
         
         return max;
-    }
+    },
 
+    appendarray: (list,appendtolist) => {
+        
+        let fulllist = list;
+
+        // add to the front
+        fulllist.unshift("tiger");
+
+        // add to the end
+        fulllist.push(appendtolist);
+
+        return fulllist;
+    }    
       
 };
 

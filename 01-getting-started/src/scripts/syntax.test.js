@@ -14,3 +14,9 @@ test('Check the findmax', () => {
     expect(syntaxfunctions.findmax([1,2,3,9,8,7])).toBe(9);
     expect(syntaxfunctions.findmax([10,2,35,134,8,634])).toBe(634);
 });
+
+test('Check the appendarray', () => {
+    expect(syntaxfunctions.appendarray(["dog","cat"],"panda")).toEqual(["tiger","dog","cat","panda"]);
+    expect(syntaxfunctions.appendarray(["dog","cat"],"panda")).toContain("panda");
+    expect(syntaxfunctions.appendarray(["dog","cat"],"panda")).toContain("tiger");
+});
