@@ -63,17 +63,37 @@ const syntaxfunctions = {
             year_made: "2000",
      },
 
-     appendcarproperties: () => {
-        let menu = {menu1:"shrimp", menu2:"chicken"};
+     appendproperties: (list) => {
 
-        let temp = "";
-        
-        for (const property in menu) {
-            temp = temp + menu[property];
+        let temp="";
+
+        for (const property in list) {
+            temp = `${temp}${list[property]}`;
           }
 
         return temp;
-     }
+     },
+
+     appendvalues: (list) => {
+        let temp="";
+        
+        // Object.keys(list).forEach(key => {console.log(key)})
+        // Object.entries(list).forEach(entry => {console.log(entry)})
+
+        Object.values(list).forEach(value => {
+          temp = `${temp}, ${value}`;
+      })
+
+      return temp = temp.substring(2,temp.length);
+     },
+
+     getKeyByValue: (object, value) => {
+      return Object.keys(object).find(key => object[key] === value);
+    },
+
+    getValueByKey: (object, key) => {
+      return Object.values(object).find(value => object[key] === value);
+    }
 
 };
 

@@ -26,6 +26,22 @@ test('Check the car', () => {
     expect(syntaxfunctions.car.year_made).toEqual("2000");
 });
 
-test('Check the appendcarproperties', () => {
-    expect(syntaxfunctions.appendcarproperties()).toEqual("shrimpchicken");
+test('Check the appendproperties', () => {
+    expect(syntaxfunctions.appendproperties({menu1:"shrimp", menu2:"chicken"})).toEqual("shrimpchicken");
+    expect(syntaxfunctions.appendproperties({car1:"Honda", car2:"GM", car3:"Ford"})).toEqual("HondaGMFord");
+});
+
+test('Check the appendvalues', () => {
+    expect(syntaxfunctions.appendvalues({menu1:"shrimp", menu2:"chicken"})).toEqual("shrimp, chicken");
+    expect(syntaxfunctions.appendvalues({subject1:"Math", subject2:"English", subject3:"Bio"})).toEqual("Math, English, Bio");
+});
+
+test('Check the getKeyByValue', () => {
+    expect(syntaxfunctions.getKeyByValue({menu1:"shrimp", menu2:"chicken"}, "shrimp")).toEqual("menu1");
+    expect(syntaxfunctions.getKeyByValue({subject1:"Math", subject2:"English", subject3:"Bio"}, "English")).toEqual("subject2");
+});
+
+test('Check the getValueByKey', () => {
+    expect(syntaxfunctions.getValueByKey({menu1:"shrimp", menu2:"chicken"}, "menu1")).toEqual("shrimp");
+    expect(syntaxfunctions.getValueByKey({subject1:"Math", subject2:"English", subject3:"Bio"}, "subject2")).toEqual("English");
 });
