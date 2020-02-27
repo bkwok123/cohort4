@@ -45,3 +45,13 @@ test('Check the getValueByKey', () => {
     expect(syntaxfunctions.getValueByKey({menu1:"shrimp", menu2:"chicken"}, "menu1")).toEqual("shrimp");
     expect(syntaxfunctions.getValueByKey({subject1:"Math", subject2:"English", subject3:"Bio"}, "subject2")).toEqual("English");
 });
+
+test('Check the findmin', () => {
+    expect(syntaxfunctions.findmin([1,2,3,9,8,7])).toBe(1);
+    expect(syntaxfunctions.findmin([10,2,35,134,8,634])).toBe(2);
+});
+
+test('Check the findmin2', () => {
+    expect(syntaxfunctions.findmin2([1,2,3,9,8,7])).toBe(1);
+    expect(syntaxfunctions.findmin2([10,2,35,134,8,634])).toBe(2);
+});

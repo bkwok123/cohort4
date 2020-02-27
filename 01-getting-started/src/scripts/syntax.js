@@ -93,8 +93,38 @@ const syntaxfunctions = {
 
     getValueByKey: (object, key) => {
       return Object.values(object).find(value => object[key] === value);
-    }
+    },
 
+    findmin: (array) => {
+      let i=0;
+      let min = array[0];
+    
+      while(i < array.length) {
+        if (array[i] < min) {
+          min = array[i];
+        }
+    
+        i++;
+      }
+      
+      return min;
+    },
+
+    findmin2: (array) => {
+      let i=0;
+      let min = array[0];
+    
+      do {
+        if (array[i] < min) {
+          min = array[i];
+        }
+    
+        i++;
+      } while (i < array.length);
+      
+      return min;
+    },
 };
+
 
 export default syntaxfunctions;
