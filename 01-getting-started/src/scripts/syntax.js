@@ -56,8 +56,25 @@ const syntaxfunctions = {
         fulllist.push(appendtolist);
 
         return fulllist;
-    }    
-      
+    },   
+    
+    car: {
+            model: "Forester",
+            year_made: "2000",
+     },
+
+     appendcarproperties: () => {
+        let menu = {menu1:"shrimp", menu2:"chicken"};
+
+        let temp = "";
+        
+        for (const property in menu) {
+            temp = temp + menu[property];
+          }
+
+        return temp;
+     }
+
 };
 
 export default syntaxfunctions;

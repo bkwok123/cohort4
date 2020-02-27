@@ -20,3 +20,12 @@ test('Check the appendarray', () => {
     expect(syntaxfunctions.appendarray(["dog","cat"],"panda")).toContain("panda");
     expect(syntaxfunctions.appendarray(["dog","cat"],"panda")).toContain("tiger");
 });
+
+test('Check the car', () => {
+    expect(syntaxfunctions.car.model).toEqual("Forester");
+    expect(syntaxfunctions.car.year_made).toEqual("2000");
+});
+
+test('Check the appendcarproperties', () => {
+    expect(syntaxfunctions.appendcarproperties()).toEqual("shrimpchicken");
+});
