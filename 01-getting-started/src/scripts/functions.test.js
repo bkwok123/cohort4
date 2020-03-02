@@ -41,6 +41,20 @@ test('Does that calculate function work?', () => {
     expect(functions.calculate(10,20,"/")).toBe(0.5);
 });
 
+test('Does that calculate_taxamt function work?', () => {
+    expect(functions.calculate_taxamt(1)).toBe(0.15);
+    expect(functions.calculate_taxamt(2)).toBe(0.3);
+    expect(functions.calculate_taxamt(50000)).toBe(7580.325);
+    expect(functions.calculate_taxamt(100000)).toBe(17992.06);
+    expect(functions.calculate_taxamt(150000)).toBe(30992.06);
+    expect(functions.calculate_taxamt(250000)).toBe(61403.56);
+});
+
+test('Does that calculate_taxrate function work?', () => {
+    expect(functions.calculate_taxrate(1)).toBe(0.15);
+    expect(functions.calculate_taxrate(100000)).toBe(0.1799206);
+});
+
 // test('Does that isEven function work?', () => {
 //     expect(functions.isEven(2)).toBe(true);
 // });

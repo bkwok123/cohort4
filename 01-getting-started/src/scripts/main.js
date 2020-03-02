@@ -92,3 +92,8 @@ idCalEq.addEventListener("click", (() =>{
     idCalNumCache1.textContent =""
     idCalNumCacheS.textContent =""
 }));
+
+idTaxUpdate.addEventListener("click", (() =>{
+    idTaxAmt.textContent = `Tax Amount: ${functions.calculate_taxamt(idTaxableIncome.value)}`;
+    idTaxRate.textContent = `Effective Tax Rate: ${functions.display_percent(functions.calculate_taxrate(idTaxableIncome.value),2)}`;
+}));
