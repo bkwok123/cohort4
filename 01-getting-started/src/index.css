@@ -74,6 +74,12 @@ html {
 .calculator-container-s1 {
     display: inline-grid;
     gap: 3px;
+    grid-template-columns: 0.04fr 0.04fr;
+}
+
+.calculator-container-s1 {
+    display: inline-grid;
+    gap: 3px;
     grid-template-columns: 0.02fr 0.02fr 0.02fr 0.02fr;
 }
 
@@ -85,13 +91,20 @@ html {
 
 .calculator-display{
     display: inline-block;
-    width:169px;
+    width: auto;
     height:40px;
 }
 
-.calculator-but{
+.calculator-but0{
+    width:82px;
+    height:40px;
+    border-radius: 15%;
+}
+
+.calculator-but1{
     width:40px;
-    height:40px; 
+    height:40px;
+    border-radius: 25%;
 }
 
 #idNumber {
