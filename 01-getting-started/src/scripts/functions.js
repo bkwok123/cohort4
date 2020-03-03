@@ -77,9 +77,48 @@ const functions = {
         return functions.calculate_taxamt(income)/income;
     },
 
-    display_percent(number, float) {
+    display_percent: (number, float) => {
         return parseFloat(number * 100).toFixed(float) + "%";
-      }
+    },
+
+    addtoarray: (array,number) =>{
+        array.push(number);
+        return array;
+    },
+
+    showarray: (array) =>{
+
+        let i=0;
+        let arr_content =array[0];
+
+        for (i = 1; i < array.length; i++) {
+            arr_content = arr_content  + "," + array[i];
+          }
+
+        return arr_content;
+    },
+
+    totalarray: (array) =>{
+
+        let i=0;
+        let total =Number(array[0]);
+
+        for (i = 1; i < array.length; i++) {
+            total = total + Number(array[i]);
+          }
+
+        return total;
+    },
+
+    cleararray: (array) =>{
+        array.length = 0;
+        return array;
+    },
+
+    lookup_prov: (provincelist, provincecode) => {
+        return Object.values(provincelist).find(value => provincelist[provincecode] === value);
+    },
+
     // isEven: (num) => {
     //     return false;
     // }

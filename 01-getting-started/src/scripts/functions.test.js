@@ -55,6 +55,31 @@ test('Does that calculate_taxrate function work?', () => {
     expect(functions.calculate_taxrate(100000)).toBe(0.1799206);
 });
 
+test('Does that addtoarray function work?', () => {
+    expect(functions.addtoarray([1,2],3)).toEqual([1,2,3]);
+    expect(functions.addtoarray([5,2,5,6],3)).toEqual([5,2,5,6,3]);
+});
+
+test('Does that showarray function work?', () => {
+    expect(functions.showarray([1,2,3])).toBe("1,2,3");
+    expect(functions.showarray([9,2,3,4,5])).toBe("9,2,3,4,5");
+});
+
+test('Does that totalarray function work?', () => {
+    expect(functions.totalarray([1,2,3])).toBe(6);
+    expect(functions.totalarray([9,2,3,4,5])).toBe(23);
+});
+
+test('Does that cleararray function work?', () => {
+    expect(functions.cleararray([1,2,3])).toEqual([]);
+    expect(functions.cleararray([9,2,3,4,6])).toEqual([]);
+});
+
+test('Does that lookup_prov function work?', () => {
+    expect(functions.lookup_prov({menu1:"shrimp", menu2:"chicken"},"menu1")).toEqual("shrimp");
+    expect(functions.lookup_prov({menu1:"shrimp", menu2:"chicken", menu3:"beef"},"menu3")).toEqual("beef");
+});
+
 // test('Does that isEven function work?', () => {
 //     expect(functions.isEven(2)).toBe(true);
 // });
