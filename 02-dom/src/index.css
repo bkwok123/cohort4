@@ -15,17 +15,51 @@
     float: center;
 }
 
+.addcardbutton{
+    /* text-align: right; */
+    /* float: center; */
+    margin: 0.2em;
+}
+
 .domcontainer{
     text-align: center; 
+}
+
+.lpanelcontainer{
+    float: left; 
+}
+
+.rpanelcontainer{
+    float: right;
 }
 
 .domcontent{
     display: inline-block;
     border: 2;    
     width: 200px;
-    height:180px;
+    /* height:180px; */
     color: #442F74;
     border-style:solid;
     border-color:#442F74;
     padding: 1em;
+    margin-bottom: 2em;
+}
+
+.panelcontent{
+    /* display: inline-block; */
+    /* display: inline-flex; */
+    border: 2;    
+    width: 45vw;
+    background-color: rgb(216, 209, 200);
+    padding: 1em;
+    text-align: center;
+}
+
+.card{
+    border: 2;    
+    width: auto;
+    background-color: ghostwhite;
+    padding: 1em;
+    text-align: center;
+    margin: 0em;
 }
