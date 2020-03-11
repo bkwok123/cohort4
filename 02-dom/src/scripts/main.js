@@ -64,19 +64,6 @@ idLcontent.addEventListener('click', ((event) => {
             cardID = functions.addafter_card(cardID,targetid);
         }
 
-        const children = document.getElementById("idLcontent").childNodes;
-        const len = children.length;
-
-        console.log("v-------------Begin-----------------v");
-        for (let i = 0; i < len; i++){
-
-            console.log(children[i].nodeName);
-            console.log(children[i].id);
-
-        }
-        console.log("^---------------End-----------------^");
-        
-
     }
 
 }));

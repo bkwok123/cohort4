@@ -29,7 +29,50 @@ document.body.innerHTML =       "<div id='idDOM' class='domcontainer'>" +
 
 test('Check the add_card function', () => {
 
-    // console.log(document.getElementById("idShow").childNodes);
     expect(functions.add_card(1)).toBe(2);
     expect(functions.add_card(10)).toBe(11);
+});
+
+test('Check the return_parentindex function', () => {
+
+    functions.add_card(1);
+    expect(functions.return_parentindex("idAddBeforeCard 1")).toBe(7);
+    functions.add_card(2);
+    expect(functions.return_parentindex("idAddBeforeCard 2")).toBe(9);
+    functions.add_card(3);
+    expect(functions.return_parentindex("idAddBeforeCard 3")).toBe(11);
+});
+
+test('Check the addbefore_card function', () => {
+
+    functions.add_card(1);
+    expect(functions.addbefore_card(2, "idAddBeforeCard 1")).toBe(3);
+    console.log(document.getElementById("idcard 2").id);
+    console.log(document.getElementById("idcard 2").childElementCount);
+    expect(functions.addbefore_card(3, "idAddBeforeCard 2")).toBe(4);
+    console.log(document.getElementById("idcard 3").id);
+    console.log(document.getElementById("idcard 3").childElementCount);    
+});
+
+test('Check the addbefore_card function', () => {
+
+    functions.add_card(1);
+    expect(functions.addafter_card(2, "idAddAfterCard 1")).toBe(3);
+    console.log(document.getElementById("idcard 2").id);
+    console.log(document.getElementById("idcard 2").childElementCount);
+    expect(functions.addafter_card(3, "idAddAfterCard 2")).toBe(4);
+    console.log(document.getElementById("idcard 3").id);
+    console.log(document.getElementById("idcard 3").childElementCount);
+    
+    const children = document.getElementById("idLcontent").childNodes;
+    const len = children.length;
+
+    console.log("v-------------Begin-----------------v");
+    for (let i = 0; i < len; i++){
+
+        console.log(children[i].nodeName);
+        console.log(children[i].id);
+
+    }
+    console.log("^---------------End-----------------^");    
 });
