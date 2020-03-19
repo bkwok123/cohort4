@@ -1,22 +1,22 @@
 export default class Account {
 
-    constructor(name, balance) {
+    constructor(accountName, startingBalance) {
 
-        this.name = name;
-        this.balance = balance;
+        this.accountName = accountName;
+        this.startingBalance = startingBalance;
     }
 
-    deposit(deposit_amt) {        
+    deposit(amount) {        
         
-        return this.balance = this.balance + deposit_amt;
+        return this.startingBalance = this.startingBalance + Number(amount);
     }
 
-    withdraw(withdraw_amt) {        
-        return this.balance = this.balance - withdraw_amt;
+    withdraw(amount) {        
+        return this.startingBalance = this.startingBalance - Number(amount);
     }
 
-    show_balance() {        
-        return this.balance;
+    balance() {        
+        return this.startingBalance;
     }
 
 }
