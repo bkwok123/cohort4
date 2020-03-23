@@ -102,6 +102,11 @@ li {
     border-radius: 0.5em;
 }
 
+.acctinput:hover{
+    border-style: solid;
+    border-color: red;
+}
+
 .accctdisplay{
     margin: 0%;
     padding: 0.5em;

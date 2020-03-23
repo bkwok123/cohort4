@@ -21,14 +21,13 @@ const functions = {
         list.appendChild(linode);
 
         // keep display log to a fixed number of items
-        if(list.childElementCount > 5){
+        if(list.childElementCount >= 5){
             list.removeChild(list.childNodes[0]);
         }
 
     }
 
 }
-
 
 document.addEventListener('click', ((e) => {
     
