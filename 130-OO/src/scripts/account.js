@@ -2,7 +2,7 @@ export default class Account {
 
     constructor(accountName, startingBalance) {
 
-        this.accountName = accountName;
+        this.accountName = accountName + " Account";
         this.startingBalance = startingBalance;
     }
 

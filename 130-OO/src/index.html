@@ -7,21 +7,36 @@
     
     <title>JavaScript Classes Objects and State</title>
   </head>
-  <body>
-    <h1>ATM Machine</h1>
+  <body>    
 
-    <div id="accountType"></div>
+    
 
-    <button type="button">Deposit</button>
-    <input type="number" id="inputDeposit"></input>
+    <div class="acct">
 
-    <button type="button">Withdraw</button>
-    <input type="number" id="inputWithdraw"></input>
+      <div class="acctpanel atmcolor">
+        <h1>ATM Machine</h1>
+      </div>
+  
+      <div id="accountType" class="acctpanel atmcolor accctmsg"></div>      
 
-    <button type="button">Balance</button>
+      <div class="acctpanel atmcolor">        
+        <button type="button" class="acctbtn">Deposit</button>
+        <button type="button" class="acctbtn">Withdraw</button>
+        <button type="button" class="acctbtn">Balance</button>
+      </div>
 
-    <ul id="listBalance">         
-    </ul>
+      <div class="acctpanel atmcolor">
+        <label class="acctlabel">Amount: </label>
+        <input type="number" id="inputAmt" class="acctinput"></input>        
+      </div>      
+      
+      <div class="acctpanel atmcolor">
+        <ul id="listBalance" class="accctdisplay">         
+        </ul>
+      </div>
+
+    </div>
+
 
   </body>
 
