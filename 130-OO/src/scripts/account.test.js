@@ -1,4 +1,4 @@
-import Account from './account.js'
+import Account, {AccountController} from './account.js'
 
 test('Check the account class instantiation', () => {
 
@@ -40,4 +40,12 @@ test('Check the account class balance method', () => {
     console.log(account.startingBalance);    
     expect(account.deposit(100)).toBe(110);
     console.log(account.startingBalance);        
+});
+
+test('Check the account class balance method', () => {
+
+    let accountcontroller = new AccountController()
+
+    accountcontroller.test();
+
 });

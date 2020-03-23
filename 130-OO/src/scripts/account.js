@@ -21,6 +21,10 @@ export default class Account {
 
 }
 
-export default class AccountController {
+export class AccountController {
 
+    test() {        
+        
+        console.log("In test");
+    }
 }
