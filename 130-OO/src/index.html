@@ -1,44 +1,78 @@
 <!DOCTYPE html>
-
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="./index.css">
-    
-    <title>JavaScript Classes Objects and State</title>
-  </head>
-  <body>    
-
-    
-
-    <div class="acct">
-
-      <div class="acctpanel atmcolor">
-        <h1>ATM Machine</h1>
-      </div>
-  
-      <div id="accountType" class="acctpanel atmcolor accctmsg"></div>      
-
-      <div class="acctpanel atmcolor">        
-        <button type="button" class="acctbtn">Deposit</button>
-        <button type="button" class="acctbtn">Withdraw</button>
-        <button type="button" class="acctbtn">Balance</button>
-      </div>
-
-      <div class="acctpanel atmcolor">
-        <label class="acctlabel">Amount: </label>
-        <input type="number" id="inputAmt" class="acctinput"></input>        
-      </div>      
+<html>
+<head>
+  <title>Account Controller</title>
+  <link rel="stylesheet" type="text/css" href="./index.css">
+</head>
+<body>
+  <nav class="zone blue sticky">
+    <ul class="main-nav">
+      <li><a href="./accountproto.html">Account Prototype</a></li>        
+      <li><a href=""></a></li>       
+      <li class="sys-nav push">
+        <label>Login:</label>
+        <label>User</label>
+      </li>
       
-      <div class="acctpanel atmcolor">
-        <ul id="listBalance" class="accctdisplay">         
-        </ul>
-      </div>
+    </ul>            
+  </nav>
 
+  <div class="container zone">        
+    <div class="panel green">
+      <label class="highlight">Transaction Log</label>      
+      <ul id="listBalance" class="accctdisplay boxul">
+        <li>1</li> 
+        <li>1</li> 
+        <li>1</li> 
+        <li>1</li> 
+        <li>1</li>
+      </ul>
     </div>
+     
+    <div class="panel yellow">
+      <div class="highlight">Active Account: Saving</div>
+      <div>      
+        <label>Amount: </label>
+        <input type="number" id="inputAmt" class="acctinput"></input>        
+      </div>
+      
+      <div class="subpanel">
+        <div>
+          <button type="button" class="acctbtn">Deposit</button>
+          <button type="button" class="acctbtn">Withdraw</button>
+          <button type="button" class="acctbtn">Balance</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-
-  </body>
-
-  <script type="module" src="./scripts/index.js"></script>
+  <div class="zone blue grid-wrapper">
+    <div class="box zone">      
+        <ul class="boxul">
+          <li>Account Name</li>          
+          <li>Balance: $100</li>          
+        </ul>      
+    </div>
+    <div class="box zone">      
+      <ul class="boxul">
+        <li>Account Name</li>          
+        <li>Balance: $100</li>          
+      </ul>      
+    </div>
+    <div class="box zone">      
+      <ul class="boxul">
+        <li>Account Name</li>          
+        <li>Balance: $100</li>          
+      </ul>      
+    </div>
+    <div class="box zone">      
+      <ul class="boxul">
+        <li>Account Name</li>          
+        <li>Balance: $100</li>          
+      </ul>      
+    </div>    
+  </div>
+  <footer class="zone yellow">Brought you by EvolvU</footer>
+</div>
+</body>
 </html>
