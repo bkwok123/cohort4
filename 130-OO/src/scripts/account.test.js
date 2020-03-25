@@ -146,3 +146,33 @@ test('Check the account class min_balance method', () => {
     accountcontroller.accounts[2].withdraw(300);
     expect(accountcontroller.min_balance()).toBe(-100);    
 });
+
+test('Check the account class check_validacctname method', () => {
+
+    const accountcontroller = new AccountController("John Doe")
+    accountcontroller.add_account("Saving", 100);
+    accountcontroller.add_account("Investment", 150);
+    accountcontroller.add_account("High Interest", 200);
+
+    expect(accountcontroller.check_validacctname("Test")).toBe(true);
+    expect(accountcontroller.check_validacctname("Saving")).toBe(false);
+    expect(accountcontroller.check_validacctname("Investment")).toBe(false);
+    expect(accountcontroller.check_validacctname("High Interest")).toBe(false);
+});
+
+test('Check the account class return_index method', () => {
+
+    const accountcontroller = new AccountController("John Doe")
+
+    expect(accountcontroller.return_index("High Interest")).toBe(null);
+
+    accountcontroller.add_account("Saving", 100);
+    accountcontroller.add_account("Investment", 150);
+    accountcontroller.add_account("High Interest", 200);
+
+    expect(accountcontroller.return_index("Saving")).toBe(0);
+    expect(accountcontroller.return_index("Investment")).toBe(1);
+    expect(accountcontroller.return_index("High Interest")).toBe(2);
+
+    expect(accountcontroller.return_index("Test")).toBe(null);    
+});
