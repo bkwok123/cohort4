@@ -60,7 +60,7 @@ a {
 }
 
 /***********************************************************************
- *  Cover
+ *  Main Controller
  **********************************************************************/
 .container {
     /*show heigh: auto*/
@@ -78,7 +78,7 @@ a {
     padding: 0.5% 0%;
     width: 50%;
     height: 50%;
-    font-size: 1.5vw;
+    font-size: 50%;
 }
 
 .subpanel{
@@ -90,7 +90,7 @@ a {
 }
 
 .acctbtn {
-    width: 10em;
+    width: auto;
     font-size: 1em;
     border-radius: 0.3em;
     background-color: silver;
@@ -117,12 +117,16 @@ a {
     border-color: red;
 }
 
+.accctdisplay{
+    font-size: 90%;
+}
+
 /***********************************************************************
  *  Grid Panel
  **********************************************************************/
 .grid-wrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     grid-gap: 20px;
 }
 
@@ -130,8 +134,13 @@ a {
     background-color: #444;
     padding: 10px;
     margin: 20px;
-    font-size: 2vw;
+    font-size: 50%;
     text-align: center;
+}
+
+.box:hover{
+    border-style: solid;
+    border-color: red;
 }
 
 .boxul {
@@ -201,6 +210,9 @@ footer {
     background: linear-gradient(top, #7abcff 0%,#60abf8 44%,#4096ee 100%); /* W3C */
 }
 
+/***********************************************************************
+ *  Highlighted text
+ **********************************************************************/
 .highlight{
     color: purple;
     font-style: italic;

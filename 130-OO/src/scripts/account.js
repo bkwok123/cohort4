@@ -61,6 +61,35 @@ export class AccountController {
         return this.accounts;
     }
 
+    check_validacctname(accountName){
+        let isvalid = true;
+
+        for (let i=0; i<this.accounts.length; i++) {
+
+            if(this.accounts[i].accountName === accountName) {
+                isvalid = false;
+            }
+            
+        }     
+        
+        return isvalid;
+    }
+    
+    return_index(accountName){
+
+        let index=null;
+
+        for (let i=0; i<this.accounts.length; i++) {
+
+            if(this.accounts[i].accountName === accountName) {
+                index = i;
+            }
+            
+        }     
+        
+        return index;
+    }    
+
     sum_balance () {
 
         return this.accounts.reduce(((total,currentAcct) => total+currentAcct.startingBalance),0);
