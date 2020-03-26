@@ -1,13 +1,13 @@
 {
-  "name": "130-OO",
+  "name": "03-objects",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "jest",
     "testcov": "jest --coverage",
-    "test1": "jest src/130-OO",
-    "test1cov": "jest src/130-OO --coverage",
-    "testfile": "jest src/130-OO/scripts/account.test.js"
+    "test1": "jest src/03-objects",
+    "test1cov": "jest src/03-objects --coverage",
+    "testfile": "jest src/03-objects/scripts/account.test.js"
   },
   "keywords": [],
   "author": "",

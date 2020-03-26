@@ -1,11 +1,12 @@
 import Account, {AccountController} from './account.js'
 
+// Reference: https://jestjs.io/docs/en/using-matchers
+
 test('Check the account class instantiation', () => {
 
     const account = new Account("Checking",20)
-    console.log(account);
-    console.log(account.accountName);
-    console.log(account.startingBalance);
+    expect(account.accountName).toBe("Checking");
+    expect(account.startingBalance).toBe(20);
 });
 
 test('Check the account class deposit method', () => {
@@ -45,9 +46,9 @@ test('Check the account class balance method', () => {
 test('Check the AccountController class instantiation', () => {
 
     const accountcontroller = new AccountController("John Doe")
-
-    console.log(accountcontroller.accountHolder);
-    console.log(accountcontroller);
+    const obj = {"accountHolder": "John Doe", "accounts": []};
+    expect(accountcontroller.accountHolder).toBe("John Doe");
+    expect(accountcontroller).toEqual(obj);
 });
 
 test('Check the account class add_account method', () => {

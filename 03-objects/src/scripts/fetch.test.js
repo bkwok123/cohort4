@@ -12,6 +12,15 @@ const data = [
     {"name":"Teohari","surname":"Crețu","gender":"male","region":"Romania"},
     {"name":"Varvara","surname":"Braghiș","gender":"female","region":"Romania"}];
 
+
+const me = { 
+    "name": "Boris", 
+    "surname": "Kwok", 
+    "gender": "male", 
+    "region": "Canada" 
+};
+    
+
 test('Check the getFirstName method', () => {
 
     expect(API.getFirstName(data,0)).toBe("Kayla");
@@ -27,5 +36,12 @@ test('Check the getUsers method', () => {
     let apidata = API.getUsers();
     
     console.log(apidata);
+
+});
+
+test('Check the fetch method', () => {
+    
+    const sMe = JSON.stringify(me);
+    console.log(sMe);
 
 });
