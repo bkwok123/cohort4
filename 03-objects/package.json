@@ -1,0 +1,23 @@
+{
+  "name": "130-OO",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "testcov": "jest --coverage",
+    "test1": "jest src/130-OO",
+    "test1cov": "jest src/130-OO --coverage",
+    "testfile": "jest src/130-OO/scripts/account.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/cli": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "jest": "^24.9.0",
+    "node-fetch": "^2.6.0",
+    "whatwg-fetch": "^3.0.0"
+  },
+  "description": ""
+}
