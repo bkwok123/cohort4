@@ -8,52 +8,51 @@
   <nav class="zone blue sticky">
     <ul class="main-nav">
       <li><a href=""></a>
-        <label id="clockdisplay"></label>
-      </li>        
-      <li><a href=""></a></li>       
+        <label id="modulelabel"></label>
+      </li>       
       <li class="sys-nav push">
-        <label>Login:</label>
-        <label id="userlabel"></label>
+        <label id="credentiallabel"></label>
+        <label id="classlabel"></label>
       </li>      
     </ul>            
   </nav>
 
   <div class="container zone">        
     <div class="panel green">
-      <label class="highlight">Transaction Activities</label>      
-      <ul id="listBalance" class="accctdisplay boxul"></ul>
+      <label id="activity_label" class="highlight"></label>      
+      <ul id="activitylist" class="accctdisplay boxul"></ul>
     </div>
      
     <div class="panel yellow">
-      <div id="active_acct" class="highlight"></div>
+      <div id="active_class" class="highlight"></div>
       <div class="subpanel">
         <div>
-          <button type="button" class="acctbtn">Create Account</button>
+          <button type="button" id="createclassBtn" class="acctbtn"></button>
         </div>
       </div>  
 
       <div>      
-        <label>Amount: </label>
+        <label id="class_qty_label"></label>
         <input type="number" id="inputAmt" class="acctinput"></input>        
       </div>
       
       <div class="subpanel">
         <div>
-          <button type="button" class="acctbtn">Deposit</button>
-          <button type="button" class="acctbtn">Withdraw</button>
-          <button type="button" class="acctbtn">Balance</button>
+          <button type="button" id="moveinBtn" class="acctbtn"></button>
+          <button type="button" id="moveoutBtn" class="acctbtn"></button>
+          <button type="button" id="balanceBtn" class="acctbtn"></button>
         </div>
       </div>
     </div>
   </div>
 
-  <div id="acctgrid" class="zone blue grid-wrapper">
+  <div id="classgrid" class="zone blue grid-wrapper">
   </div>
 
   <footer class="zone yellow bottom-nav stickyb">
     <div class="navbox-wrapper">
-      <div class="navbox"><img src="./images/bank.png" alt="Bank"></div>
-      <div class="navbox"><img src="./images/community.png" alt="Community"></div>        
+      <div class="navbox" id="Banking_div-nav"><img src="./images/bank.png" alt="Bank" id="Banking_img-nav"></div>
+      <div class="navbox" id="Demographic_div-nav"><img src="./images/community.png" alt="Community" id="Demographic_img-nav"></div>        
     </div>
   </footer>
 

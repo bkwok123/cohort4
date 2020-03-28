@@ -55,6 +55,7 @@ body {
     background-color: rgb(85, 2, 78);
     padding: 0.4em;
     margin: 0.4em;
+    cursor: pointer;
 }
 
 .navbox > img {
