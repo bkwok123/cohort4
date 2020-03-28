@@ -8,6 +8,8 @@ window.onload = function() {
     userlabel.textContent = user.accountHolder;
     active_acct.textContent = "Active Account: " + "None";
     active_acct.value = "None";
+    // clock.value = new Date().toLocaleString();
+    clockdisplay.textContent = "Date: " + new Date().toLocaleDateString() + "    Time: " + new Date().toLocaleTimeString();
 
 }
 
