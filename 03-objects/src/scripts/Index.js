@@ -19,6 +19,12 @@ window.onload = function() {
     functions.initaccount("None");
 }
 
+window.onbeforeunload = function() {
+
+    // Save states on remote server
+
+}
+
 const functions = {
     initcommon: () => { 
         // clocklabel.textContent = "Date: " + new Date().toLocaleDateString() + "    Time: " + new Date().toLocaleTimeString();
@@ -35,12 +41,17 @@ const functions = {
         active_class.textContent = "Active Account: " + currentClass;
         active_class.value = currentClass;
         createclassBtn.textContent = "Create Account"; 
+        removeclassBtn.textContent = "Remove Account"; 
+        nameclassBtn.textContent = "Rename Account"; 
+        sumBtn.textContent = "Sum Balance"; 
+        maxBtn.textContent = "Max Balance"; 
+        minBtn.textContent = "Min Balance";      
         moveinBtn.textContent = "Deposit"; 
         moveoutBtn.textContent = "Withdraw"; 
         balanceBtn.textContent = "Balance";     
     },
 
-    initcommunity: () => {   
+    initcommunity: (currentClass) => {   
         page_state.currentPage = "Demographic";
         modulelabel.textContent = "Demographic";     
         class_qty_label.textContent = "Population: ";
@@ -48,15 +59,21 @@ const functions = {
         credentiallabel.textContent = "";
         activity_label.textContent = "Population Movement";
         classlabel.textContent = community.name;
-        active_class.textContent = "Current Location: " + "None";
-        active_class.value = "None";
+        active_class.textContent = "Current Location: " + currentClass;
+        active_class.value = currentClass;
         createclassBtn.textContent = "Create Settlement";
+        removeclassBtn.textContent = "Delete Settlement"; 
+        nameclassBtn.textContent = "Show Sphere"; 
+        sumBtn.textContent = "Sum Population"; 
+        maxBtn.textContent = "Show Most Northern"; 
+        minBtn.textContent = "Show Most Southern"; 
+
         moveinBtn.textContent = "Moved In"; 
         moveoutBtn.textContent = "Moved Out"; 
         balanceBtn.textContent = "How Big";           
     },    
 
-    createclassitem: (classID, className, balance) => {
+    createclassitem: (classID, className, balance, msg) => {
         const classlist = document.getElementById(classID);
         const divnode = document.createElement("div");
         const ulnode = document.createElement("ul");
@@ -74,7 +91,7 @@ const functions = {
         linode.appendChild(textnode);
         linode = document.createElement("li");        
         ulnode.appendChild(linode); 
-        textnode = document.createTextNode("Balance: $" + balance);
+        textnode = document.createTextNode(msg + balance);
         linode.setAttribute("id", className + "_li2");
         linode.appendChild(textnode);       
     },
@@ -82,6 +99,10 @@ const functions = {
     updateacctitem: (className, balance) => {        
         document.getElementById(className + "_li2").textContent = "Balance: $" + balance;
     },
+
+    updatecityitem: (className, latitude, longitude, population) => {        
+        document.getElementById(className + "_li2").textContent = "Population: " + population;
+    },    
 
     createactivityitem: (listID, message, qty) => {
         const list = document.getElementById(listID);
@@ -120,21 +141,21 @@ const functions = {
     displayaccountlist: (classes, listID) => {
         // Regenerate all class items within the controller
         for (let i=0; i < classes.length; i++){
-            functions.createclassitem("classgrid",classes[i].accountName,classes[i].startingBalance);
+            functions.createclassitem("classgrid",classes[i].accountName,classes[i].startingBalance,"Balance: $");
         } 
     },
 
     displaycitylist: (classes, listID) => {
         // Regenerate all class items within the controller
         for (let i=0; i < classes.length; i++){
-            functions.createclassitem("classgrid",classes[i].name,classes[i].population);
+            functions.createclassitem("classgrid",classes[i].name,classes[i].population,"Population: ");
         } 
     },    
 
     destoryclasslist: (listID) => {
         // Remove all class items in the display pane
         functions.eraseactivityitem(listID);     
-    },    
+    },      
 }
 
 document.addEventListener('click', ((e) => {
@@ -149,7 +170,7 @@ document.addEventListener('click', ((e) => {
                 return;     
             }
             else {
-                if(user.check_validacctname(className)) {
+                if(!user.isNameExisting(className)) {
                     console.log(user.add_account(className, 0));
 
                     active_class.textContent = "Active Account: " + className;
@@ -158,7 +179,7 @@ document.addEventListener('click', ((e) => {
                     functions.eraseactivityitem("activitylist");
 
                     let index = user.return_index(className);
-                    functions.createclassitem("classgrid",className,user.accounts[index].startingBalance);
+                    functions.createclassitem("classgrid",className,user.accounts[index].startingBalance, "Balance: $");
 
                     // Maintain Page State
                     page_state.currentAccount = className;
@@ -169,6 +190,105 @@ document.addEventListener('click', ((e) => {
             }
             
         break;
+
+        case "Remove Account":
+
+            if (page_state.currentAccount == null || page_state.currentAccount == "") {
+
+                window.alert("Invalid Account to Remove.");
+                return;     
+            }
+            else {
+                if(!user.isNameExisting(page_state.currentAccount)) {
+
+                    window.alert("Invalid Account to Remove.");
+                    return;
+                }
+                else {
+                    user.remove_account(page_state.currentAccount);
+
+                    // Maintain Page State
+                    page_state.currentAccount = "None";
+
+                    // Refresh page
+                    functions.destoryclasslist("classgrid");
+                    functions.initaccount(page_state.currentAccount);
+                    functions.eraseactivityitem("activitylist");
+                    functions.displayaccountlist(user.accounts, "classgrid");                    
+                    return; 
+                }
+            }
+            
+        break;     
+        
+        case "Rename Account":
+
+            if (page_state.currentAccount == null || page_state.currentAccount == "") {
+
+                window.alert("Invalid Account to Rename.");
+                return;     
+            }
+            else {
+                if(!user.isNameExisting(page_state.currentAccount)) {
+
+                    window.alert("Invalid Account to Rename.");
+                    return;
+                }
+                else {
+                    let className = window.prompt("Enter New Name for the Account: ");
+
+                    if(!user.isNameExisting(className)) {
+                        user.rename_account(page_state.currentAccount, className);
+                    
+                        // Maintain Page State
+                        page_state.currentAccount = className;
+    
+                        // Refresh page
+                        functions.destoryclasslist("classgrid");
+                        functions.initaccount(page_state.currentAccount);
+                        functions.eraseactivityitem("activitylist");
+                        functions.displayaccountlist(user.accounts, "classgrid");   
+
+                        return;
+                    }
+                    else {
+                        window.alert("Invalid Account to Rename.");
+                        return;
+                    }                                                          
+                }
+            }
+            
+        break;         
+
+        case "Sum Balance":
+
+            if (user.accounts.length > 0) {
+
+                functions.createactivityitem("activitylist", "Total Balance: $", user.sum_balance());
+                return;     
+            }
+            
+        break;
+
+        case "Max Balance":
+
+            if (user.accounts.length > 0) {
+
+                functions.createactivityitem("activitylist", "Max Balance: $", user.max_balance());
+                return;     
+            }
+            
+        break;         
+
+        case "Min Balance":
+
+            if (user.accounts.length > 0) {
+
+                functions.createactivityitem("activitylist", "Min Balance: $", user.min_balance());
+                return;     
+            }
+            
+        break;                 
 
         case "Deposit":
             
@@ -221,6 +341,166 @@ document.addEventListener('click', ((e) => {
 
         break;
         
+
+        case "Create Settlement":
+            let className2 = window.prompt("Enter Settlement Name: ","Calgary");            
+            
+            if (className2 == null || className2 == "") {
+
+                console.log("User cancel the settlement creation");
+                return;     
+            }
+            else {
+                if(!community.isNameExisting(className2)) {
+                    let latitude = window.prompt("Enter latitude: ", 0);
+                    let longitude = window.prompt("Enter longitude: ", 0);
+                    let population = window.prompt("Enter population: ", 0);
+                    console.log(community.createCity (className2, Number(latitude), Number(longitude), Number(population)));
+
+                    active_class.textContent = "Active Settlement: " + className2;
+                    active_class.value = className2;
+
+                    functions.eraseactivityitem("activitylist");
+
+                    let index = community.return_index(className2);
+                    functions.createclassitem("classgrid",className2,community.citys[index].population, "Population: ");
+
+                    // Maintain Page State
+                    page_state.currentCity = className2;
+                }
+                else {
+                    window.alert("Invalid settlement name, please try again.");
+                }
+            }
+            
+        break;        
+
+        case "Delete Settlement":
+            if (page_state.currentCity == null || page_state.currentCity == "") {
+
+                window.alert("Invalid Settlement to Remove.");
+                return;     
+            }
+            else {
+                if(!community.isNameExisting(page_state.currentCity)) {
+
+                    window.alert("Invalid Settlement to Remove.");
+                    return;
+                }
+                else {
+                   
+                    community.deleteCity(page_state.currentCity);
+
+                    // Maintain Page State
+                    page_state.currentCity = "None";
+
+                    // Refresh page
+                    functions.destoryclasslist("classgrid");
+                    functions.initcommunity(page_state.currentCity);
+                    functions.eraseactivityitem("activitylist");
+                    functions.displaycitylist(community.citys, "classgrid");                    
+                    return; 
+                }
+            }
+            
+        break;
+        
+        case "Show Sphere":
+
+            if(page_state.currentCity !== "None"){
+                let index = community.return_index(page_state.currentCity);
+
+                functions.createactivityitem("activitylist", "In: ", community.whichSphere(page_state.currentCity));
+                console.log("In: ",community.whichSphere(page_state.currentCity));                
+            }
+            
+        break;      
+        
+        case "Sum Population":
+
+            if (community.citys.length > 0) {
+
+                functions.createactivityitem("activitylist", "Total Population: ", community.getPopulation());
+                return;     
+            }
+            
+        break;     
+        
+        case "Show Most Northern":
+
+            if (community.citys.length > 0) {
+
+                functions.createactivityitem("activitylist", "Most Northern Settlement: ", community.getMostNorthern());
+                return;     
+            }
+            
+        break; 
+        
+        case "Show Most Southern":
+
+            if (community.citys.length > 0) {
+
+                functions.createactivityitem("activitylist", "Most Southern Settlement: ", community.getMostSouthern());
+                return;     
+            }
+            
+        break;         
+
+
+        case "Moved In":
+            
+            if(page_state.currentCity !== "None"){
+                
+                let index = community.return_index(page_state.currentCity);
+
+                community.citys[index].movedIn(inputAmt.value);
+                functions.createactivityitem("activitylist", "Moved In: ", inputAmt.value);
+    
+                console.log("Current Population: ",community.citys[index].population);
+                inputAmt.value = 0;
+                
+                functions.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);             
+            }
+            else{
+                console.log("Invalid Settlement: ", page_state.currentCity);
+            }
+
+        break;
+
+        case "Moved Out":
+        
+            if(page_state.currentCity !== "None"){
+                
+                let index = community.return_index(page_state.currentCity);
+
+                community.citys[index].movedOut(inputAmt.value);
+                functions.createactivityitem("activitylist", "Moved Out: ", inputAmt.value);
+    
+                console.log("Current Population: ",community.citys[index].population);
+                inputAmt.value = 0;
+                
+                functions.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);             
+            }
+            else{
+                console.log("Invalid Settlement: ", page_state.currentCity);
+            }
+
+        break;   
+        
+        case "How Big":
+        
+            if(page_state.currentCity !== "None"){
+                
+                let index = community.return_index(page_state.currentCity);
+                
+                functions.createactivityitem("activitylist", "Classification: ", community.citys[index].howBig());
+            }
+            else{
+                console.log("Invalid Settlement: ", page_state.currentCity);
+            }
+
+        break;         
+
         default:
 
             if((e.target.id !== "")) {
@@ -245,7 +525,7 @@ document.addEventListener('click', ((e) => {
 
                         case "Demographic":
                             functions.destoryclasslist("classgrid");
-                            functions.initcommunity();
+                            functions.initcommunity(page_state.currentCity);
                             functions.eraseactivityitem("activitylist");
                             functions.displaycitylist(community.citys, "classgrid");
 
@@ -254,7 +534,7 @@ document.addEventListener('click', ((e) => {
                         break;
                     }  
                 } else {                 
-                    if(!user.check_validacctname(className)){
+                    if(user.isNameExisting(className)){
                         active_class.textContent = "Active Account: " + className;
                         active_class.value = className;
         
@@ -264,9 +544,23 @@ document.addEventListener('click', ((e) => {
 
                         // Maintain Page State
                         page_state.currentAccount = className; 
-                }                                                   
-            } 
-        }           
+                    }
+                    
+                    if(community.isNameExisting(className)){
+                        active_class.textContent = "Active Location: " + className;
+                        active_class.value = className;
+        
+                        let index = community.return_index(className);
+                        functions.updatecityitem(className, 0, 0, community.citys[index].population);
+                        functions.eraseactivityitem("activitylist");
+
+                        // Maintain Page State
+                        page_state.currentCity = className; 
+
+                    }                    
+                    
+                } 
+            }           
       }
 
 }));
