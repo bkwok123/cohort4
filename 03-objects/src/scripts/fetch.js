@@ -1,6 +1,7 @@
 const functions = {
 
-    url: 'https://uinames.com/api/?amount=10',
+    // url: 'https://uinames.com/api/?amount=10',
+    url: 'https://api.myjson.com/bins/10cqhs',
 
     getFirstName(data) {
         return (data[0].name);
@@ -48,6 +49,7 @@ const functions = {
 
     async workWithData() {
         const data = await functions.getUsers();
+
         console.log(functions.getFirstName(data));
         console.log(functions.getAllFirstNames(data));
     },
