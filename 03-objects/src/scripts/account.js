@@ -61,18 +61,18 @@ export class AccountController {
         return this.accounts;
     }
 
-    check_validacctname(accountName){
-        let isvalid = true;
+    isNameExisting(accountName){
+        let isExisting = false;
 
         for (let i=0; i<this.accounts.length; i++) {
 
             if(this.accounts[i].accountName === accountName) {
-                isvalid = false;
+                isExisting = true;
             }
             
         }     
         
-        return isvalid;
+        return isExisting;
     }
     
     return_index(accountName){

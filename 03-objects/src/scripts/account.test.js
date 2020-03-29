@@ -148,17 +148,17 @@ test('Check the account class min_balance method', () => {
     expect(accountcontroller.min_balance()).toBe(-100);    
 });
 
-test('Check the account class check_validacctname method', () => {
+test('Check the account class isNameExisting method', () => {
 
     const accountcontroller = new AccountController("John Doe")
     accountcontroller.add_account("Saving", 100);
     accountcontroller.add_account("Investment", 150);
     accountcontroller.add_account("High Interest", 200);
 
-    expect(accountcontroller.check_validacctname("Test")).toBe(true);
-    expect(accountcontroller.check_validacctname("Saving")).toBe(false);
-    expect(accountcontroller.check_validacctname("Investment")).toBe(false);
-    expect(accountcontroller.check_validacctname("High Interest")).toBe(false);
+    expect(accountcontroller.isNameExisting("Test")).toBe(false);
+    expect(accountcontroller.isNameExisting("Saving")).toBe(true);
+    expect(accountcontroller.isNameExisting("Investment")).toBe(true);
+    expect(accountcontroller.isNameExisting("High Interest")).toBe(true);
 });
 
 test('Check the account class return_index method', () => {
