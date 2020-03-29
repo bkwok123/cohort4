@@ -143,3 +143,36 @@ test('Check the community class isNameExisting method', () => {
     expect(community.isNameExisting("Lima")).toBe(true);
     expect(community.isNameExisting("Sydney")).toBe(true);
 });
+
+test('Check the community class copyArray method', () => {
+
+    let community = new Community ("Community 1");
+    let community2 = new Community ("Community 2");
+    let array1 = [{"name":"Calgary","latitude":51.0447,"longitude":-114.0719,"population":100},
+                    {"name":"Lima","latitude":-12.0464,"longitude":-77.0428,"population":200}, 
+                    {"name":"Sydney","latitude":-33.8688,"longitude":151.2093,"population":300},
+                    {"name":"Hong Kong","latitude":22.3193,"longitude":114.1694,"population":400}];
+                
+    community2.createCity("Calgary",51.0447,-114.0719,100);
+    community2.createCity("Lima",-12.0464,-77.0428,200);
+    community2.createCity("Sydney",-33.8688,151.2093,300);
+    community2.createCity("Hong Kong",22.3193,114.1694,400);
+    expect(community.copyArray(array1)).toEqual(community2.citys);
+
+    community = new Community ("Community 3");
+    community2 = new Community ("Community 4");
+    array1 = [{"name":"CA","latitude":51.0447,"longitude":-114.0719,"population":100},
+                    {"name":"LI","latitude":-12.0464,"longitude":-77.0428,"population":200}, 
+                    {"name":"SY","latitude":-33.8688,"longitude":151.2093,"population":300}];    
+
+    community2.createCity("CA",51.0447,-114.0719,100);
+    community2.createCity("LI",-12.0464,-77.0428,200);
+    community2.createCity("SY",-33.8688,151.2093,300);
+    expect(community.copyArray(array1)).toEqual(community2.citys);
+
+    community = new Community ("Community 5");
+    community2 = new Community ("Community 6");
+    array1 = [];    
+
+    expect(community.copyArray(array1)).toEqual(community2.citys);    
+});

@@ -177,3 +177,36 @@ test('Check the account class return_index method', () => {
 
     expect(accountcontroller.return_index("Test")).toBe(null);    
 });
+
+test('Check the account class copyArray method', () => {
+
+    let user = new AccountController ("John Doe");
+    let user2 = new AccountController ("Jane J");
+    let array1 = [{"accountName":"Saving","startingBalance":5000},
+                  {"accountName":"Investment","startingBalance":10000},
+                  {"accountName":"High Interest","startingBalance":700},
+                  {"accountName":"Cheque","startingBalance":100}];
+                
+    user2.add_account("Saving",5000);
+    user2.add_account("Investment",10000);
+    user2.add_account("High Interest",700);
+    user2.add_account("Cheque",100);
+    expect(user.copyArray(array1)).toEqual(user2.accounts);
+
+    user = new AccountController ("Brad");
+    user2 = new AccountController ("Beth");
+    array1 = [{"accountName":"ABC","startingBalance":0},
+                  {"accountName":"DEF","startingBalance":54},
+                  {"accountName":"HI","startingBalance":98}];   
+
+    user2.add_account("ABC",0);
+    user2.add_account("DEF",54);
+    user2.add_account("HI",98);
+    expect(user.copyArray(array1)).toEqual(user2.accounts);
+
+    user = new AccountController ("Rain");
+    user2 = new AccountController ("Cloud");
+    array1 = [];    
+
+    expect(user.copyArray(array1)).toEqual(user2.accounts);
+});

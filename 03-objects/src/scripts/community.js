@@ -108,6 +108,15 @@ export default class community {
         }     
         
         return isExisting;
-    }    
+    }
+    
+    copyArray(array) {
+        
+        for (let i=0; i < array.length; i++) {
+            this.citys.push(new City(array[i].name, array[i].latitude, array[i].longitude, array[i].population));
+        }
+
+        return this.citys;
+    }
 
 }

@@ -90,6 +90,15 @@ export class AccountController {
         return index;
     }    
 
+    copyArray(array) {
+
+        for (let i=0; i < array.length; i++) {
+            this.accounts.push(new Account(array[i].accountName, array[i].startingBalance));
+        }
+
+        return this.accounts;
+    }
+
     sum_balance () {
 
         return this.accounts.reduce(((total,currentAcct) => total+currentAcct.startingBalance),0);

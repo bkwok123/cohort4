@@ -172,6 +172,11 @@ a {
     }
 }
 
+.panel > ul{
+    list-style: none;
+    margin: 0px;
+}
+
 .subpanel{
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
@@ -257,7 +262,7 @@ a {
     border-color: red;
 }
 
-.boxul {
+.box > ul {
     list-style: none;
     padding: 0px;
 }

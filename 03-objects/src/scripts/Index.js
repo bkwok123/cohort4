@@ -1,6 +1,10 @@
 import Account, {AccountController} from './account.js'
-import City from './city.js'
 import CityController from './community.js'
+import State from './maintaintstate.js'
+
+const stateurl = 'https://api.myjson.com/bins/10cqhs';
+const accturl = 'https://api.myjson.com/bins/1gqjio';
+const cityurl = 'https://api.myjson.com/bins/i1mvc';
 
 const user = new AccountController("John Doe");
 const community = new CityController("New Settlement");
@@ -14,20 +18,43 @@ window.onload = function() {
 
     // Initialize common Items
     functions.initcommon();
-
-   // Initialize account Items
-    functions.initaccount("None");
 }
 
 window.onbeforeunload = function() {
+ 
+}
 
-    // Save states on remote server
-
+window.onunload = function() {
+    
+       
 }
 
 const functions = {
-    initcommon: () => { 
+    initcommon: async () => { 
         // clocklabel.textContent = "Date: " + new Date().toLocaleDateString() + "    Time: " + new Date().toLocaleTimeString();
+        // Retrieve saved states from remote server
+        let webdata = await State.getData(stateurl);
+        page_state.currentAccount = webdata.currentAccount;
+        page_state.currentCity = webdata.currentCity;
+        page_state.currentPage = webdata.currentPage;
+
+        webdata = await State.getData(accturl);
+        user.copyArray(webdata);
+
+        webdata = await State.getData(cityurl);
+        community.copyArray(webdata);
+
+        switch(page_state.currentPage) {
+            case "Banking":
+                functions.initaccount(page_state.currentAccount);
+                functions.displayaccountlist(user.accounts, "classgrid");                
+            break;
+
+            case "Demographic":
+                functions.initcommunity(page_state.currentCity);
+                functions.displaycitylist(community.citys, "classgrid");                
+            break;
+        }        
     },
 
     initaccount: (currentClass) => {        
@@ -155,7 +182,16 @@ const functions = {
     destoryclasslist: (listID) => {
         // Remove all class items in the display pane
         functions.eraseactivityitem(listID);     
-    },      
+    },
+    
+    savestate: () => {
+
+        console.log(page_state);
+        State.putData(stateurl,page_state);
+        State.putData(accturl,user.accounts);
+        State.putData(cityurl,community.citys);
+
+    },        
 }
 
 document.addEventListener('click', ((e) => {
@@ -183,6 +219,9 @@ document.addEventListener('click', ((e) => {
 
                     // Maintain Page State
                     page_state.currentAccount = className;
+
+                    // Save State to the Server
+                    functions.savestate();
                 }
                 else {
                     window.alert("Invalid account name, please try again.");
@@ -209,6 +248,9 @@ document.addEventListener('click', ((e) => {
 
                     // Maintain Page State
                     page_state.currentAccount = "None";
+
+                    // Save State to the Server
+                    functions.savestate();                    
 
                     // Refresh page
                     functions.destoryclasslist("classgrid");
@@ -242,6 +284,9 @@ document.addEventListener('click', ((e) => {
                     
                         // Maintain Page State
                         page_state.currentAccount = className;
+
+                        // Save State to the Server
+                        functions.savestate();                        
     
                         // Refresh page
                         functions.destoryclasslist("classgrid");
@@ -303,6 +348,9 @@ document.addEventListener('click', ((e) => {
                 inputAmt.value = 0;
                 
                 functions.updateacctitem(active_class.value, user.accounts[index].balance());             
+
+                // Save State to the Server
+                functions.savestate();
             }
             else{
                 console.log("Invalid Account: ", active_class.value);
@@ -323,6 +371,9 @@ document.addEventListener('click', ((e) => {
                 inputAmt.value = 0;       
                 
                 functions.updateacctitem(active_class.value, user.accounts[index].balance());
+
+                // Save State to the Server
+                functions.savestate();                
             }
             else{
                 console.log("Invalid Account: ", active_class.value);
@@ -367,6 +418,9 @@ document.addEventListener('click', ((e) => {
 
                     // Maintain Page State
                     page_state.currentCity = className2;
+
+                    // Save State to the Server
+                    functions.savestate();                    
                 }
                 else {
                     window.alert("Invalid settlement name, please try again.");
@@ -393,6 +447,9 @@ document.addEventListener('click', ((e) => {
 
                     // Maintain Page State
                     page_state.currentCity = "None";
+
+                    // Save State to the Server
+                    functions.savestate();
 
                     // Refresh page
                     functions.destoryclasslist("classgrid");
@@ -459,7 +516,10 @@ document.addEventListener('click', ((e) => {
                 console.log("Current Population: ",community.citys[index].population);
                 inputAmt.value = 0;
                 
-                functions.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);             
+                functions.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);  
+                
+                // Save State to the Server
+                functions.savestate();                
             }
             else{
                 console.log("Invalid Settlement: ", page_state.currentCity);
@@ -479,7 +539,10 @@ document.addEventListener('click', ((e) => {
                 console.log("Current Population: ",community.citys[index].population);
                 inputAmt.value = 0;
                 
-                functions.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);             
+                functions.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);  
+                
+                // Save State to the Server
+                functions.savestate();                
             }
             else{
                 console.log("Invalid Settlement: ", page_state.currentCity);
@@ -520,7 +583,10 @@ document.addEventListener('click', ((e) => {
                             functions.displayaccountlist(user.accounts, "classgrid");
 
                             // Maintain Page State
-                            page_state.currentPage = "Banking";                        
+                            page_state.currentPage = "Banking";        
+                            
+                            // Save State to the Server
+                            functions.savestate();                                   
                         break;
 
                         case "Demographic":
@@ -530,7 +596,10 @@ document.addEventListener('click', ((e) => {
                             functions.displaycitylist(community.citys, "classgrid");
 
                             // Maintain Page State
-                            page_state.currentPage = "Demographic";                        
+                            page_state.currentPage = "Demographic";      
+                            
+                            // Save State to the Server
+                            functions.savestate();                                
                         break;
                     }  
                 } else {                 
@@ -555,8 +624,7 @@ document.addEventListener('click', ((e) => {
                         functions.eraseactivityitem("activitylist");
 
                         // Maintain Page State
-                        page_state.currentCity = className; 
-
+                        page_state.currentCity = className;                              
                     }                    
                     
                 } 
