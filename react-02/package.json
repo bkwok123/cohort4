@@ -9,7 +9,8 @@
     "cross-env": "^7.0.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-svg-injector": "^2.0.2"
   },
   "scripts": {
     "start": "cross-env BROWSER='chrome' react-scripts start",

@@ -12,8 +12,19 @@
   }
 
   .dragon {
+    fill: rgb(36, 1, 49);
+  }
+
+  .coronavirus {
     fill: violet;
-    background-color: teal;
+  }
+
+  .camel {
+   fill: rgb(192, 99, 11);
+  }
+
+  .unicorn {
+   fill: white;
   }
 
   .spin-clk {

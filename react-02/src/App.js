@@ -1,7 +1,6 @@
 import React from 'react';
 import Svg from './components/Svg';
 import logo from './logo.svg';
-import coronavirus from  './coronavirus.svg';
 import './App.css';
 
 
