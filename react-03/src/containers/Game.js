@@ -88,7 +88,7 @@ class Game extends React.Component {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       }
   
-    const switchAI = <button onClick={() => this.turnAIswitch()}>AI {this.state.AIon ? 'On': 'Off'}</button>;
+      const switchAI = <button onClick={() => this.turnAIswitch()}>{this.state.AIon ? 'Single Player': 'Two Players'}</button>;
 
       return (
         <div className="game">
@@ -107,31 +107,15 @@ class Game extends React.Component {
     }
   }
 
-  // Return an array of available moves within the tic-tac-toe board of which
-  // each squared is represented in integer as below:
-  //  0 1 2
-  //  3 4 5
-  //  6 7 8
-  function getavailableMove(squares) {
-    let availableMove = [];
-
-    for (let i=0; i<squares.length; i++) {
-      if (squares[i] === null) {
-        availableMove.push(i);
-      }
-    }
-
-    return availableMove;
-  }
-
   // Return the next move as an array to contains the entire board current state
   function applyAI (squares, isPlayerX) {
     let AImove = [];
-    let AImoveIndex = null;
+    let AImoveIndex = -1;
 
     // get move from AI as i
     AImoveIndex = (Math.random() < 0.2) ? produceRandomMove(squares) : produceBestMove(squares, isPlayerX);
-    if (AImoveIndex != null) {
+
+    if (AImoveIndex > -1) {
       AImove = squares.slice();
 
       AImove[AImoveIndex] = 'O';
@@ -143,7 +127,7 @@ class Game extends React.Component {
   // Generate best move based on remaining available move on the board
   function produceBestMove(squares, isPlayerX) {    
     let bestscore = -Infinity;
-    let move = null;
+    let move = -1;
 
     squares.forEach((square, i) => {
       if (square === null) {        
@@ -165,15 +149,22 @@ class Game extends React.Component {
 
   // Generate the best score of the current board states for the maximizer (AI)
   function minmax(squares, isNextMax, isPlayerX) {
+    
+    // TERMINATION CONDITION
+    if (squares.length < 0) {
+      return
+    }
 
     // Check the result of the game
     const score = returnResult(squares, isPlayerX);
 
+    // BASE CASE
     // Either player wins, return the score (player = -1, AI = +1, draw = 0)
     if (score !== null) {      
         return score;
     }
 
+    // RECURSION
     // Simulate the game by looping through (recursivly calling) all possible moves by both players
     // AI is the maximizer and Player is the minimizer
     if (isNextMax) {       // Maximizer's (AI) move
@@ -225,16 +216,14 @@ class Game extends React.Component {
 
   // Generate random move based on remaining available move on the board
   function produceRandomMove (squares) {      
-    const availableMove = getavailableMove(squares);
-    const prob = Math.random();
-    let move = null;
 
-    // Assign a random move as an integer of which each number has equal probability to be picked
-    for (let i=0; i<availableMove.length; i++) {
-      if ((prob >= i/availableMove.length) && (prob < (i+1)/availableMove.length)) {
-        move = availableMove[i];
-      }
-    }
+    const sim_squares = squares.slice();
+    let move = sim_squares.findIndex((square) => square === null );    
+    sim_squares.forEach((square, i) => {
+      if (square === null) {
+        move = (Math.random() < 0.2) ? i : move;
+      }      
+    }); 
     
     return move;
   }
@@ -261,4 +250,4 @@ class Game extends React.Component {
   }
     
   export default Game;
-  export {getavailableMove, applyAI, produceRandomMove, calculateWinner, minmax, returnResult, produceBestMove};
+  export {applyAI, produceRandomMove, calculateWinner, minmax, returnResult, produceBestMove};

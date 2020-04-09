@@ -22,20 +22,6 @@ expect.extend({
   },
 });
 
-test('Check the getavailableMove function', () => {
-  let squares = [null, null, null, null, null, null, null, null, null];
-  expect(getavailableMove(squares)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8]);
-
-  squares = [null, null, "X", null, null, null, null, null, null];
-  expect(getavailableMove(squares)).toEqual([0, 1, 3, 4, 5, 6, 7, 8]);
-
-  squares = [null, null, "X", null, null, "O", null, null, null];
-  expect(getavailableMove(squares)).toEqual([0, 1, 3, 4, 6, 7, 8]);
-
-  squares = ["X", "X", "X", "X", "X", "O", "O", "O", "O"];
-  expect(getavailableMove(squares)).toEqual([]);  
-});
-
 test('Check the produceRandomMove function', () => {
   let squares = [null, null, null, null, null, null, null, null, null];
   expect(produceRandomMove(squares)).toBeGreaterThanOrEqual(0);
@@ -66,7 +52,7 @@ test('Check the produceRandomMove function', () => {
   expect(produceRandomMove(squares)).toBe(3);  
 
   squares = ["X", "X", "X", "X", "X", "O", "O", "X", "O"];
-  expect(produceRandomMove(squares)).toBe(null);    
+  expect(produceRandomMove(squares)).toBe(-1);    
 });
 
 test('Check the returnResult function', () => {
