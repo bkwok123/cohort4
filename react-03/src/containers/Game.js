@@ -28,18 +28,18 @@ class Game extends React.Component {
       }
       squares[i] = this.state.xIsNext ? 'X' : 'O';
 
-      if (this.state.AIon) {    
-        let AImove = applyAI(squares);
-        if (AImove.length < 1) {
+      if (this.state.AIon) {  // AI On    
+        let AImove = applyAI(squares, true);
+        if (AImove.length < 1) { // No more move available for AI
           newhistory = history.concat([{squares: squares}]);          
           newstepNum = history.length;
         }
-        else {
+        else {                   // 1 or more move available for AI
           newhistory = history.concat([{squares: squares}], [{squares: AImove}]);
           newstepNum = history.length + 1;
         }          
       }
-      else {       
+      else {                  // AI Off
         newhistory = history.concat([{squares: squares}]);          
         newstepNum = history.length;
         nextPlayer = !this.state.xIsNext;
@@ -113,7 +113,6 @@ class Game extends React.Component {
   //  3 4 5
   //  6 7 8
   function getavailableMove(squares) {
-
     let availableMove = [];
 
     for (let i=0; i<squares.length; i++) {
@@ -126,27 +125,111 @@ class Game extends React.Component {
   }
 
   // Return the next move as an array to contains the entire board current state
-  function applyAI (squares) {
+  function applyAI (squares, isPlayerX) {
     let AImove = [];
+    let AImoveIndex = null;
 
-    // get move from AI as i                
-    if (getMove(squares) != null) {
+    // get move from AI as i
+    AImoveIndex = (Math.random() < 0.2) ? produceRandomMove(squares) : produceBestMove(squares, isPlayerX);
+    if (AImoveIndex != null) {
       AImove = squares.slice();
 
-      AImove[getMove(squares)] = 'O';
+      AImove[AImoveIndex] = 'O';
     }              
 
     return AImove;
   }
 
-  // Return the next move as an integer which represents a single square in the board
-  // => Need to change algorithm for best move
-  function getMove (squares) {      
+  // Generate best move based on remaining available move on the board
+  function produceBestMove(squares, isPlayerX) {    
+    let bestscore = -Infinity;
+    let move = null;
+
+    squares.forEach((square, i) => {
+      if (square === null) {        
+        // Make a copy of the board states and reset for each first move
+        const sim_squares = squares.slice();    
+        // AI makes a move in the next available square        
+        sim_squares[i] = (isPlayerX) ? "O" : "X"; 
+        let score = Math.max(bestscore, minmax(sim_squares, false, isPlayerX));
+        
+        if(score > bestscore) {
+          bestscore = score;
+          move = i;
+        }        
+      }
+    });
+
+    return move;
+  }
+
+  // Generate the best score of the current board states for the maximizer (AI)
+  function minmax(squares, isNextMax, isPlayerX) {
+
+    // Check the result of the game
+    const score = returnResult(squares, isPlayerX);
+
+    // Either player wins, return the score (player = -1, AI = +1, draw = 0)
+    if (score !== null) {      
+        return score;
+    }
+
+    // Simulate the game by looping through (recursivly calling) all possible moves by both players
+    // AI is the maximizer and Player is the minimizer
+    if (isNextMax) {       // Maximizer's (AI) move
+        let best = -Infinity;        
+
+        squares.forEach((square, i) => {
+            if (square === null) {
+                // Make a copy of the board states and reset for each first move
+                const sim_squares = squares.slice();
+
+                // Make a move in the next available square
+                sim_squares[i] = (isPlayerX) ? "O" : "X";          
+    
+                // call yourself to loop the next depth      
+                best = Math.max(best, minmax(sim_squares, !isNextMax, isPlayerX));            
+            }
+        });
+
+        return best;
+    }
+    else {
+        let best = Infinity;
+
+        squares.forEach((square, i) => {
+            if (square === null) {
+                // Make a copy of the board states and reset for each first move
+                const sim_squares = squares.slice();
+
+                // Make a move in the next available square
+                sim_squares[i] = (isPlayerX) ? "X" : "O";          
+    
+                // call yourself to loop the next depth      
+                best = Math.min(best, minmax(sim_squares, !isNextMax, isPlayerX));            
+            }
+        });        
+
+        return best;        
+    }
+  }
+
+  // Map symbol represented each player to assinged score
+  function returnResult(squares, isPlayerX) {
+
+    // AI: win = +1, draw = 0, loss = -1
+    const scores = isPlayerX ? { X: -1, O: +1, Draw: 0} : { X: 1, O: -1, Draw: 0}
+    const score = calculateWinner(squares);
+    return score === null ? null : scores[score];
+  }
+
+  // Generate random move based on remaining available move on the board
+  function produceRandomMove (squares) {      
     const availableMove = getavailableMove(squares);
     const prob = Math.random();
     let move = null;
 
-    // Assign a random move as integer
+    // Assign a random move as an integer of which each number has equal probability to be picked
     for (let i=0; i<availableMove.length; i++) {
       if ((prob >= i/availableMove.length) && (prob < (i+1)/availableMove.length)) {
         move = availableMove[i];
@@ -173,7 +256,9 @@ class Game extends React.Component {
         return squares[a];
       }
     }
-    return null;
+
+    return !squares.includes(null) ? "Draw" : null;
   }
     
   export default Game;
+  export {getavailableMove, applyAI, produceRandomMove, calculateWinner, minmax, returnResult, produceBestMove};
