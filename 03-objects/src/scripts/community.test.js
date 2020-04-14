@@ -116,7 +116,7 @@ test('Check the community class return_index method', () => {
 
     const community = new Community ("Community 1");
 
-    expect(community.return_index("Calgary")).toBe(null);
+    expect(community.return_index("Calgary")).toBe(-1);
 
     community.createCity("Calgary",51.0447,-114.0719,100);
     community.createCity("Lima",-12.0464,-77.0428,200);
@@ -126,7 +126,7 @@ test('Check the community class return_index method', () => {
     expect(community.return_index("Lima")).toBe(1);
     expect(community.return_index("Sydney")).toBe(2);
 
-    expect(community.return_index("Test")).toBe(null);  
+    expect(community.return_index("Test")).toBe(-1);  
 });
 
 test('Check the community class isNameExisting method', () => {

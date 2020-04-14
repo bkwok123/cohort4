@@ -13,7 +13,6 @@ export default class community {
         this.citys.push(new City(name, latitude, longitude, population));
 
         return this.citys;
-
     }
 
 
@@ -32,15 +31,12 @@ export default class community {
         switch(true) {
             case location.latitude === 0:
                 return "Equator";
-            break;
 
             case location.latitude > 0:
                 return "Northern Hemisphere";
-            break;
 
             case location.latitude <0:
                 return "Southern Hemisphere";
-            break;
         }
         
     }
@@ -81,19 +77,8 @@ export default class community {
         return this.citys.reduce(((total,currentCity) => total+currentCity.population),0);
     }
 
-    return_index(cityName){
-
-        let index=null;
-
-        for (let i=0; i<this.citys.length; i++) {
-
-            if(this.citys[i].name === cityName) {
-                index = i;
-            }
-            
-        }     
-        
-        return index;
+    return_index(cityName){        
+        return this.citys.findIndex((element) => element.name === cityName);
     }  
 
     isNameExisting(settlementName){

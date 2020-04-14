@@ -165,7 +165,7 @@ test('Check the account class return_index method', () => {
 
     const accountcontroller = new AccountController("John Doe")
 
-    expect(accountcontroller.return_index("High Interest")).toBe(null);
+    expect(accountcontroller.return_index("High Interest")).toBe(-1);
 
     accountcontroller.add_account("Saving", 100);
     accountcontroller.add_account("Investment", 150);
@@ -175,7 +175,7 @@ test('Check the account class return_index method', () => {
     expect(accountcontroller.return_index("Investment")).toBe(1);
     expect(accountcontroller.return_index("High Interest")).toBe(2);
 
-    expect(accountcontroller.return_index("Test")).toBe(null);    
+    expect(accountcontroller.return_index("Test")).toBe(-1);    
 });
 
 test('Check the account class copyArray method', () => {
