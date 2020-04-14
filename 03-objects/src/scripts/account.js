@@ -76,18 +76,7 @@ export class AccountController {
     }
     
     return_index(accountName){
-
-        let index=null;
-
-        for (let i=0; i<this.accounts.length; i++) {
-
-            if(this.accounts[i].accountName === accountName) {
-                index = i;
-            }
-            
-        }     
-        
-        return index;
+        return this.accounts.findIndex((element) => element.accountName === accountName);
     }    
 
     copyArray(array) {
