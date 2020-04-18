@@ -32,93 +32,158 @@ class DisplayPanel extends AppElement {
 
     constructor(key) {
         super(key);
-        this.updateElement = null;
+        this.updateObj = null;
     }
 
     getElement() {
-        const panel = document.createElement("div");              
-        this.updateElement = createDisplayPanel(panel);   
+        const panel = document.createElement("div");
+        createDisplayPanel(panel);              
+        this.updateObj = {label: panel.children[0], list: panel.children[1]};
         this.element = panel;
         return panel;
     }
 
+    eraseList() {
+        eraseitems (this.updateObj["list"]);
+    }   
+
+    generateList(message, qty) {
+        const list = this.updateObj["list"];
+        const linode = document.createElement("li");
+        const textnode = document.createTextNode(message + qty);
+
+        let count = list.childElementCount;
+
+        // keep display log to a fixed number of items        
+        if(count === 5){
+            list.removeChild(list.firstElementChild);
+        }
+        
+        // Add new log item
+        linode.appendChild(textnode);
+        list.appendChild(linode);        
+    }     
+}
+
+class AccountDisplay extends DisplayPanel {
+
     initElement() {
-        this.element.children[0].textContent = "Transaction Activities";
+        this.updateObj["label"].textContent = "Transaction Activities";
+    }    
+}
+
+class CityDisplay extends DisplayPanel {
+
+    initElement() {
+        this.updateObj["label"].textContent = "Population Movement";
     }
+    
+    generateList(array) {
+        
+    }    
 }
 
 class ControlPanel extends AppElement {
 
     constructor(key) {
         super(key);
-        this.updateArray = null;
+        this.updateObj = null;
+        this.inputObj = null;
     }
 
     getElement() {
         const panel = document.createElement("div");              
-        this.updateArray = createControlPanel(panel);   
+        const array = createControlPanel(panel);
+        this.updateObj = {label: array[0], bpanel1: array[1], bpanel2: array[2], ipanel1: array[3], bpanel3: array[4]};
+        this.inputObj = array[3].children[1];
         this.element = panel;
         return panel;
     }   
+        
+    updateLabel(msg) {
+        this.updateObj["label"].textContent = msg;
+    }
+}
 
-    initElement(state,isAccounts) {
+class AccountControl extends ControlPanel {
 
-        if (isAccounts) {
-            modulelabel.textContent = "Banking";
-            credentiallabel.textContent = "Login:";
-            classlabel.textContent = state["user"].accountHolder;
+    initElement(state) {
+        modulelabel.textContent = "Banking";
+        credentiallabel.textContent = "Login:";
+        classlabel.textContent = state["user"].accountHolder;
+
+        this.updateObj["label"].textContent = "Active Account: " + state["currentAccount"];
+        this.updateObj["bpanel1"].children[0].textContent = "Create Account";            
+        this.updateObj["bpanel1"].children[1].textContent = "Remove Account";
+        this.updateObj["bpanel1"].children[2].textContent = "Rename Account";
+        this.updateObj["bpanel2"].children[0].textContent = "Sum Balance";
+        this.updateObj["bpanel2"].children[1].textContent = "Max Balance";
+        this.updateObj["bpanel2"].children[2].textContent = "Min Balance";
+        this.updateObj["ipanel1"].children[0].textContent = "Amount: ";
+        this.inputObj.value = 0;
+        this.updateObj["bpanel3"].children[0].textContent = "Deposit";
+        this.updateObj["bpanel3"].children[1].textContent = "Withdraw";
+        this.updateObj["bpanel3"].children[2].textContent = "Balance";
+    }
     
-            this.element.children[0].textContent = "Active Account: " + state["currentAccount"];
-            this.updateArray[0].children[0].textContent = "Create Account";            
-            this.updateArray[0].children[1].textContent = "Remove Account";
-            this.updateArray[0].children[2].textContent = "Rename Account";
-            this.updateArray[1].children[0].textContent = "Sum Balance";
-            this.updateArray[1].children[1].textContent = "Max Balance";
-            this.updateArray[1].children[2].textContent = "Min Balance";
-            this.updateArray[2].children[0].textContent = "Amount: ";
-            this.updateArray[2].children[1].value = 0;
-            this.updateArray[3].children[0].textContent = "Deposit";
-            this.updateArray[3].children[1].textContent = "Withdraw";
-            this.updateArray[3].children[2].textContent = "Balance";
-        }
-        else {
-            modulelabel.textContent = "Demographic";
-            credentiallabel.textContent = "";
-            classlabel.textContent = state["community"].name;
-    
-            this.element.children[0].textContent = "Current Location: " + state.currentCity;
-            this.updateArray[0].children[0].textContent = "Create Settlement";
-            this.updateArray[0].children[1].textContent = "Delete Settlement";
-            this.updateArray[0].children[2].textContent = "Show Sphere";
-            this.updateArray[1].children[0].textContent = "Sum Population";
-            this.updateArray[1].children[1].textContent = "Show Most Northern";
-            this.updateArray[1].children[2].textContent = "Show Most Southern";
-            this.updateArray[2].children[0].textContent = "Population: ";
-            this.updateArray[2].children[1].value = 0;
-            this.updateArray[3].children[0].textContent = "Moved In";
-            this.updateArray[3].children[1].textContent = "Moved Out";
-            this.updateArray[3].children[2].textContent = "How Big";                       
-        }
-    }       
+    updateLabel(msg) {
+        this.updateObj["label"].textContent = "Active Account: " + msg;
+    }    
+}
+
+class CityControl extends ControlPanel {
+
+    initElement(state) {
+        modulelabel.textContent = "Demographic";
+        credentiallabel.textContent = "";
+        classlabel.textContent = state["community"].name;
+
+        this.updateObj["label"].textContent = "Current Location: " + state.currentCity;
+        this.updateObj["bpanel1"].children[0].textContent = "Create Settlement";
+        this.updateObj["bpanel1"].children[1].textContent = "Delete Settlement";
+        this.updateObj["bpanel1"].children[2].textContent = "Show Sphere";
+        this.updateObj["bpanel2"].children[0].textContent = "Sum Population";
+        this.updateObj["bpanel2"].children[1].textContent = "Show Most Northern";
+        this.updateObj["bpanel2"].children[2].textContent = "Show Most Southern";
+        this.updateObj["ipanel1"].children[0].textContent = "Population: ";
+        this.inputObj.value = 0;
+        this.updateObj["bpanel3"].children[0].textContent = "Moved In";
+        this.updateObj["bpanel3"].children[1].textContent = "Moved Out";
+        this.updateObj["bpanel3"].children[2].textContent = "How Big"; 
+    }      
 }
 
 class Cards extends AppElement {
+    removeAll() {
+        eraseitems(this.element);
+    }
+}
 
-    getElement(array, isAccounts) {
-        const panel = createCards(array, isAccounts);             
+class AccountCards extends Cards {
+
+    getElement(array) {
+        const panel = document.createElement("div");
+        panel.setAttribute("id","classgrid");
+        panel.setAttribute("class","zone blue grid-wrapper frame");
+        createAccountCards (panel, array);
+
         this.element = panel;
         return panel;
     }
 
-    removeAll() {
+    updateAll(array) {
         eraseitems(this.element);
+        createAccountCards (this.element, array);
+        
+        return this.element;        
     }
-    
-    updateAll(array, isAccounts) {
-        eraseitems(this.element);
-        const panel = createCards(array, isAccounts);             
-        this.element = panel;
-        return panel;        
+
+    addOne(name) {
+        addCard(this.element, name, 0, "Balance: $");
+    }
+
+    updateOne(name, balance) {
+        document.getElementById(name + "_li2").textContent = "Balance: $" + balance;
     }
 }
 
@@ -148,29 +213,181 @@ class PopulateApp {
         this.container = shadow;
 
         // Create main panels
-        let key = this.nextKey();
-        const displayEL = new DisplayPanel (key);
-        this.elements[key] = displayEL;
-        key = this.nextKey();
-        const controlEL = new ControlPanel (key);
-        this.elements[key] = controlEL;
-        key = this.nextKey();
-        const cardEL = new Cards (key);
-        key = this.nextKey(cardEL);
-
-        const dpanel = displayEL.getElement();
-        const cpanel = controlEL.getElement(); 
-        const cards = cardEL.getElement(page_state["user"],true);        
-        container.append(dpanel);
-        container.append(cpanel);        
+        const displayEL = new AccountDisplay ("display");
+        this.elements["display"] = displayEL;
+        const controlEL = new AccountControl ("control");
+        this.elements["control"] = controlEL;
+        const cardEL = new AccountCards ("cards");
+        this.elements["cards"] = cardEL;
+       
+        container.append(displayEL.getElement());
+        container.append(controlEL.getElement());        
                 
-        displayEL.initElement();
-        controlEL.initElement(page_state,true);
-
         // Create cards for individual objects
-        shadow.append(cards);
+        shadow.append(cardEL.getElement(page_state["user"]));
+
+        displayEL.initElement();
+        controlEL.initElement(page_state);
 
         return shadow;
+    }
+
+    createAccount() {
+        let className = window.prompt("Enter Account Name: ","Saving");            
+            
+        if (className !== null && className !== "") {
+
+            if(!page_state["user"].isNameExisting(className)) {
+                this.elements["control"].updateLabel(className);
+                this.elements["display"].eraseList();
+                this.elements["cards"].addOne(className);
+
+                // Maintain Page State
+                page_state["user"].add_account(className,0);
+                page_state["currentAccount"] = className;
+
+                // Save State to the Server
+                // functions.savestate();
+            }
+            else {
+                window.alert("Invalid account name, please try again.");
+            }
+        }
+    }
+
+    removeAccount() {        
+        if (page_state["currentAccount"] == null || page_state["currentAccount"] == "") {
+
+            window.alert("Invalid Account to Remove.");
+            return;     
+        }
+        else {
+            if(!page_state["user"].isNameExisting(page_state["currentAccount"])) {
+
+                window.alert("Invalid Account to Remove.");
+                return;
+            }
+            else {
+                page_state["user"].remove_account(page_state["currentAccount"]);
+
+                // Maintain Page State
+                page_state["currentAccount"] = "None";
+
+                // Save State to the Server
+                // functions.savestate();                    
+
+                // Refresh page
+                this.elements["control"].updateLabel("None");
+                this.elements["display"].eraseList();
+                this.elements["cards"].updateAll(page_state["user"].accounts);                 
+                return; 
+            }
+        }        
+    }
+
+    renameAccount() {        
+        if (page_state["currentAccount"] == null || page_state["currentAccount"] == "") {
+
+            window.alert("Invalid Account to Rename.");
+            return;     
+        }
+        else {
+            if(!page_state["user"].isNameExisting(page_state["currentAccount"])) {
+
+                window.alert("Invalid Account to Rename.");
+                return;
+            }
+            else {
+                let className = window.prompt("Enter New Name for the Account: ");
+
+                if(!page_state["user"].isNameExisting(className)) {
+                    page_state["user"].rename_account(page_state["currentAccount"], className);
+                
+                    // Maintain Page State
+                    page_state["currentAccount"] = className;
+
+                    // Save State to the Server
+                    // functions.savestate();                        
+
+                    // Refresh page
+                    this.elements["control"].updateLabel(className);
+                    this.elements["display"].eraseList();
+                    this.elements["cards"].updateAll(page_state["user"].accounts); 
+                    return;
+                }
+                else {
+                    window.alert("Invalid Account to Rename.");
+                    return;
+                }                                                          
+            }
+        }     
+    }
+
+    sumBalance() {
+        if (page_state["user"].accounts.length > 0) {
+
+            this.elements["display"].generateList("Total Balance: $", page_state["user"].sum_balance());
+            return;     
+        }
+    }
+
+    maxBalance() {
+        if (page_state["user"].accounts.length > 0) {
+
+            this.elements["display"].generateList("Max Balance: $", page_state["user"].max_balance());
+            return;     
+        }
+    } 
+    
+    minBalance() {
+        if (page_state["user"].accounts.length > 0) {
+
+            this.elements["display"].generateList("Min Balance: $", page_state["user"].min_balance());
+            return;     
+        }
+    }
+    
+    deposit() {
+
+        if(page_state["currentAccount"] !== "None"){
+                
+            let index = page_state["user"].return_index(page_state["currentAccount"]);
+            page_state["user"].accounts[index].deposit(this.elements["control"].inputObj.value);
+            this.elements["display"].generateList("Deposit: $", this.elements["control"].inputObj.value);            
+            this.elements["control"].inputObj.value = 0;
+
+            this.elements["cards"].updateOne(page_state["currentAccount"],page_state["user"].accounts[index].balance());
+
+            // Save State to the Server
+            // functions.savestate();
+        }      
+    }
+
+    withdraw() {
+        if(page_state["currentAccount"] !== "None"){
+                
+            let index = page_state["user"].return_index(page_state["currentAccount"]);
+            page_state["user"].accounts[index].withdraw(this.elements["control"].inputObj.value);
+            this.elements["display"].generateList("Withdraw: $", this.elements["control"].inputObj.value);            
+            this.elements["control"].inputObj.value = 0;
+
+            this.elements["cards"].updateOne(page_state["currentAccount"],page_state["user"].accounts[index].balance());
+
+            // Save State to the Server
+            // functions.savestate();
+        }                 
+    }
+    
+    balance() {
+        if(page_state["currentAccount"] !== "None"){                
+            let index = page_state["user"].return_index(page_state["currentAccount"]);
+            this.elements["display"].generateList("Balance: $", page_state["user"].accounts[index].balance());            
+        }             
+    }
+    
+    updateCardSel(sel) {
+        page_state["currentAccount"] = sel;
+        this.elements["control"].updateLabel(sel);
     }
 }
 
@@ -197,20 +414,22 @@ function createControlPanel(panel) {
     panel.append(label);    
     let subs = [];
 
-    subs[0] = createSubPanel(panel,{"class": "subpanel"},
+    subs[0] = label;
+
+    subs[1] = createSubPanel(panel,{"class": "subpanel"},
                                 [{"id": "createclassBtn", "class": "acctbtn"}, 
                                  {"id": "removeclassBtn", "class": "acctbtn"}, 
                                  {"id": "nameclassBtn", "class": "acctbtn"}],true,{},{});
-    subs[1] = createSubPanel(panel,{"class": "subpanel"},
+    subs[2] = createSubPanel(panel,{"class": "subpanel"},
                                 [{"id": "sumBtn", "class": "acctbtn"}, 
                                  {"id": "maxBtn", "class": "acctbtn"}, 
                                  {"id": "minBtn", "class": "acctbtn"}],true,{},{});
 
-    subs[2] = createSubPanel(panel,{"class": "subpanel"},[],false, 
+    subs[3] = createSubPanel(panel,{"class": "subpanel"},[],false, 
                                  {"id": "class_qty_label"}, 
                                  {"type": "number", "id":"inputAmt", "class":"acctinput"});    
                                  
-    subs[3] = createSubPanel(panel,{"class": "subpanel"},
+    subs[4] = createSubPanel(panel,{"class": "subpanel"},
                                 [{"id": "moveinBtn", "class": "acctbtn"}, 
                                  {"id": "moveoutBtn", "class": "acctbtn"}, 
                                  {"id": "balanceBtn", "class": "acctbtn"}],true,{},{});
@@ -265,17 +484,21 @@ function addCard(containerdiv, objName, balance, msg) {
         let textnode = document.createTextNode(objName);
 
         containerdiv.appendChild(divnode);
+        divnode.setAttribute("update", objName);
         divnode.setAttribute("id", objName + "_div");
         divnode.setAttribute("class", "box");
         divnode.appendChild(ulnode);
+        ulnode.setAttribute("update", objName);
         ulnode.setAttribute("id", objName + "_ul");        
         ulnode.setAttribute("class", "boxul");
         ulnode.appendChild(linode);
+        linode.setAttribute("update", objName);
         linode.setAttribute("id", objName + "_li1");        
-        linode.appendChild(textnode);
+        linode.appendChild(textnode);        
         linode = document.createElement("li");        
         ulnode.appendChild(linode); 
         textnode = document.createTextNode(msg + balance);
+        linode.setAttribute("update", objName);
         linode.setAttribute("id", objName + "_li2");
         linode.appendChild(textnode); 
 
@@ -296,33 +519,12 @@ function createCityCards (containerdiv, array) {
     } 
 }
 
-function createCards(array, isAccounts) {
-
-    const div = document.createElement("div");      
-    div.setAttribute("id","classgrid");
-    div.setAttribute("class","zone blue grid-wrapper frame");
-
-    if (isAccounts) {
-        createAccountCards (div, array);
-    }
-    else {
-        createCityCards (div, array);
-    }
-
-    return div;
-}
-
-function updateAccountCard (objName, balance) {        
-    document.getElementById(objName + "_li2").textContent = "Balance: $" + balance;
-}
-
 function updateCityCard (objName, latitude, longitude, population) {        
     document.getElementById(objName + "_li2").textContent = "Population: " + population;
 }
 
 function eraseitems (list) {
     let count = list.childElementCount;
-
     if(list.hasChildNodes) {
         for (let i=0; i<count; i++) {
             list.removeChild(list.firstElementChild);                
@@ -331,4 +533,4 @@ function eraseitems (list) {
 }
 
 export default { AppElement, PopulateApp , DisplayPanel, ControlPanel, Cards, createDisplayPanel, createControlPanel, 
-                 createCards, createSubPanel, createButton, addCard, createAccountCards, createCityCards, eraseitems};
+                 createSubPanel, createButton, addCard, createAccountCards, createCityCards, eraseitems};
