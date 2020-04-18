@@ -1,4 +1,4 @@
-import State from './maintaintstate.js'
+import State from './netcomm.js'
 
 global.fetch = require('node-fetch');
 
