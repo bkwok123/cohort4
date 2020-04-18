@@ -4,34 +4,49 @@ import display from './display.js'
 import State from './netcomm.js'
 import DOM from './dom.js'
 
+const app = new DOM.PopulateApp();
+const container = app.populate();
+
 window.onload = function() {
-
-    const app = new DOM.PopulateApp();
-    const container = app.populate();
-
     idAppContent.append(container);
 }
 
 document.addEventListener('click', ((e) => {
+    const update = e.target.getAttribute("update");
+
+    if(update) {
+        app.updateCardSel(update);
+        console.log(update);
+
+    }
 
     switch (e.target.textContent) {
         case "Create Account":
+            app.createAccount();
             break;
         case "Remove Account":
+            app.removeAccount();
             break;
-        case "Rename Account":                
+        case "Rename Account":  
+            app.renameAccount();              
             break;        
         case "Sum Balance":
+            app.sumBalance();
             break;        
         case "Max Balance":
+            app.maxBalance();
             break;                                                                                          
         case "Min Balance":
+            app.minBalance();
             break;
         case "Deposit":
+            app.deposit();
             break;
-        case "Withdraw":                
+        case "Withdraw":  
+            app.withdraw();              
             break;        
         case "Balance":
+            app.balance();
             break;        
         case "Create Settlement":
             break;

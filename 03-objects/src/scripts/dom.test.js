@@ -28,7 +28,7 @@ test('Check the DisplayPanel class instantiation2', () => {
     const el = new DOM.DisplayPanel ("k1");
     expect(el.key).toBe("k1");
     expect(el.element).toBe(null);
-    expect(el.updateElement).toBe(null);
+    expect(el.updateObj).toBe(null);
 });
 
 test('Check the DisplayPanel class getElement2 method', () => {
@@ -36,7 +36,8 @@ test('Check the DisplayPanel class getElement2 method', () => {
     const el = new DOM.DisplayPanel ("k1");
     const panel = el.getElement();
     expect(panel.nodeName).toEqual("DIV");
-    expect(el.updateElement.nodeName).toEqual("UL");
+    expect(el.updateObj["label"].nodeName).toEqual("LABEL");
+    expect(el.updateObj["list"].nodeName).toEqual("UL");
 });
 
 test('Check the ControlPanel class instantiation3', () => {
@@ -44,7 +45,7 @@ test('Check the ControlPanel class instantiation3', () => {
     const el = new DOM.ControlPanel ("k1");
     expect(el.key).toBe("k1");
     expect(el.element).toBe(null);
-    expect(el.updateArray).toBe(null);
+    expect(el.updateObj).toBe(null);
 });
 
 test('Check the ControlPanel class getElement3 method', () => {
@@ -52,10 +53,11 @@ test('Check the ControlPanel class getElement3 method', () => {
     const el = new DOM.ControlPanel ("k1");
     const panel = el.getElement();
     expect(panel.nodeName).toEqual("DIV");
-    expect(el.updateArray[0].nodeName).toEqual("DIV");
-    expect(el.updateArray[1].nodeName).toEqual("DIV");
-    expect(el.updateArray[2].nodeName).toEqual("DIV");
-    expect(el.updateArray[3].nodeName).toEqual("DIV");
+    expect(el.updateObj["label"].nodeName).toEqual("DIV");
+    expect(el.updateObj["bpanel1"].nodeName).toEqual("DIV");
+    expect(el.updateObj["bpanel2"].nodeName).toEqual("DIV");
+    expect(el.updateObj["ipanel1"].nodeName).toEqual("DIV");
+    expect(el.updateObj["bpanel3"].nodeName).toEqual("DIV");
 });
 
 test('Check the Cards class instantiation4', () => {
