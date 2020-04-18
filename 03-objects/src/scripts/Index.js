@@ -1,5 +1,6 @@
 import Account, {AccountController} from './account.js'
 import CityController from './community.js'
+import display from './display.js'
 import State from './maintaintstate.js'
 
 const stateurl = 'https://api.myjson.com/bins/10cqhs';
@@ -11,7 +12,8 @@ const community = new CityController("New Settlement");
 const page_state = {
     currentAccount: "None",
     currentCity: "None",
-    currentPage: "None"
+    currentPage: "None",
+    warningMsg: "Offline Mode: Data cannot be retrieved and saved to the server"
 };
 
 window.onload = function() {
@@ -20,177 +22,52 @@ window.onload = function() {
     functions.initcommon();
 }
 
-window.onbeforeunload = function() {
- 
-}
-
-window.onunload = function() {
-    
-       
-}
-
 const functions = {
-    initcommon: async () => { 
-        // clocklabel.textContent = "Date: " + new Date().toLocaleDateString() + "    Time: " + new Date().toLocaleTimeString();
-        // Retrieve saved states from remote server
-        let webdata = await State.getData(stateurl);
-        page_state.currentAccount = webdata.currentAccount;
-        page_state.currentCity = webdata.currentCity;
-        page_state.currentPage = webdata.currentPage;
+    initcommon: async () => {
+        try {            
+            // Retrieve saved states from remote server
+            let webdata = await State.getData(stateurl);
+            page_state.currentAccount = webdata.currentAccount;
+            page_state.currentCity = webdata.currentCity;
+            page_state.currentPage = webdata.currentPage;
+            page_state.warningMsg = "";
 
-        webdata = await State.getData(accturl);
-        user.copyArray(webdata);
+            webdata = await State.getData(accturl);
+            user.copyArray(webdata);
 
-        webdata = await State.getData(cityurl);
-        community.copyArray(webdata);
+            webdata = await State.getData(cityurl);
+            community.copyArray(webdata);
 
-        switch(page_state.currentPage) {
-            case "Banking":
-                functions.initaccount(page_state.currentAccount);
-                functions.displayaccountlist(user.accounts, "classgrid");                
-            break;
+            switch(page_state.currentPage) {
+                case "Banking":
+                    page_state.currentPage = "Banking";
+                    display.initaccount(user, page_state);
+                    display.displayaccountlist(user.accounts, "classgrid");                
+                break;
 
-            case "Demographic":
-                functions.initcommunity(page_state.currentCity);
-                functions.displaycitylist(community.citys, "classgrid");                
-            break;
-        }        
-    },
-
-    initaccount: (currentClass) => {        
-        page_state.currentPage = "Banking";
-        modulelabel.textContent = "Banking";
-        class_qty_label.textContent = "Amount: ";
-        inputAmt.value = 0;        
-        credentiallabel.textContent = "Login:";
-        activity_label.textContent = "Transaction Activities";
-        classlabel.textContent = user.accountHolder;
-        active_class.textContent = "Active Account: " + currentClass;
-        active_class.value = currentClass;
-        createclassBtn.textContent = "Create Account"; 
-        removeclassBtn.textContent = "Remove Account"; 
-        nameclassBtn.textContent = "Rename Account"; 
-        sumBtn.textContent = "Sum Balance"; 
-        maxBtn.textContent = "Max Balance"; 
-        minBtn.textContent = "Min Balance";      
-        moveinBtn.textContent = "Deposit"; 
-        moveoutBtn.textContent = "Withdraw"; 
-        balanceBtn.textContent = "Balance";     
-    },
-
-    initcommunity: (currentClass) => {   
-        page_state.currentPage = "Demographic";
-        modulelabel.textContent = "Demographic";     
-        class_qty_label.textContent = "Population: ";
-        inputAmt.value = 0;
-        credentiallabel.textContent = "";
-        activity_label.textContent = "Population Movement";
-        classlabel.textContent = community.name;
-        active_class.textContent = "Current Location: " + currentClass;
-        active_class.value = currentClass;
-        createclassBtn.textContent = "Create Settlement";
-        removeclassBtn.textContent = "Delete Settlement"; 
-        nameclassBtn.textContent = "Show Sphere"; 
-        sumBtn.textContent = "Sum Population"; 
-        maxBtn.textContent = "Show Most Northern"; 
-        minBtn.textContent = "Show Most Southern"; 
-
-        moveinBtn.textContent = "Moved In"; 
-        moveoutBtn.textContent = "Moved Out"; 
-        balanceBtn.textContent = "How Big";           
-    },    
-
-    createclassitem: (classID, className, balance, msg) => {
-        const classlist = document.getElementById(classID);
-        const divnode = document.createElement("div");
-        const ulnode = document.createElement("ul");
-        let linode = document.createElement("li");
-        let textnode = document.createTextNode(className);
-                
-        classlist.appendChild(divnode);
-        divnode.setAttribute("id", className + "_div");
-        divnode.setAttribute("class", "box");
-        divnode.appendChild(ulnode);
-        ulnode.setAttribute("id", className + "_ul");        
-        ulnode.setAttribute("class", "boxul");
-        ulnode.appendChild(linode);
-        linode.setAttribute("id", className + "_li1");        
-        linode.appendChild(textnode);
-        linode = document.createElement("li");        
-        ulnode.appendChild(linode); 
-        textnode = document.createTextNode(msg + balance);
-        linode.setAttribute("id", className + "_li2");
-        linode.appendChild(textnode);       
-    },
-
-    updateacctitem: (className, balance) => {        
-        document.getElementById(className + "_li2").textContent = "Balance: $" + balance;
-    },
-
-    updatecityitem: (className, latitude, longitude, population) => {        
-        document.getElementById(className + "_li2").textContent = "Population: " + population;
-    },    
-
-    createactivityitem: (listID, message, qty) => {
-        const list = document.getElementById(listID);
-        const linode = document.createElement("li");
-        const textnode = document.createTextNode(message + qty);
-
-        let count = list.childElementCount;
-        console.log("count: ", count);
-
-        // keep display log to a fixed number of items        
-        if(count === 5){
-            list.removeChild(list.firstElementChild);
-        }
-        
-        // Add new log item
-        linode.appendChild(textnode);
-        list.appendChild(linode);
-
-        console.log("list.childElementCount: ", list.childElementCount);
-    },
-
-    eraseactivityitem: (listID) => {
-        const list = document.getElementById(listID);
-        let count = list.childElementCount;
-
-        console.log("list.childElementCount: ", count);
-        if(list.hasChildNodes) {
-            for (let i=0; i<count; i++) {
-                list.removeChild(list.firstElementChild);
-                
-                console.log(i);
-            }
-        }
-    },
-
-    displayaccountlist: (classes, listID) => {
-        // Regenerate all class items within the controller
-        for (let i=0; i < classes.length; i++){
-            functions.createclassitem("classgrid",classes[i].accountName,classes[i].startingBalance,"Balance: $");
+                case "Demographic":
+                    page_state.currentPage = "Demographic";
+                    display.initcommunity(community, page_state);
+                    display.displaycitylist(community.citys, "classgrid");                
+                break;
+            }  
         } 
-    },
 
-    displaycitylist: (classes, listID) => {
-        // Regenerate all class items within the controller
-        for (let i=0; i < classes.length; i++){
-            functions.createclassitem("classgrid",classes[i].name,classes[i].population,"Population: ");
-        } 
-    },    
-
-    destoryclasslist: (listID) => {
-        // Remove all class items in the display pane
-        functions.eraseactivityitem(listID);     
+        catch (err) {   // cannot access online data => default to a starting page
+            page_state.currentPage = "Banking";
+            display.initaccount(user, page_state);
+        }      
     },
     
-    savestate: () => {
+    updatestate: () => {
 
-        console.log(page_state);
+
+    },
+
+    savestate: () => {
         State.putData(stateurl,page_state);
         State.putData(accturl,user.accounts);
         State.putData(cityurl,community.citys);
-
     },        
 }
 
@@ -212,10 +89,10 @@ document.addEventListener('click', ((e) => {
                     active_class.textContent = "Active Account: " + className;
                     active_class.value = className;
 
-                    functions.eraseactivityitem("activitylist");
+                    display.eraseactivityitem("activitylist");
 
                     let index = user.return_index(className);
-                    functions.createclassitem("classgrid",className,user.accounts[index].startingBalance, "Balance: $");
+                    display.createclassitem("classgrid",className,user.accounts[index].startingBalance, "Balance: $");
 
                     // Maintain Page State
                     page_state.currentAccount = className;
@@ -253,10 +130,10 @@ document.addEventListener('click', ((e) => {
                     functions.savestate();                    
 
                     // Refresh page
-                    functions.destoryclasslist("classgrid");
-                    functions.initaccount(page_state.currentAccount);
-                    functions.eraseactivityitem("activitylist");
-                    functions.displayaccountlist(user.accounts, "classgrid");                    
+                    display.destoryclasslist("classgrid");
+                    display.initaccount(user, page_state);
+                    display.eraseactivityitem("activitylist");
+                    display.displayaccountlist(user.accounts, "classgrid");                    
                     return; 
                 }
             }
@@ -289,10 +166,10 @@ document.addEventListener('click', ((e) => {
                         functions.savestate();                        
     
                         // Refresh page
-                        functions.destoryclasslist("classgrid");
-                        functions.initaccount(page_state.currentAccount);
-                        functions.eraseactivityitem("activitylist");
-                        functions.displayaccountlist(user.accounts, "classgrid");   
+                        display.destoryclasslist("classgrid");
+                        display.initaccount(user, page_state);
+                        display.eraseactivityitem("activitylist");
+                        display.displayaccountlist(user.accounts, "classgrid");   
 
                         return;
                     }
@@ -309,7 +186,7 @@ document.addEventListener('click', ((e) => {
 
             if (user.accounts.length > 0) {
 
-                functions.createactivityitem("activitylist", "Total Balance: $", user.sum_balance());
+                display.createactivityitem("activitylist", "Total Balance: $", user.sum_balance());
                 return;     
             }
             
@@ -319,7 +196,7 @@ document.addEventListener('click', ((e) => {
 
             if (user.accounts.length > 0) {
 
-                functions.createactivityitem("activitylist", "Max Balance: $", user.max_balance());
+                display.createactivityitem("activitylist", "Max Balance: $", user.max_balance());
                 return;     
             }
             
@@ -329,7 +206,7 @@ document.addEventListener('click', ((e) => {
 
             if (user.accounts.length > 0) {
 
-                functions.createactivityitem("activitylist", "Min Balance: $", user.min_balance());
+                display.createactivityitem("activitylist", "Min Balance: $", user.min_balance());
                 return;     
             }
             
@@ -342,12 +219,12 @@ document.addEventListener('click', ((e) => {
                 let index = user.return_index(active_class.value);
 
                 user.accounts[index].deposit(inputAmt.value);
-                functions.createactivityitem("activitylist", "Deposit: $", inputAmt.value);
+                display.createactivityitem("activitylist", "Deposit: $", inputAmt.value);
     
                 console.log("Current Balance: ",user.accounts[index].startingBalance);
                 inputAmt.value = 0;
                 
-                functions.updateacctitem(active_class.value, user.accounts[index].balance());             
+                display.updateacctitem(active_class.value, user.accounts[index].balance());             
 
                 // Save State to the Server
                 functions.savestate();
@@ -365,12 +242,12 @@ document.addEventListener('click', ((e) => {
                 let index = user.return_index(active_class.value);
 
                 user.accounts[index].withdraw(inputAmt.value);
-                functions.createactivityitem("activitylist", "Withdraw: $", inputAmt.value);
+                display.createactivityitem("activitylist", "Withdraw: $", inputAmt.value);
     
                 console.log("Current Balance: ",user.accounts[index].startingBalance);
                 inputAmt.value = 0;       
                 
-                functions.updateacctitem(active_class.value, user.accounts[index].balance());
+                display.updateacctitem(active_class.value, user.accounts[index].balance());
 
                 // Save State to the Server
                 functions.savestate();                
@@ -386,7 +263,7 @@ document.addEventListener('click', ((e) => {
             if(active_class.value !== "None"){
                 let index = user.return_index(active_class.value);
 
-                functions.createactivityitem("activitylist", "Balance: $", user.accounts[index].balance());
+                display.createactivityitem("activitylist", "Balance: $", user.accounts[index].balance());
                 console.log("Current Balance: ",user.accounts[index].startingBalance);                
             }
 
@@ -411,10 +288,10 @@ document.addEventListener('click', ((e) => {
                     active_class.textContent = "Active Settlement: " + className2;
                     active_class.value = className2;
 
-                    functions.eraseactivityitem("activitylist");
+                    display.eraseactivityitem("activitylist");
 
                     let index = community.return_index(className2);
-                    functions.createclassitem("classgrid",className2,community.citys[index].population, "Population: ");
+                    display.createclassitem("classgrid",className2,community.citys[index].population, "Population: ");
 
                     // Maintain Page State
                     page_state.currentCity = className2;
@@ -452,10 +329,10 @@ document.addEventListener('click', ((e) => {
                     functions.savestate();
 
                     // Refresh page
-                    functions.destoryclasslist("classgrid");
-                    functions.initcommunity(page_state.currentCity);
-                    functions.eraseactivityitem("activitylist");
-                    functions.displaycitylist(community.citys, "classgrid");                    
+                    display.destoryclasslist("classgrid");
+                    display.initcommunity(community, page_state);
+                    display.eraseactivityitem("activitylist");
+                    display.displaycitylist(community.citys, "classgrid");                    
                     return; 
                 }
             }
@@ -467,7 +344,7 @@ document.addEventListener('click', ((e) => {
             if(page_state.currentCity !== "None"){
                 let index = community.return_index(page_state.currentCity);
 
-                functions.createactivityitem("activitylist", "In: ", community.whichSphere(page_state.currentCity));
+                display.createactivityitem("activitylist", "In: ", community.whichSphere(page_state.currentCity));
                 console.log("In: ",community.whichSphere(page_state.currentCity));                
             }
             
@@ -477,7 +354,7 @@ document.addEventListener('click', ((e) => {
 
             if (community.citys.length > 0) {
 
-                functions.createactivityitem("activitylist", "Total Population: ", community.getPopulation());
+                display.createactivityitem("activitylist", "Total Population: ", community.getPopulation());
                 return;     
             }
             
@@ -487,7 +364,7 @@ document.addEventListener('click', ((e) => {
 
             if (community.citys.length > 0) {
 
-                functions.createactivityitem("activitylist", "Most Northern Settlement: ", community.getMostNorthern());
+                display.createactivityitem("activitylist", "Most Northern Settlement: ", community.getMostNorthern());
                 return;     
             }
             
@@ -497,7 +374,7 @@ document.addEventListener('click', ((e) => {
 
             if (community.citys.length > 0) {
 
-                functions.createactivityitem("activitylist", "Most Southern Settlement: ", community.getMostSouthern());
+                display.createactivityitem("activitylist", "Most Southern Settlement: ", community.getMostSouthern());
                 return;     
             }
             
@@ -511,12 +388,12 @@ document.addEventListener('click', ((e) => {
                 let index = community.return_index(page_state.currentCity);
 
                 community.citys[index].movedIn(inputAmt.value);
-                functions.createactivityitem("activitylist", "Moved In: ", inputAmt.value);
+                display.createactivityitem("activitylist", "Moved In: ", inputAmt.value);
     
                 console.log("Current Population: ",community.citys[index].population);
                 inputAmt.value = 0;
                 
-                functions.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);  
+                display.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);  
                 
                 // Save State to the Server
                 functions.savestate();                
@@ -534,12 +411,12 @@ document.addEventListener('click', ((e) => {
                 let index = community.return_index(page_state.currentCity);
 
                 community.citys[index].movedOut(inputAmt.value);
-                functions.createactivityitem("activitylist", "Moved Out: ", inputAmt.value);
+                display.createactivityitem("activitylist", "Moved Out: ", inputAmt.value);
     
                 console.log("Current Population: ",community.citys[index].population);
                 inputAmt.value = 0;
                 
-                functions.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);  
+                display.updatecityitem(page_state.currentCity, 0, 0, community.citys[index].population);  
                 
                 // Save State to the Server
                 functions.savestate();                
@@ -556,7 +433,7 @@ document.addEventListener('click', ((e) => {
                 
                 let index = community.return_index(page_state.currentCity);
                 
-                functions.createactivityitem("activitylist", "Classification: ", community.citys[index].howBig());
+                display.createactivityitem("activitylist", "Classification: ", community.citys[index].howBig());
             }
             else{
                 console.log("Invalid Settlement: ", page_state.currentCity);
@@ -568,19 +445,16 @@ document.addEventListener('click', ((e) => {
 
             if((e.target.id !== "")) {
                 let className = e.target.id;   
-                let pos = className.search("-");                             
-                let cmd = className.substring(pos+1,className.length);
-                
-                pos = className.search("_");                            
-                className = className.substring(0,pos);
-           
-                if (cmd === "nav"){
+     
+                if (className.includes("Btn")){
+                    className = e.target.alt;
+                    
                     switch(className) {
                         case "Banking":
-                            functions.destoryclasslist("classgrid");
-                            functions.initaccount(page_state.currentAccount);
-                            functions.eraseactivityitem("activitylist");
-                            functions.displayaccountlist(user.accounts, "classgrid");
+                            display.destoryclasslist("classgrid");
+                            display.initaccount(user, page_state);
+                            display.eraseactivityitem("activitylist");
+                            display.displayaccountlist(user.accounts, "classgrid");
 
                             // Maintain Page State
                             page_state.currentPage = "Banking";        
@@ -590,10 +464,10 @@ document.addEventListener('click', ((e) => {
                         break;
 
                         case "Demographic":
-                            functions.destoryclasslist("classgrid");
-                            functions.initcommunity(page_state.currentCity);
-                            functions.eraseactivityitem("activitylist");
-                            functions.displaycitylist(community.citys, "classgrid");
+                            display.destoryclasslist("classgrid");
+                            display.initcommunity(community, page_state);
+                            display.eraseactivityitem("activitylist");
+                            display.displaycitylist(community.citys, "classgrid");
 
                             // Maintain Page State
                             page_state.currentPage = "Demographic";      
@@ -608,8 +482,8 @@ document.addEventListener('click', ((e) => {
                         active_class.value = className;
         
                         let index = user.return_index(className);
-                        functions.updateacctitem(className, user.accounts[index].balance());
-                        functions.eraseactivityitem("activitylist");
+                        display.updateacctitem(className, user.accounts[index].balance());
+                        display.eraseactivityitem("activitylist");
 
                         // Maintain Page State
                         page_state.currentAccount = className; 
@@ -620,8 +494,8 @@ document.addEventListener('click', ((e) => {
                         active_class.value = className;
         
                         let index = community.return_index(className);
-                        functions.updatecityitem(className, 0, 0, community.citys[index].population);
-                        functions.eraseactivityitem("activitylist");
+                        display.updatecityitem(className, 0, 0, community.citys[index].population);
+                        display.eraseactivityitem("activitylist");
 
                         // Maintain Page State
                         page_state.currentCity = className;                              
