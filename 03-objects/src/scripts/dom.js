@@ -1,5 +1,8 @@
 import { Community } from './city.js'
 import { AccountController } from './account.js'
+import NET from './netcomm.js'
+
+const url = 'https://api.myjson.com/bins/10cqhs';
 
 const page_state = {
     currentAccount: "None",
@@ -7,7 +10,7 @@ const page_state = {
     currentPage: "None",
     user: new AccountController("John Doe"),
     community: new Community("New Settlement"),
-    warningMsg: "Offline Mode: Data cannot be retrieved and saved to the server"
+    warningMsg: ""
 };
 
 class AppElement {
@@ -33,14 +36,14 @@ class DisplayPanel extends AppElement {
 
     getElement() {
         const panel = document.createElement("div");
-        createDisplayPanel(panel);              
+        htmlEl.createDisplayPanel(panel);              
         this.updateObj = {label: panel.children[0], list: panel.children[1]};
         this.element = panel;
         return panel;
     }
 
     eraseList() {
-        eraseitems (this.updateObj["list"]);
+        utility.eraseitems (this.updateObj["list"]);
     }   
 
     generateList(message, qty) {
@@ -65,9 +68,47 @@ class NavFooter extends AppElement {
 
     getElement() {
         const footer = document.createElement("footer");
-        createFooter(footer);              
+        htmlEl.createFooter(footer);              
         this.element = footer;
         return footer;
+    }
+}
+
+class NavHeader extends AppElement {
+
+    constructor(key) {
+        super(key);
+        this.applabel;
+        this.credential;
+        this.currentController;
+        this.warning;
+    }
+
+    getElement() {
+        const navbar = document.createElement("nav");
+        htmlEl.createNav(navbar);              
+        this.element = navbar;
+        this.applabel = navbar.children[0].children[0].children[0];
+        this.credential = navbar.children[0].children[1].children[0];
+        this.currentController = navbar.children[0].children[1].children[1];
+        this.warning = navbar.children[1].children[0];     
+        return navbar;
+    }
+
+    updateAppLabel(msg) {
+        this.applabel.textContent = msg;
+    }
+
+    updateCredential(msg) {
+        this.credential.textContent = msg;
+    }
+    
+    updateController(msg) {
+        this.currentController.textContent = msg;
+    }
+
+    updateWarning(msg) {
+        this.warning.textContent = msg;
     }
 }
 
@@ -95,7 +136,7 @@ class ControlPanel extends AppElement {
 
     getElement() {
         const panel = document.createElement("div");              
-        const array = createControlPanel(panel);
+        const array = htmlEl.createControlPanel(panel);
         this.updateObj = {label: array[0], bpanel1: array[1], bpanel2: array[2], ipanel1: array[3], bpanel3: array[4]};
         this.inputObj = array[3].children[1];
         this.element = panel;
@@ -110,10 +151,6 @@ class ControlPanel extends AppElement {
 class AccountControl extends ControlPanel {
 
     initElement(state) {
-        modulelabel.textContent = "Banking";
-        credentiallabel.textContent = "Login:";
-        classlabel.textContent = state["user"].accountHolder;
-
         this.updateObj["label"].textContent = "Active Account: " + state["currentAccount"];
         this.updateObj["bpanel1"].children[0].textContent = "Create Account";            
         this.updateObj["bpanel1"].children[1].textContent = "Remove Account";
@@ -136,10 +173,6 @@ class AccountControl extends ControlPanel {
 class CityControl extends ControlPanel {
 
     initElement(state) {
-        modulelabel.textContent = "Demographic";
-        credentiallabel.textContent = "";
-        classlabel.textContent = state["community"].name;
-
         this.updateObj["label"].textContent = "Current Location: " + state.currentCity;
         this.updateObj["bpanel1"].children[0].textContent = "Create Settlement";
         this.updateObj["bpanel1"].children[1].textContent = "Delete Settlement";
@@ -161,7 +194,7 @@ class CityControl extends ControlPanel {
 
 class Cards extends AppElement {
     removeAll() {
-        eraseitems(this.element);
+        utility.eraseitems(this.element);
     }
 }
 
@@ -171,21 +204,21 @@ class AccountCards extends Cards {
         const panel = document.createElement("div");
         panel.setAttribute("id","classgrid");
         panel.setAttribute("class","zone blue grid-wrapper frame");
-        createAccountCards (panel, array);
+        utility.createAccountCards (panel, array);
 
         this.element = panel;
         return panel;
     }
 
     updateAll(array) {
-        eraseitems(this.element);
-        createAccountCards (this.element, array);
+        utility.eraseitems(this.element);
+        utility.createAccountCards (this.element, array);
         
         return this.element;        
     }
 
     addOne(name) {
-        addCard(this.element, name, 0, "Balance: $");
+        utility.addCard(this.element, name, 0, "Balance: $");
     }
 
     updateOne(name, balance) {
@@ -199,21 +232,21 @@ class CityCards extends Cards {
         const panel = document.createElement("div");
         panel.setAttribute("id","classgrid");
         panel.setAttribute("class","zone blue grid-wrapper frame");
-        createCityCards (panel, array);
+        utility.createCityCards (panel, array);
 
         this.element = panel;
         return panel;
     }
 
     updateAll(array) {
-        eraseitems(this.element);
-        createCityCards (this.element, array);
+        utility.eraseitems(this.element);
+        utility.createCityCards (this.element, array);
         
         return this.element;        
     }
 
     addOne(name) {
-        addCard(this.element, name, 0, "Population: ");
+        utility.addCard(this.element, name, 0, "Population: ");
     }
 
     updateOne(name, population) {
@@ -287,7 +320,7 @@ class PopulateAccountApp extends PopulateApp {
                 page_state["currentAccount"] = className;
 
                 // Save State to the Server
-                // functions.savestate();
+                State.savestate(url, page_state);
             }
             else {
                 window.alert("Invalid account name, please try again.");
@@ -314,7 +347,7 @@ class PopulateAccountApp extends PopulateApp {
                 page_state["currentAccount"] = "None";
 
                 // Save State to the Server
-                // functions.savestate();                    
+                State.savestate(url, page_state);                    
 
                 // Refresh page
                 this.elements["control"].updateLabel("None");
@@ -347,7 +380,7 @@ class PopulateAccountApp extends PopulateApp {
                     page_state["currentAccount"] = className;
 
                     // Save State to the Server
-                    // functions.savestate();                        
+                    State.savestate(url, page_state);                        
 
                     // Refresh page
                     this.elements["control"].updateLabel(className);
@@ -399,7 +432,7 @@ class PopulateAccountApp extends PopulateApp {
             this.elements["cards"].updateOne(page_state["currentAccount"],page_state["user"].accounts[index].balance());
 
             // Save State to the Server
-            // functions.savestate();
+            State.savestate(url, page_state);
         }      
     }
 
@@ -414,7 +447,7 @@ class PopulateAccountApp extends PopulateApp {
             this.elements["cards"].updateOne(page_state["currentAccount"],page_state["user"].accounts[index].balance());
 
             // Save State to the Server
-            // functions.savestate();
+            State.savestate(url, page_state);
         }                 
     }
     
@@ -478,7 +511,7 @@ class PopulateCityApp extends PopulateApp {
                 page_state["currentCity"] = className;
 
                 // Save State to the Server
-                // functions.savestate();
+                State.savestate(url, page_state);
             }
             else {
                 window.alert("Invalid settlement name, please try again.");
@@ -505,7 +538,7 @@ class PopulateCityApp extends PopulateApp {
                 page_state["currentCity"] = "None";
 
                 // Save State to the Server
-                // functions.savestate();                    
+                State.savestate(url, page_state);                    
 
                 // Refresh page
                 this.elements["control"].updateLabel("None");
@@ -557,7 +590,7 @@ class PopulateCityApp extends PopulateApp {
             this.elements["cards"].updateOne(page_state["currentCity"],page_state["community"].citys[index].population);
 
             // Save State to the Server
-            // functions.savestate();
+            State.savestate(url, page_state);
         }        
     }
 
@@ -572,7 +605,7 @@ class PopulateCityApp extends PopulateApp {
             this.elements["cards"].updateOne(page_state["currentCity"],page_state["community"].citys[index].population);
 
             // Save State to the Server
-            // functions.savestate();
+            State.savestate(url, page_state);
         }                
     }
     
@@ -600,28 +633,39 @@ class AppsController {
     }
 
     load() {
+        State.loadstate(url, page_state);
+
         const shadow = document.createElement("div");
         this.container = shadow;
 
         const bankingApp = new PopulateAccountApp();
         const demographicApp = new PopulateCityApp();
         const footerEl = new NavFooter();
+        const navEl = new NavHeader();
         this.apps = {Banking: bankingApp, Demographic: demographicApp};
 
         const banking = bankingApp.populate();
         const demographic = demographicApp.populate();
         const footer = footerEl.getElement();
+        const nav = navEl.getElement();
 
+        this.nav = navEl;
         this.pages = {Banking: banking, Demographic: demographic};
         this.footer = footer;
 
-        // shadow.append(nav);
+        shadow.append(nav);
 
-        if (page_state["currentPage"] === "None") {   // Home Page
+        // Only show warning message when server is not responding        
+        navEl.updateWarning(page_state["warningMsg"]);        
+
+        if (page_state["currentPage"] === "None") {   // Home Page            
             shadow.append(this.pages["Banking"]);
+            page_state["currentPage"] = "Banking";
+            navEl.updateAppLabel("Banking");
         }
         else {
             shadow.append(this.pages[page_state["currentPage"]]);
+            navEl.updateAppLabel(page_state["currentPage"]);          
         }
 
         shadow.append(footer);
@@ -632,10 +676,8 @@ class AppsController {
     switchPage(page) {
         page_state["currentPage"] = page;
 
-        console.log(page_state["currentPage"]);
-        console.log(this.container.children.length);
-
-        this.container.removeChild(this.container.firstChild);
+        this.nav.updateAppLabel(page);
+        this.container.removeChild(this.container.children[1]);
         this.container.insertAdjacentElement('beforeend',this.pages[page_state["currentPage"]]);
         this.container.append(this.footer);
     }
@@ -695,111 +737,139 @@ class AppsController {
         this.apps["Demographic"].howBig();
     };
 
-    updateCardSel(update) {
+    updateCardSel(update) {               
         this.apps[page_state["currentPage"]].updateCardSel(update);
     };
 }
 
-function createFooter(footer) {
-    footer.setAttribute("class","zone yellow bottom-nav stickyb");
-    const div = document.createElement("div");
-    footer.append(div);
-    let input = document.createElement("input");
-    setMulAttributes(input, {type: "image", src: "./images/bank.png", alt: "Banking", class: "navbox"});
-    div.append(input);    
-    input = document.createElement("input");
-    setMulAttributes(input, {type: "image", src: "./images/community.png", alt: "Demographic", class: "navbox"});
-    div.append(input);
-    return footer;
-}
+const htmlEl = {
+    createDisplayPanel: (panel)=> {
+        panel.setAttribute("class","panel green");
+        const label = document.createElement("label");             
+        label.setAttribute("id","activity_label");
+        label.setAttribute("class","highlight");
+        panel.append(label);
+        const list = document.createElement("ul");     
+        list.setAttribute("id","activitylist");
+        list.setAttribute("class","accctdisplay");
+        panel.append(list);
+        return list;
+    },
 
-function createDisplayPanel(panel) {  
-    panel.setAttribute("class","panel green");
-    const label = document.createElement("label");             
-    label.setAttribute("id","activity_label");
-    label.setAttribute("class","highlight");
-    panel.append(label);
-    const list = document.createElement("ul");     
-    list.setAttribute("id","activitylist");
-    list.setAttribute("class","accctdisplay");
-    panel.append(list);
-    return list;
-}
+    createControlPanel: (panel)=> {
+        panel.setAttribute("class","panel yellow");
+        const label = document.createElement("div");          
+        label.setAttribute("id","active_class");
+        label.setAttribute("class","highlight");
+        panel.append(label);    
+        let subs = [];
+    
+        subs[0] = label;
+    
+        subs[1] = htmlEl.createSubPanel(panel,{"class": "subpanel"},
+                                    [{"id": "createclassBtn", "class": "acctbtn"}, 
+                                     {"id": "removeclassBtn", "class": "acctbtn"}, 
+                                     {"id": "nameclassBtn", "class": "acctbtn"}],true,{},{});
+        subs[2] = htmlEl.createSubPanel(panel,{"class": "subpanel"},
+                                    [{"id": "sumBtn", "class": "acctbtn"}, 
+                                     {"id": "maxBtn", "class": "acctbtn"}, 
+                                     {"id": "minBtn", "class": "acctbtn"}],true,{},{});
+    
+        subs[3] = htmlEl.createSubPanel(panel,{"class": "subpanel"},[],false, 
+                                     {"id": "class_qty_label"}, 
+                                     {"type": "number", "id":"inputAmt", "class":"acctinput"});    
+                                     
+        subs[4] = htmlEl.createSubPanel(panel,{"class": "subpanel"},
+                                    [{"id": "moveinBtn", "class": "acctbtn"}, 
+                                     {"id": "moveoutBtn", "class": "acctbtn"}, 
+                                     {"id": "balanceBtn", "class": "acctbtn"}],true,{},{});
+        return subs;        
+    },
 
-function createControlPanel(panel) {     
-    panel.setAttribute("class","panel yellow");
-    const label = document.createElement("div");          
-    label.setAttribute("id","active_class");
-    label.setAttribute("class","highlight");
-    panel.append(label);    
-    let subs = [];
-
-    subs[0] = label;
-
-    subs[1] = createSubPanel(panel,{"class": "subpanel"},
-                                [{"id": "createclassBtn", "class": "acctbtn"}, 
-                                 {"id": "removeclassBtn", "class": "acctbtn"}, 
-                                 {"id": "nameclassBtn", "class": "acctbtn"}],true,{},{});
-    subs[2] = createSubPanel(panel,{"class": "subpanel"},
-                                [{"id": "sumBtn", "class": "acctbtn"}, 
-                                 {"id": "maxBtn", "class": "acctbtn"}, 
-                                 {"id": "minBtn", "class": "acctbtn"}],true,{},{});
-
-    subs[3] = createSubPanel(panel,{"class": "subpanel"},[],false, 
-                                 {"id": "class_qty_label"}, 
-                                 {"type": "number", "id":"inputAmt", "class":"acctinput"});    
-                                 
-    subs[4] = createSubPanel(panel,{"class": "subpanel"},
-                                [{"id": "moveinBtn", "class": "acctbtn"}, 
-                                 {"id": "moveoutBtn", "class": "acctbtn"}, 
-                                 {"id": "balanceBtn", "class": "acctbtn"}],true,{},{});
-    return subs;
-}
-
-function createSubPanel(panel, panelAttributes, btnAttributes, isButton, labelAttributes, inputAttributes) {
-
-    const subpanel = document.createElement("div");
-    for (let key in panelAttributes) {
-        subpanel.setAttribute(key,panelAttributes[key]);
-    }
-    panel.append(subpanel);
-
-    if (isButton) {
-        createButton(subpanel, btnAttributes);
-    }
-    else{
-        let el = document.createElement("p");
-        setMulAttributes(el,inputAttributes);
-        subpanel.append(el);
-        el = document.createElement("input");
-        setMulAttributes(el,inputAttributes);
-        subpanel.append(el);        
-    }
-    return subpanel;
-}
-
-function setMulAttributes(element, attributes) {
-    for (let key in attributes) {
-        element.setAttribute(key,attributes[key]);
-    } 
-}
-
-function createButton(subpanel, btnAttributes) {    
-    let btn;
-
-    for (let i=0; i<btnAttributes.length; i++) {
-        btn = document.createElement("button");
-
-        for (let key in btnAttributes[i]) {
-            btn.setAttribute(key,btnAttributes[i][key]);
+    createSubPanel: (panel, panelAttributes, btnAttributes, isButton, labelAttributes, inputAttributes)=> {
+        const subpanel = document.createElement("div");
+        utility.setMulAttributes(subpanel,panelAttributes);
+        panel.append(subpanel);
+    
+        if (isButton) {
+            utility.createButton(subpanel, btnAttributes);
         }
-        subpanel.append(btn);
-    }
+        else{
+            let el = document.createElement("p");
+            utility.setMulAttributes(el,labelAttributes);
+            subpanel.append(el);
+            el = document.createElement("input");
+            utility.setMulAttributes(el,inputAttributes);
+            subpanel.append(el);        
+        }
+        return subpanel;
+    },
 
-    return subpanel;
+    createFooter: (footer)=> {
+        footer.setAttribute("class","zone yellow bottom-nav stickyb");
+        const div = document.createElement("div");
+        footer.append(div);
+        let input = document.createElement("input");
+        utility.setMulAttributes(input, {type: "image", src: "./images/bank.png", alt: "Banking", class: "navbox"});
+        div.append(input);    
+        input = document.createElement("input");
+        utility.setMulAttributes(input, {type: "image", src: "./images/community.png", alt: "Demographic", class: "navbox"});
+        div.append(input);
+        return footer;
+    },
+
+    createNav: (navbar)=> {
+        navbar.setAttribute("class","zone blue sticky");
+        let div = document.createElement("div");
+        const ul = document.createElement("ul");
+        ul.setAttribute("class","main-nav");
+        let li = document.createElement("li");
+        let label = document.createElement("label"); // modulelabel
+        navbar.appendChild(ul);
+        ul.appendChild(li);
+        li.appendChild(label);
+        li = document.createElement("li");
+        li.setAttribute("class","sys-nav push");
+        ul.appendChild(li);
+        label = document.createElement("label");
+        li.appendChild(label);                      // credentiallabel
+        label = document.createElement("label");
+        li.appendChild(label);                      // classlabel
+        div = document.createElement("div");
+        div.setAttribute("class","zone red warning");
+        navbar.appendChild(div);
+        label = document.createElement("label");    // warninglabel
+        div.appendChild(label);              
+        return navbar;
+    },    
+
 }
 
-function addCard(containerdiv, objName, balance, msg) {
+const utility = {
+    setMulAttributes: (element, attributes)=> {
+        for (let key in attributes) {
+            element.setAttribute(key,attributes[key]);
+        } 
+    },
+
+    createButton: (subpanel, btnAttributes)=> {
+        {    
+            let btn;
+        
+            for (let i=0; i<btnAttributes.length; i++) {
+                btn = document.createElement("button");
+        
+                for (let key in btnAttributes[i]) {
+                    btn.setAttribute(key,btnAttributes[i][key]);
+                }
+                subpanel.append(btn);
+            }
+        
+            return subpanel;
+        }
+    },
+
+    addCard: (containerdiv, objName, balance, msg)=> {
         const divnode = document.createElement("div");
         const ulnode = document.createElement("ul");
         let linode = document.createElement("li");
@@ -825,30 +895,58 @@ function addCard(containerdiv, objName, balance, msg) {
         linode.appendChild(textnode); 
 
         return divnode;
-}
+    },
 
-function createAccountCards (containerdiv, array) {
-    // Regenerate all class items within the controller
-    for (let i=0; i < array.length; i++){
-        addCard(containerdiv,array[i].accountName,array[i].startingBalance,"Balance: $");
-    } 
-}
+    createAccountCards: (containerdiv, array)=> {
+        // Regenerate all class items within the controller
+        for (let i=0; i < array.length; i++){
+            utility.addCard(containerdiv,array[i].accountName,array[i].startingBalance,"Balance: $");
+        } 
+    },
 
-function createCityCards (containerdiv, array) {
-    // Regenerate all class items within the controller
-    for (let i=0; i < array.length; i++){
-        addCard(containerdiv,array[i].name,array[i].population,"Population: ");
-    } 
-}
+    createCityCards: (containerdiv, array)=> {
+        // Regenerate all class items within the controller
+        for (let i=0; i < array.length; i++){
+            utility.addCard(containerdiv,array[i].name,array[i].population,"Population: ");
+        } 
+    },
 
-function eraseitems (list) {
-    let count = list.childElementCount;
-    if(list.hasChildNodes) {
-        for (let i=0; i<count; i++) {
-            list.removeChild(list.firstElementChild);                
+    eraseitems: (list)=> {
+        let count = list.childElementCount;
+        if(list.hasChildNodes) {
+            for (let i=0; i<count; i++) {
+                list.removeChild(list.firstElementChild);                
+            }
         }
-    }
+    },
 }
 
-export default { AppElement, PopulateApp , PopulateAccountApp, PopulateCityApp, DisplayPanel, ControlPanel, Cards, AppsController, createDisplayPanel, createControlPanel, 
-                 createSubPanel, createButton, addCard, createAccountCards, createCityCards, eraseitems};
+const State = {
+    savestate: (url,obj) => {
+        NET.putData(url,obj);
+    },
+
+    loadstate: async (url,obj) => {
+
+        try {            
+            // Retrieve saved states from remote server
+            const webdata = await NET.getData(url);
+            obj.currentAccount = webdata.currentAccount;
+            obj.currentCity = webdata.currentCity;
+            obj.currentPage = webdata.currentPage;
+            obj.warningMsg = webdata.warningMsg;
+            obj.user.copyArray(webdata);
+            obj.community.copyArray(webdata);
+        }  
+         
+        catch (err) {   // cannot access online data => default to a starting page
+            obj.warningMsg = "Offline Mode: Data cannot be retrieved and saved to the server";
+            console.log("Error: ", err); 
+            console.log("Error: ", page_state.warningMsg);                                
+        }      
+    },    
+}
+
+export default { AppElement, ControlPanel, DisplayPanel, Cards, 
+                 PopulateApp , PopulateAccountApp, PopulateCityApp, AppsController,
+                 htmlEl, utility};

@@ -42,8 +42,7 @@ export class AccountController {
 
             if(this.accounts[i].accountName === accountName) {
                 this.accounts.splice(i,1);
-            }
-            
+            }            
         }
 
         return this.accounts;
@@ -69,7 +68,6 @@ export class AccountController {
             if(this.accounts[i].accountName === accountName) {
                 isExisting = true;
             }
-            
         }     
         
         return isExisting;
