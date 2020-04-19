@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JavaScript Class Objects and State</title>
+  <link rel="stylesheet" type="text/css" href="./index.css">
+</head>
+<body>
+  <nav class="zone blue sticky">
+    <ul class="main-nav">
+      <li><a href=""></a>
+        <label id="modulelabel"></label>
+      </li>   
+      <li class="sys-nav push">
+        <label id="credentiallabel"></label>
+        <label id="classlabel"></label>
+      </li>      
+    </ul>    
+  
+    <div class="zone red warning">
+      <label id="warninglabel"></label>
+    </div>      
+  </nav>
+
+
+
+  <div class="container zone">        
+    <div class="panel green">
+      <label id="activity_label" class="highlight"></label>      
+      <ul id="activitylist" class="accctdisplay"></ul>
+    </div>
+     
+    <div class="panel yellow">
+      <div id="active_class" class="highlight"></div>
+      <div class="subpanel">        
+        <button type="button" id="createclassBtn" class="acctbtn"></button>
+        <button type="button" id="removeclassBtn" class="acctbtn"></button>
+        <button type="button" id="nameclassBtn" class="acctbtn"></button>        
+      </div>  
+
+      <div class="subpanel">
+        <button type="button" id="sumBtn" class="acctbtn"></button>
+        <button type="button" id="maxBtn" class="acctbtn"></button>
+        <button type="button" id="minBtn" class="acctbtn"></button>
+      </div>        
+      
+      <div class="subpanel">      
+        <p id="class_qty_label"></p>
+        <input type="number" id="inputAmt" class="acctinput"></input>        
+      </div>
+      
+      <div class="subpanel">
+        <button type="button" id="moveinBtn" class="acctbtn"></button>
+        <button type="button" id="moveoutBtn" class="acctbtn"></button>
+        <button type="button" id="balanceBtn" class="acctbtn"></button>        
+      </div>
+    </div>
+  </div>
+
+
+  <div id="classgrid" class="zone blue grid-wrapper frame">
+  </div>
+
+
+  <footer class="zone yellow bottom-nav stickyb">
+    <div>
+      <input type="image" src="./images/bank.png" alt="Banking" id="bankingBtn" class="navbox"></button>
+      <input type="image" src="./images/community.png" alt="Demographic" id="communityBtn" class="navbox"></button>
+    </div>
+  </footer>
+
+</div>
+</body>
+
+<script type="module" src="./scripts/index.js"></script>
+</html>

@@ -1,10 +1,7 @@
-import Account, {AccountController} from './account.js'
-import CityController from './community.js'
-import display from '../../temp/display.js'
 import State from './netcomm.js'
 import DOM from './dom.js'
 
-const app = new DOM.PopulateCityApp();
+const app = new DOM.PopulateAccountApp();
 const container = app.populate();
 
 window.onload = function() {

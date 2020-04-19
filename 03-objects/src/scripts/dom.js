@@ -1,12 +1,12 @@
-import CityController from './community.js'
-import AccountController from './account.js'
+import { Community } from './city.js'
+import { AccountController } from './account.js'
 
 const page_state = {
     currentAccount: "None",
     currentCity: "None",
     currentPage: "None",
     user: new AccountController("John Doe"),
-    community: new CityController("New Settlement"),
+    community: new Community("New Settlement"),
     warningMsg: "Offline Mode: Data cannot be retrieved and saved to the server"
 };
 
@@ -267,7 +267,6 @@ class PopulateAccountApp extends PopulateApp {
         let className = window.prompt("Enter Account Name: ","Saving");            
             
         if (className !== null && className !== "") {
-
             if(!page_state["user"].isNameExisting(className)) {
                 this.elements["control"].updateLabel(className);
                 this.elements["display"].eraseList();
