@@ -1,8 +1,9 @@
-import State from './netcomm.js'
 import DOM from './dom.js'
 
-const app = new DOM.PopulateAccountApp();
-const container = app.populate();
+// const app = new DOM.PopulateAccountApp();
+// const container = app.populate();
+const app = new DOM.AppsController();
+const container = app.load();
 
 window.onload = function() {
     idAppContent.append(container);
@@ -10,7 +11,11 @@ window.onload = function() {
 
 document.addEventListener('click', ((e) => {
     const update = e.target.getAttribute("update");
+    const nav = e.target.getAttribute("alt");
 
+    if (nav) {
+        app.switchPage(nav);
+    }
     if(update) {
         app.updateCardSel(update);
     }
