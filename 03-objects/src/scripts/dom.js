@@ -1,9 +1,5 @@
-import City from './city.js'
 import CityController from './community.js'
-import Account, {AccountController} from './account.js'
-
-// const user = new AccountController("John Doe");
-// const community = new CityController("New Settlement");
+import AccountController from './account.js'
 
 const page_state = {
     currentAccount: "None",
@@ -76,11 +72,7 @@ class CityDisplay extends DisplayPanel {
 
     initElement() {
         this.updateObj["label"].textContent = "Population Movement";
-    }
-    
-    generateList(array) {
-        
-    }    
+    }      
 }
 
 class ControlPanel extends AppElement {
@@ -150,7 +142,11 @@ class CityControl extends ControlPanel {
         this.updateObj["bpanel3"].children[0].textContent = "Moved In";
         this.updateObj["bpanel3"].children[1].textContent = "Moved Out";
         this.updateObj["bpanel3"].children[2].textContent = "How Big"; 
-    }      
+    }     
+    
+    updateLabel(msg) {
+        this.updateObj["label"].textContent = "Current Location: " + msg;
+    }     
 }
 
 class Cards extends AppElement {
@@ -187,6 +183,34 @@ class AccountCards extends Cards {
     }
 }
 
+class CityCards extends Cards {
+
+    getElement(array) {
+        const panel = document.createElement("div");
+        panel.setAttribute("id","classgrid");
+        panel.setAttribute("class","zone blue grid-wrapper frame");
+        createCityCards (panel, array);
+
+        this.element = panel;
+        return panel;
+    }
+
+    updateAll(array) {
+        eraseitems(this.element);
+        createCityCards (this.element, array);
+        
+        return this.element;        
+    }
+
+    addOne(name) {
+        addCard(this.element, name, 0, "Population: ");
+    }
+
+    updateOne(name, population) {
+        document.getElementById(name + "_li2").textContent = "Population: " + population;
+    }    
+}
+
 class PopulateApp {
 
     constructor() {
@@ -203,16 +227,23 @@ class PopulateApp {
         return this.elements[theKey];
     }
 
-    // Create two panels (message display and control panels)
     populate() {
-
         const shadow = document.createElement("div");
+        this.container = shadow;
+
+        return shadow;
+    }    
+}
+
+class PopulateAccountApp extends PopulateApp {
+
+    populate() {
+        const shadow = super.populate();
         const container = document.createElement("div");        
         container.setAttribute("class","container zone"); 
         shadow.append(container);
-        this.container = shadow;
 
-        // Create main panels
+        // Create two panels (message display and control panels)
         const displayEL = new AccountDisplay ("display");
         this.elements["display"] = displayEL;
         const controlEL = new AccountControl ("control");
@@ -223,11 +254,11 @@ class PopulateApp {
         container.append(displayEL.getElement());
         container.append(controlEL.getElement());        
                 
+        displayEL.initElement();
+        controlEL.initElement(page_state);                
+                   
         // Create cards for individual objects
         shadow.append(cardEL.getElement(page_state["user"]));
-
-        displayEL.initElement();
-        controlEL.initElement(page_state);
 
         return shadow;
     }
@@ -391,6 +422,164 @@ class PopulateApp {
     }
 }
 
+class PopulateCityApp extends PopulateApp {
+
+    populate() {
+        const shadow = super.populate();
+        const container = document.createElement("div");        
+        container.setAttribute("class","container zone"); 
+        shadow.append(container);
+
+        // Create two panels (message display and control panels)
+        const displayEL = new CityDisplay ("display");
+        this.elements["display"] = displayEL;
+        const controlEL = new CityControl ("control");
+        this.elements["control"] = controlEL;
+        const cardEL = new CityCards ("cards");
+        this.elements["cards"] = cardEL;
+       
+        container.append(displayEL.getElement());
+        container.append(controlEL.getElement());        
+                
+        displayEL.initElement();
+        controlEL.initElement(page_state);                
+                   
+        // // Create cards for individual objects
+        shadow.append(cardEL.getElement(page_state["community"]));
+
+        return shadow;
+    }
+
+    createSettlement() {
+        let className = window.prompt("Enter Settlement Name: ","Calgary");            
+            
+        if (className !== null && className !== "") {
+
+            if(!page_state["community"].isNameExisting(className)) {
+                let latitude = window.prompt("Enter latitude: ", 0);
+                let longitude = window.prompt("Enter longitude: ", 0);
+                let population = window.prompt("Enter population: ", 0);
+
+                this.elements["control"].updateLabel(className);
+                this.elements["display"].eraseList();
+                this.elements["cards"].addOne(className);
+
+                // Maintain Page State                
+                page_state["community"].createCity(className, latitude, longitude, population);
+                page_state["currentCity"] = className;
+
+                // Save State to the Server
+                // functions.savestate();
+            }
+            else {
+                window.alert("Invalid settlement name, please try again.");
+            }
+        }
+    }
+
+    deleteSettlement() {        
+        if (page_state["currentCity"] == null || page_state["currentCity"] == "") {
+
+            window.alert("Invalid Settlement to Remove.");
+            return;     
+        }
+        else {
+            if(!page_state["community"].isNameExisting(page_state["currentCity"])) {
+
+                window.alert("Invalid Settlement to Remove.");
+                return;
+            }
+            else {
+                page_state["community"].deleteCity(page_state["currentCity"]);
+
+                // Maintain Page State
+                page_state["currentCity"] = "None";
+
+                // Save State to the Server
+                // functions.savestate();                    
+
+                // Refresh page
+                this.elements["control"].updateLabel("None");
+                this.elements["display"].eraseList();
+                this.elements["cards"].updateAll(page_state["community"].citys);                 
+                return; 
+            }
+        }  
+    }
+
+    showSphere() {        
+        if(page_state["currentCity"] !== "None"){
+            this.elements["display"].generateList("In: " + page_state["community"].whichSphere(page_state["currentCity"]),"");
+        }
+    }
+
+    sumPopulation() {
+        if (page_state["community"].citys.length > 0) {
+
+            this.elements["display"].generateList("Total Population: ", page_state["community"].getPopulation());
+            return;     
+        }
+    }
+
+    showMostNorthern() {
+        if (page_state["community"].citys.length > 0) {
+
+            this.elements["display"].generateList("Most Northern Settlement: ", page_state["community"].getMostNorthern());
+            return;     
+        }
+    } 
+    
+    showMostSouthern() {
+        if (page_state["community"].citys.length > 0) {
+
+            this.elements["display"].generateList("Most Southern Settlement: ", page_state["community"].getMostSouthern());
+            return;     
+        }
+    }
+    
+    movedIn() {
+        if(page_state["currentCity"] !== "None"){
+                
+            let index = page_state["community"].return_index(page_state["currentCity"]);
+            page_state["community"].citys[index].movedIn(this.elements["control"].inputObj.value);
+            this.elements["display"].generateList("Moved In: ", this.elements["control"].inputObj.value);            
+            this.elements["control"].inputObj.value = 0;
+
+            this.elements["cards"].updateOne(page_state["currentCity"],page_state["community"].citys[index].population);
+
+            // Save State to the Server
+            // functions.savestate();
+        }        
+    }
+
+    movedOut() {
+        if(page_state["currentCity"] !== "None"){
+                
+            let index = page_state["community"].return_index(page_state["currentCity"]);
+            page_state["community"].citys[index].movedOut(this.elements["control"].inputObj.value);
+            this.elements["display"].generateList("Moved In: ", this.elements["control"].inputObj.value);            
+            this.elements["control"].inputObj.value = 0;
+
+            this.elements["cards"].updateOne(page_state["currentCity"],page_state["community"].citys[index].population);
+
+            // Save State to the Server
+            // functions.savestate();
+        }                
+    }
+    
+    howBig() {
+        if(page_state["currentCity"] !== "None"){
+            let index = page_state["community"].return_index(page_state["currentCity"]);                
+            this.elements["display"].generateList("Classification: ", page_state["community"].citys[index].howBig());            
+        }            
+    }
+    
+    updateCardSel(sel) {
+        page_state["currentCity"] = sel;
+        this.elements["control"].updateLabel(sel);
+    }
+}
+
 function createDisplayPanel(panel) {  
     // const panel = document.createElement("div");      
     panel.setAttribute("class","panel green");
@@ -519,10 +708,6 @@ function createCityCards (containerdiv, array) {
     } 
 }
 
-function updateCityCard (objName, latitude, longitude, population) {        
-    document.getElementById(objName + "_li2").textContent = "Population: " + population;
-}
-
 function eraseitems (list) {
     let count = list.childElementCount;
     if(list.hasChildNodes) {
@@ -532,5 +717,5 @@ function eraseitems (list) {
     }
 }
 
-export default { AppElement, PopulateApp , DisplayPanel, ControlPanel, Cards, createDisplayPanel, createControlPanel, 
+export default { AppElement, PopulateApp , PopulateAccountApp, PopulateCityApp, DisplayPanel, ControlPanel, Cards, createDisplayPanel, createControlPanel, 
                  createSubPanel, createButton, addCard, createAccountCards, createCityCards, eraseitems};

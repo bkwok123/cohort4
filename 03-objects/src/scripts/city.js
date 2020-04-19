@@ -15,12 +15,12 @@ export default class city {
 
     movedIn(headcount) {                
 
-        return this.population = this.population + Number(headcount);
+        return this.population = Number(this.population) + Number(headcount);
     }   
 
     movedOut(headcount) {                
 
-        return this.population = this.population - Number(headcount);
+        return this.population = Number(this.population) - Number(headcount);
     }  
 
     howBig() {              

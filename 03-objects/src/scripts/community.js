@@ -29,14 +29,16 @@ export default class community {
         const location = this.citys.find(city => city.name === name);
 
         switch(true) {
-            case location.latitude === 0:
+            case Number(location.latitude) === 0:
                 return "Equator";
 
-            case location.latitude > 0:
+            case Number(location.latitude) > 0:
                 return "Northern Hemisphere";
 
-            case location.latitude <0:
+            case Number(location.latitude) <0:
                 return "Southern Hemisphere";
+
+            default:
         }
         
     }
@@ -74,7 +76,7 @@ export default class community {
 
 
     getPopulation () {
-        return this.citys.reduce(((total,currentCity) => total+currentCity.population),0);
+        return this.citys.reduce(((total,currentCity) => total+Number(currentCity.population)),0);
     }
 
     return_index(cityName){        
