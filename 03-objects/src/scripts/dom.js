@@ -61,6 +61,16 @@ class DisplayPanel extends AppElement {
     }     
 }
 
+class NavFooter extends AppElement {
+
+    getElement() {
+        const footer = document.createElement("footer");
+        createFooter(footer);              
+        this.element = footer;
+        return footer;
+    }
+}
+
 class AccountDisplay extends DisplayPanel {
 
     initElement() {
@@ -579,8 +589,131 @@ class PopulateCityApp extends PopulateApp {
     }
 }
 
+class AppsController {
+    constructor() {
+        this.container = null;                
+        this.nav = null;
+        this.apps = {};
+        this.pages = {};
+        this.footer = null;
+        this.counter = 1;
+    }
+
+    load() {
+        const shadow = document.createElement("div");
+        this.container = shadow;
+
+        const bankingApp = new PopulateAccountApp();
+        const demographicApp = new PopulateCityApp();
+        const footerEl = new NavFooter();
+        this.apps = {Banking: bankingApp, Demographic: demographicApp};
+
+        const banking = bankingApp.populate();
+        const demographic = demographicApp.populate();
+        const footer = footerEl.getElement();
+
+        this.pages = {Banking: banking, Demographic: demographic};
+        this.footer = footer;
+
+        // shadow.append(nav);
+
+        if (page_state["currentPage"] === "None") {   // Home Page
+            shadow.append(this.pages["Banking"]);
+        }
+        else {
+            shadow.append(this.pages[page_state["currentPage"]]);
+        }
+
+        shadow.append(footer);
+
+        return shadow;
+    }
+
+    switchPage(page) {
+        page_state["currentPage"] = page;
+
+        console.log(page_state["currentPage"]);
+        console.log(this.container.children.length);
+
+        this.container.removeChild(this.container.firstChild);
+        this.container.insertAdjacentElement('beforeend',this.pages[page_state["currentPage"]]);
+        this.container.append(this.footer);
+    }
+
+    createAccount() {
+        this.apps["Banking"].createAccount();
+    };
+    removeAccount() {
+        this.apps["Banking"].removeAccount();
+    };
+    renameAccount() {
+        this.apps["Banking"].renameAccount();
+    };              
+    sumBalance() {
+        this.apps["Banking"].sumBalance();
+    };
+    maxBalance() {
+        this.apps["Banking"].maxBalance();
+    };
+    minBalance() {
+        this.apps["Banking"].minBalance();
+    };
+    deposit() {
+        this.apps["Banking"].deposit();
+    };
+    withdraw() {
+        this.apps["Banking"].withdraw();
+    };              
+    balance() {
+        this.apps["Banking"].balance();
+    };
+    createSettlement() {
+        this.apps["Demographic"].createSettlement();
+    };
+    deleteSettlement() {
+        this.apps["Demographic"].deleteSettlement();
+    };
+    showSphere() {
+        this.apps["Demographic"].showSphere();
+    };
+    sumPopulation() {
+        this.apps["Demographic"].sumPopulation();
+    };                
+    showMostNorthern() {
+        this.apps["Demographic"].showMostNorthern();
+    };
+    showMostSouthern() {
+        this.apps["Demographic"].showMostSouthern();
+    };
+    movedIn() {
+        this.apps["Demographic"].movedIn();
+    };
+    movedOut() {
+        this.apps["Demographic"].movedOut();
+    };                
+    howBig() {
+        this.apps["Demographic"].howBig();
+    };
+
+    updateCardSel(update) {
+        this.apps[page_state["currentPage"]].updateCardSel(update);
+    };
+}
+
+function createFooter(footer) {
+    footer.setAttribute("class","zone yellow bottom-nav stickyb");
+    const div = document.createElement("div");
+    footer.append(div);
+    let input = document.createElement("input");
+    setMulAttributes(input, {type: "image", src: "./images/bank.png", alt: "Banking", class: "navbox"});
+    div.append(input);    
+    input = document.createElement("input");
+    setMulAttributes(input, {type: "image", src: "./images/community.png", alt: "Demographic", class: "navbox"});
+    div.append(input);
+    return footer;
+}
+
 function createDisplayPanel(panel) {  
-    // const panel = document.createElement("div");      
     panel.setAttribute("class","panel green");
     const label = document.createElement("label");             
     label.setAttribute("id","activity_label");
@@ -593,8 +726,7 @@ function createDisplayPanel(panel) {
     return list;
 }
 
-function createControlPanel(panel) {  
-    // let panel = document.createElement("div");      
+function createControlPanel(panel) {     
     panel.setAttribute("class","panel yellow");
     const label = document.createElement("div");          
     label.setAttribute("id","active_class");
@@ -637,17 +769,19 @@ function createSubPanel(panel, panelAttributes, btnAttributes, isButton, labelAt
     }
     else{
         let el = document.createElement("p");
-        for (let key in labelAttributes) {
-            el.setAttribute(key,labelAttributes[key]);
-        }        
+        setMulAttributes(el,inputAttributes);
         subpanel.append(el);
         el = document.createElement("input");
-        for (let key in inputAttributes) {
-            el.setAttribute(key,inputAttributes[key]);
-        }             
+        setMulAttributes(el,inputAttributes);
         subpanel.append(el);        
     }
     return subpanel;
+}
+
+function setMulAttributes(element, attributes) {
+    for (let key in attributes) {
+        element.setAttribute(key,attributes[key]);
+    } 
 }
 
 function createButton(subpanel, btnAttributes) {    
@@ -716,5 +850,5 @@ function eraseitems (list) {
     }
 }
 
-export default { AppElement, PopulateApp , PopulateAccountApp, PopulateCityApp, DisplayPanel, ControlPanel, Cards, createDisplayPanel, createControlPanel, 
+export default { AppElement, PopulateApp , PopulateAccountApp, PopulateCityApp, DisplayPanel, ControlPanel, Cards, AppsController, createDisplayPanel, createControlPanel, 
                  createSubPanel, createButton, addCard, createAccountCards, createCityCards, eraseitems};
