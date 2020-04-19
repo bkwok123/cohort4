@@ -1,4 +1,4 @@
-import City from './city.js'
+import City from '../src/scripts/city.js'
 import Community from './community.js'
 
 // Reference: https://jestjs.io/docs/en/using-matchers
