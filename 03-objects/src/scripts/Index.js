@@ -1,12 +1,10 @@
 import DOM from './dom.js'
 
-// const app = new DOM.PopulateAccountApp();
-// const container = app.populate();
 const app = new DOM.AppsController();
 const container = app.load();
 
-window.onload = function() {
-    idAppContent.append(container);
+window.onload = function() {    
+    idAppContent.append(container);        
 }
 
 document.addEventListener('click', ((e) => {
