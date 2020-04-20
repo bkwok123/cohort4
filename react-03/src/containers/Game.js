@@ -13,6 +13,7 @@ class Game extends React.Component {
         stepNumber: 0,
         xIsNext: true,
         AIon: false,
+        mode: "Normal",
       };
     }  
 
@@ -30,7 +31,7 @@ class Game extends React.Component {
       squares[i] = this.state.xIsNext ? 'X' : 'O';
 
       if (this.state.AIon) {  // AI On    
-        let AImove = applyAI(squares, true);
+        let AImove = applyAI(squares, true, this.state.mode);
         if (AImove.length < 1) { // No more move available for AI
           newhistory = history.concat([{squares: squares}]);          
           newstepNum = history.length;
@@ -66,6 +67,25 @@ class Game extends React.Component {
       });      
     }
 
+    switchMode() {
+      let temp;
+      switch (this.state.mode) {
+        case "Easy":
+          temp = "Normal";
+          break;
+        case "Normal":
+          temp = "Hard";
+          break;
+        default:
+          temp = "Easy";
+          break;
+      }
+
+      this.setState({
+        mode: temp
+      });
+    }
+
     render() {
       const history = this.state.history;
       const current = history[this.state.stepNumber];    
@@ -92,6 +112,7 @@ class Game extends React.Component {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       }
   
+      const difficulty = <button onClick={() => this.switchMode()}>{this.state.mode}</button>;
       const switchAI = <button onClick={() => this.turnAIswitch()}>{this.state.AIon ? 'Single Player': 'Two Players'}</button>;
 
       return (
@@ -103,7 +124,8 @@ class Game extends React.Component {
             />
           </div>
           <div className="game-info">
-            <div>{switchAI} {status}</div>
+            <div>{switchAI} {difficulty}</div>
+            <div>{status}</div>
             <ol>{moves}</ol>            
           </div>
         </div>
@@ -112,12 +134,22 @@ class Game extends React.Component {
   }
 
   // Return the next move as an array to contains the entire board current state
-  function applyAI (squares, isPlayerX) {
+  function applyAI (squares, isPlayerX, mode) {
     let AImove = [];
     let AImoveIndex = -1;
 
-    // get move from AI as i
-    AImoveIndex = (Math.random() < 0.2) ? produceRandomMove(squares) : produceBestMove(squares, isPlayerX);
+    // get move from AI as i 
+    switch(mode) {
+      case "Easy":  
+        AImoveIndex = produceRandomMove(squares);
+        break;
+      case "Normal":
+        AImoveIndex = (Math.random() < 0.2) ? produceRandomMove(squares) : produceBestMove(squares, isPlayerX);
+        break;
+      case "Hard":        
+        AImoveIndex = produceBestMove(squares, isPlayerX);
+        break;                  
+    }    
 
     if (AImoveIndex > -1) {
       AImove = squares.slice();
