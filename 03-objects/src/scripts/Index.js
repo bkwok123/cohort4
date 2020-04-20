@@ -1,4 +1,4 @@
-import DOM from './dom.js'
+import DOM from './domcontrol.js'
 
 const app = new DOM.AppsController();
 const container = app.load();
