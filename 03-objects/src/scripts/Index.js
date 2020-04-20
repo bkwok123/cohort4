@@ -4,7 +4,8 @@ const app = new DOM.AppsController();
 const container = app.load();
 
 window.onload = function() {    
-    idAppContent.append(container);        
+    idAppContent.append(container);
+    app.refresh();        
 }
 
 document.addEventListener('click', ((e) => {

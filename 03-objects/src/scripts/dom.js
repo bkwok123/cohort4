@@ -72,6 +72,16 @@ class NavFooter extends AppElement {
         this.element = footer;
         return footer;
     }
+
+    disable() {
+        this.element.children[0].children[0].disabled = true;
+        this.element.children[0].children[1].disabled = true;
+    }
+
+    enable() {
+        this.element.children[0].children[0].disabled = false;
+        this.element.children[0].children[1].disabled = false;
+    }    
 }
 
 class NavHeader extends AppElement {
@@ -320,7 +330,7 @@ class PopulateAccountApp extends PopulateApp {
                 page_state["currentAccount"] = className;
 
                 // Save State to the Server
-                State.savestate(url, page_state);
+                NET.putData(url, page_state);
             }
             else {
                 window.alert("Invalid account name, please try again.");
@@ -347,7 +357,7 @@ class PopulateAccountApp extends PopulateApp {
                 page_state["currentAccount"] = "None";
 
                 // Save State to the Server
-                State.savestate(url, page_state);                    
+                NET.putData(url, page_state);                    
 
                 // Refresh page
                 this.elements["control"].updateLabel("None");
@@ -380,7 +390,7 @@ class PopulateAccountApp extends PopulateApp {
                     page_state["currentAccount"] = className;
 
                     // Save State to the Server
-                    State.savestate(url, page_state);                        
+                    NET.putData(url, page_state);                        
 
                     // Refresh page
                     this.elements["control"].updateLabel(className);
@@ -432,7 +442,7 @@ class PopulateAccountApp extends PopulateApp {
             this.elements["cards"].updateOne(page_state["currentAccount"],page_state["user"].accounts[index].balance());
 
             // Save State to the Server
-            State.savestate(url, page_state);
+            NET.putData(url, page_state);
         }      
     }
 
@@ -447,7 +457,7 @@ class PopulateAccountApp extends PopulateApp {
             this.elements["cards"].updateOne(page_state["currentAccount"],page_state["user"].accounts[index].balance());
 
             // Save State to the Server
-            State.savestate(url, page_state);
+            NET.putData(url, page_state);
         }                 
     }
     
@@ -511,7 +521,7 @@ class PopulateCityApp extends PopulateApp {
                 page_state["currentCity"] = className;
 
                 // Save State to the Server
-                State.savestate(url, page_state);
+                NET.putData(url, page_state);
             }
             else {
                 window.alert("Invalid settlement name, please try again.");
@@ -538,7 +548,7 @@ class PopulateCityApp extends PopulateApp {
                 page_state["currentCity"] = "None";
 
                 // Save State to the Server
-                State.savestate(url, page_state);                    
+                NET.putData(url, page_state);                    
 
                 // Refresh page
                 this.elements["control"].updateLabel("None");
@@ -590,7 +600,7 @@ class PopulateCityApp extends PopulateApp {
             this.elements["cards"].updateOne(page_state["currentCity"],page_state["community"].citys[index].population);
 
             // Save State to the Server
-            State.savestate(url, page_state);
+            NET.putData(url, page_state);
         }        
     }
 
@@ -605,7 +615,7 @@ class PopulateCityApp extends PopulateApp {
             this.elements["cards"].updateOne(page_state["currentCity"],page_state["community"].citys[index].population);
 
             // Save State to the Server
-            State.savestate(url, page_state);
+            NET.putData(url, page_state);
         }                
     }
     
@@ -632,9 +642,7 @@ class AppsController {
         this.counter = 1;
     }
 
-    load() {
-        State.loadstate(url, page_state);
-
+    load() {        
         const shadow = document.createElement("div");
         this.container = shadow;
 
@@ -651,35 +659,75 @@ class AppsController {
 
         this.nav = navEl;
         this.pages = {Banking: banking, Demographic: demographic};
-        this.footer = footer;
+        this.footer = footerEl;
 
         shadow.append(nav);
-
-        // Only show warning message when server is not responding        
-        navEl.updateWarning(page_state["warningMsg"]);        
-
-        if (page_state["currentPage"] === "None") {   // Home Page            
-            shadow.append(this.pages["Banking"]);
-            page_state["currentPage"] = "Banking";
-            navEl.updateAppLabel("Banking");
-        }
-        else {
-            shadow.append(this.pages[page_state["currentPage"]]);
-            navEl.updateAppLabel(page_state["currentPage"]);          
-        }
-
+        
+        // Create a temporary app
+        navEl.updateWarning("Connecting... Please wait.");
+        shadow.append(document.createElement("div"));
+        this.footer.disable();
         shadow.append(footer);
 
         return shadow;
     }
+
+    async refresh() {
+        const shadow = this.container;
+        const navEl = this.nav;
+
+        // Remove the temporary app
+        shadow.removeChild(shadow.children[1]);
+
+        try {            
+            // Retrieve saved states from remote server
+            let wait = setTimeout(()=>{
+                try {
+                        clearTimeout(wait);
+                        throw("Timeout2");
+                    }
+        
+                catch (err) {
+                    clearTimeout(wait);
+
+                    page_state["warningMsg"] = "Offline Mode: Data cannot be retrieved and saved to the server";
+
+                    // Load default home page                    
+                    shadow.insertAdjacentElement('beforeend',this.pages["Banking"]);
+                    page_state["currentPage"] = "Banking";
+                    navEl.updateAppLabel("Banking");
+                    navEl.updateWarning(page_state["warningMsg"]);
+                    this.footer.enable();
+                    shadow.append(this.footer.element);                                
+                }
+            }, 1000);
+
+            const webdata = await NET.getData(url);            
+            page_state["currentAccount"] = webdata.currentAccount;
+            page_state["currentCity"] = webdata.currentCity;
+            page_state["currentPage"] = webdata.currentPage;
+            page_state["warningMsg"] = webdata.warningMsg;
+            page_state["user"].copyArray(webdata);
+            page_state["community"].copyArray(webdata);
+
+            shadow.insertAdjacentElement('beforeend',this.pages[page_state["currentPage"]]);
+            navEl.updateAppLabel(page_state["currentPage"]);
+            this.footer.enable();
+            shadow.append(this.footer.element);                       
+        }  
+         
+        catch (err) {   // cannot access online data => default to a starting page (handled by timeout)
+            console.log("Error: ", err); 
+        }         
+    }    
 
     switchPage(page) {
         page_state["currentPage"] = page;
 
         this.nav.updateAppLabel(page);
         this.container.removeChild(this.container.children[1]);
-        this.container.insertAdjacentElement('beforeend',this.pages[page_state["currentPage"]]);
-        this.container.append(this.footer);
+        this.container.insertAdjacentElement('beforeend',this.pages[page_state["currentPage"]]);        
+        this.container.append(this.footer.element);
     }
 
     createAccount() {
@@ -919,32 +967,6 @@ const utility = {
             }
         }
     },
-}
-
-const State = {
-    savestate: (url,obj) => {
-        NET.putData(url,obj);
-    },
-
-    loadstate: async (url,obj) => {
-
-        try {            
-            // Retrieve saved states from remote server
-            const webdata = await NET.getData(url);
-            obj.currentAccount = webdata.currentAccount;
-            obj.currentCity = webdata.currentCity;
-            obj.currentPage = webdata.currentPage;
-            obj.warningMsg = webdata.warningMsg;
-            obj.user.copyArray(webdata);
-            obj.community.copyArray(webdata);
-        }  
-         
-        catch (err) {   // cannot access online data => default to a starting page
-            obj.warningMsg = "Offline Mode: Data cannot be retrieved and saved to the server";
-            console.log("Error: ", err); 
-            console.log("Error: ", page_state.warningMsg);                                
-        }      
-    },    
 }
 
 export default { AppElement, ControlPanel, DisplayPanel, Cards, 
