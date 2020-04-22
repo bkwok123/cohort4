@@ -1,7 +1,7 @@
 import { Community } from './city.js'
 import { AccountController } from './account.js'
-import DOM from './domelement.js'
-import NET from './netcomm.js'
+import DOM from '../components/domelement.js'
+import NET from '../scripts/netcomm.js'
 
 const url = 'https://api.myjson.com/bins/10cqhs';
 

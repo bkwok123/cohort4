@@ -67,6 +67,16 @@ class Game extends React.Component {
       });      
     }
 
+    clearGame() {
+      this.setState({
+        history: [{
+          squares: Array(9).fill(null),
+        }],
+        stepNumber: 0,
+        xIsNext: true,
+      });
+    }
+
     switchMode() {
       let temp;
       switch (this.state.mode) {
@@ -114,20 +124,24 @@ class Game extends React.Component {
   
       const difficulty = <button onClick={() => this.switchMode()}>{this.state.mode}</button>;
       const switchAI = <button onClick={() => this.turnAIswitch()}>{this.state.AIon ? 'Single Player': 'Two Players'}</button>;
+      const clear = <button onClick={() => this.clearGame()}>Clear Game</button>;
 
       return (
-        <div className="game">
-          <div className="game-board">
+        <div className="game">    
+          <div className="game-option">
+            <div>{switchAI} {difficulty}</div>
+            <div>{clear}</div>            
+          </div>          
+          <div className="game-board">                 
             <Board
               squares={current.squares}
               onClick={(i) => this.handleClick(i)}
             />
-          </div>
-          <div className="game-info">
-            <div>{switchAI} {difficulty}</div>
-            <div>{status}</div>
-            <ol>{moves}</ol>            
-          </div>
+          </div>          
+          <div className="game-info">            
+              <div>{status}</div>
+              <ol>{moves}</ol>            
+          </div>          
         </div>
       );
     }

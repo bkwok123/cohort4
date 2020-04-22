@@ -1,0 +1,84 @@
+.zone {
+    /*padding:30px 50px;*/
+    cursor: default;;
+    color:#FFF;
+    font-size:2em;
+    border-radius:4px;
+    border:1px solid #bbb;
+    transition: all 0.3s linear;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .zone:hover {
+        -webkit-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
+        -moz-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
+        -o-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
+        box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
+    }
+}
+
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 100%;
+  }
+
+/***********************************************************************
+ *  Nav Bar
+ **********************************************************************/
+ .main-nav {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    font-size: 0.7em;
+    padding: 20px;
+}
+
+.sys-nav {
+    color:black;  
+    cursor: pointer;
+
+}
+
+.push {
+    margin-left: auto;
+}
+
+.warning {
+    display: flex;
+    margin: 0;
+    font-size: 0.5em;
+    padding: 0;
+}
+
+@media only screen and (max-height: 800px) {
+    .main-nav {
+        font-size: 0.5em;
+        padding: 0.3em;
+    }
+
+    .bottom-nav {
+        font-size: 0.5em;
+        padding: 0;
+    }
+
+    .warning {
+        font-size: 0.3em;
+    }      
+}
+
+/***********************************************************************
+ *  Blue Background
+ **********************************************************************/
+.blue {
+    background: #7abcff; /* Old browsers */
+    background: linear-gradient(to top, #7abcff 0%,#60abf8 44%,#4096ee 100%); /* W3C */
+}
+
+/***********************************************************************
+ *  Red Background
+ **********************************************************************/
+ .red {
+    background: #C655BE; /* Old browsers */
+    background: linear-gradient(to top, #C655BE 0%,#cf0404 100%); /* W3C */
+}

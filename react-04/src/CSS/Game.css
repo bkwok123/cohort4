@@ -1,12 +1,3 @@
-body {
-  font: 14px "Century Gothic", Futura, sans-serif;
-  margin: 20px;
-}
-
-ol, ul {
-  padding-left: 30px;
-}
-
 .board-row:after {
   clear: both;
   content: "";
@@ -41,10 +32,29 @@ ol, ul {
 }
 
 .game {
-  display: flex;
-  flex-direction: row;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(200px, auto));
+  grid-auto-rows: minmax(8vh, auto);
+  grid-template-areas: "option ."
+                       "board info";                
+  justify-content: center;
+  margin: 10vh;
+}
+
+.game-option {
+  grid-area: option;     
+}
+
+.game-board {
+  grid-area: board;  
 }
 
 .game-info {
-  margin-left: 20px;
-}  
+  grid-area: info;
+  justify-self: start;
+}
+
+.game-info > ol {
+  padding: 0px;
+  margin: 0px;
+}
