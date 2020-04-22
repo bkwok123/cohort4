@@ -1,6 +1,7 @@
 import React from 'react';
 import '../CSS/Footer.css';
 import '../CSS/Header.css';
+import himg from "../images/logo.svg";
 import bimg from "../images/bank.png";
 import cimg from "../images/community.png";
 
@@ -33,50 +34,59 @@ class NavFooter extends React.Component {
         return (
             <footer className="zone yellow bottom-nav stickyb">
                 <div>
-                    <input type="image" src={bimg} alt="Banking" id="bankingBtn" className="navbox" disabled={this.props.on}></input>
-                    <input type="image" src={cimg} alt="Demographic" id="communityBtn" className="navbox" disabled={this.props.on}></input>
+                <input type="image" src={himg} alt="Home" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
+                    <input type="image" src={bimg} alt="Banking" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
+                    <input type="image" src={cimg} alt="Demographic" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
                 </div>
             </footer>
         );
     }
 }
 
-// class DisplayPanel extends AppElement {
+class DisplayPanel extends React.Component {
 
-//     constructor(key) {
-//         super(key);
-//         this.updateObj = null;
-//     }
+    renderItem() {        
+        const msg = this.props.msg;
+        const list = msg.map((item, i) => {
 
-//     getElement() {
-//         const panel = document.createElement("div");
-//         htmlEl.createDisplayPanel(panel);              
-//         this.updateObj = {label: panel.children[0], list: panel.children[1]};
-//         this.element = panel;
-//         return panel;
-//     }
+            return (
+                <li>{item}</li>
+            );
+          });
 
-//     eraseList() {
-//         utility.eraseitems (this.updateObj["list"]);
-//     }   
+        return list;        
+    }
 
-//     generateList(message, qty) {
-//         const list = this.updateObj["list"];
-//         const linode = document.createElement("li");
-//         const textnode = document.createTextNode(message + qty);
+    // eraseList() {
+    //     utility.eraseitems (this.updateObj["list"]);
+    // }   
 
-//         let count = list.childElementCount;
+    // generateList(message, qty) {
+    //     const list = this.updateObj["list"];
+    //     const linode = document.createElement("li");
+    //     const textnode = document.createTextNode(message + qty);
 
-//         // keep display log to a fixed number of items        
-//         if(count === 5){
-//             list.removeChild(list.firstElementChild);
-//         }
+    //     let count = list.childElementCount;
+
+    //     // keep display log to a fixed number of items        
+    //     if(count === 5){
+    //         list.removeChild(list.firstElementChild);
+    //     }
         
-//         // Add new log item
-//         linode.appendChild(textnode);
-//         list.appendChild(linode);        
-//     }     
-// }
+    //     // Add new log item
+    //     linode.appendChild(textnode);
+    //     list.appendChild(linode);        
+    // }     
+
+    render() {
+        return (
+            <div class="panel green">
+                <label id="activity_label" class="highlight"></label>      
+                <ul id="activitylist" class="accctdisplay"></ul>
+            </div>
+        );
+    }
+}
 
 // class AccountDisplay extends DisplayPanel {
 
@@ -221,16 +231,6 @@ class NavFooter extends React.Component {
 // }
 
 // const htmlEl = {
-//     createDisplayPanel: (panel)=> {
-//         panel.setAttribute("class","panel green");
-//         const label = document.createElement("label");             
-//         label.setAttribute("class","highlight");
-//         panel.append(label);
-//         const list = document.createElement("ul");     
-//         list.setAttribute("class","accctdisplay");
-//         panel.append(list);
-//         return panel;
-//     },
 
 //     createControlPanel: (panel)=> {
 //         panel.setAttribute("class","panel yellow");
