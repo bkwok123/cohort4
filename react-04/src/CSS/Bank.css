@@ -34,6 +34,8 @@
         height: 50%;
         font-size: 50%;
     }
+
+    
 }
 
 @media only screen and (max-height: 800px) {
@@ -42,9 +44,9 @@
         grid-template-columns: 1;
         justify-content: center;
         padding: 0px;
-        width: 60%;
-        height: 60%;
-        font-size: 60%;
+        width: 50%;
+        height: 50%;
+        font-size: 50%;
     }
 }
 
@@ -72,18 +74,45 @@
     margin: 0em;
     padding: 0em;
     text-align: center;
-    width: auto;
-    height: auto;    
     font-size: 1em;
 }
 
 .subpanel > input {
-    width: auto;
-    height: auto;
-    max-height: min-content;
+    /* max-height: min-content; */
+    height: 1em;
     font-size: 0.7em;
     padding-left: 5%;
+    margin-right: 1em;
 }
+
+@media only screen and (max-width: 700px) {
+    .subpanel > button {
+        font-size: 0.5em;    
+    }
+    
+    .subpanel > p {
+        font-size: 0.7em;
+    }
+    
+    .subpanel > input {
+        font-size: 0.5em;
+    }  
+}
+
+@media only screen and (max-height: 800px) {
+    .subpanel > button {
+        font-size: 0.5em;    
+    }
+    
+    .subpanel > p {
+        font-size: 0.7em;
+    }
+    
+    .subpanel > input {
+        font-size: 0.5em;
+    }
+}
+
 
 .acctbtn {
     width: auto;
@@ -159,4 +188,25 @@
  .yellow {
     background: #F3AAAA; /* Old browsers */
     background: linear-gradient(to bottom, #F3AAAA 0%,#febf04 100%); /* W3C */
+}
+
+/***********************************************************************
+ *  Highlighted text
+ **********************************************************************/
+ .highlight{
+    color: purple;
+    font-style: italic;
+    text-decoration: underline;
+}
+
+@media only screen and (max-width: 700px) {
+    .highlight {
+        font-size: 0.7em;    
+    }
+}
+
+@media only screen and (max-height: 800px) {
+    .highlight {
+        font-size: 0.7em;    
+    }
 }
