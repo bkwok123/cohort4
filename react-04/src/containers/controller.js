@@ -1,5 +1,6 @@
 import React from 'react';
 import DOM from '../components/domelement';
+import Bank from './bank';
 import Game from './Game';
 import Home from '../components/Home';
 
@@ -9,6 +10,7 @@ class AppsController extends React.Component {
         super(props);
         this.state = {
             activeApp: <Home />,
+            activePage: "Home",
         };
       } 
 
@@ -19,16 +21,20 @@ class AppsController extends React.Component {
                 app = <Home />;
                 break;            
             case "Banking":
-                app = <Game />;
+                app = <Bank />;
                 break;
             case "Demographic":
-                app = <Home />;
+                app = <Game />;
                 break;
+            case "Tic Tac Toe":
+                app = <Game />;
+                break;                
         }
 
         this.setState({        
-            activeApp: app,}
-          );        
+            activeApp: app,
+            activePage: e.target.alt,
+        });        
     }
 
     render() {
@@ -36,8 +42,8 @@ class AppsController extends React.Component {
 
         return (
             <div>
-                <DOM.NavHeader applabel='Banking' credential='Login: ' currentController = 'John Doe' warninglabel= 'Warning'/>                
-                {this.state.activeApp}
+                <DOM.NavHeader applabel={this.state.activePage}/>                
+                {this.state.activeApp}            
                 <DOM.NavFooter on={switchon} onClick={(e) => this.pageClick(e)}/>
             </div>
         );

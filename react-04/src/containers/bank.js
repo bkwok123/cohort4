@@ -1,6 +1,6 @@
 import React from 'react';
-import DOM from '../components/domelement';
 import { AccountController } from '../scripts/account.js'
+import '../CSS/Bank.css';
 import NET from '../scripts/netcomm.js'
 
 class Bank extends React.Component {
@@ -10,228 +10,341 @@ class Bank extends React.Component {
         this.state = {
             currentAccount: "None",
             user: new AccountController("John Doe"),
+            list: [],
+            card: [],
+            inputAmt: 0,
         };
     }
 
     buttonClick(e) {
-        let app;
-        switch (e.target.alt) {
-            case "Home":
-                app = <Home />;
+
+        switch (e.target.textContent) {
+            case "Create Account":
+                this.createAccount();
                 break;            
-            case "Banking":
-                app = <Game />;
+            case "Remove Account":
+                this.removeAccount();
                 break;
-            case "Demographic":
-                app = <Home />;
+            case "Rename Account":
+                this.renameAccount();
                 break;
-        }
+            case "Sum Balance":
+                this.sumBalance();                
+                break;
+            case "Max Balance":
+                this.maxBalance();
+                break;            
+            case "Min Balance":
+                this.minBalance();
+                break;
+            case "Deposit":
+                this.deposit();
+                break;
+            case "Withdraw":
+                this.withdraw();
+                break;   
+            case "Balance":
+                this.balance();
+                break;                                                                                                                                                      
+        }      
+    }    
+    
+    inputChg (e){
+        this.setState({
+            inputAmt: e.target.value
+          });        
+    }
 
-        console.log("Clicke");
-
-        this.setState({        
-            activeApp: app,}
-          );        
+    cardClick(e) {
+        this.setState({
+            currentAccount: e.target.getAttribute("update") 
+          }); 
     }    
 
     render() {
+
         return (
             <div>            
                 <div className="container zone">        
                     <div className="panel green">
-                        <label id="activity_label" className="highlight"></label>      
-                        <ul id="activitylist" className="accctdisplay"></ul>
+                        <label className="highlight">Transaction Activities</label>      
+                        <ul className="accctdisplay">
+                            {this.state.list}
+                        </ul>
                     </div>
                 
                     <div className="panel yellow">
-                        <div id="active_class" className="highlight"></div>
+                        <div id="active_class" className="highlight">Active Account: {this.state.currentAccount}</div>
                         <div className="subpanel">        
-                            <button type="button" id="createclassBtn" className="acctbtn"></button>
-                            <button type="button" id="removeclassBtn" className="acctbtn"></button>
-                            <button type="button" id="nameclassBtn" className="acctbtn"></button>        
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Create Account</button>
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Remove Account</button>
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Rename Account</button>        
                         </div>  
             
                         <div className="subpanel">
-                            <button type="button" id="sumBtn" className="acctbtn"></button>
-                            <button type="button" id="maxBtn" className="acctbtn"></button>
-                            <button type="button" id="minBtn" className="acctbtn"></button>
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Sum Balance</button>
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Max Balance</button>
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Min Balance</button>
                         </div>        
                 
                         <div className="subpanel">      
-                            <p id="class_qty_label"></p>
-                            <input type="number" id="inputAmt" className="acctinput"></input>        
+                            <p>Amount:</p>
+                            <input type="number" className="acctinput" value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
                         </div>
                 
                         <div className="subpanel">
-                            <button type="button" id="moveinBtn" className="acctbtn"></button>
-                            <button type="button" id="moveoutBtn" className="acctbtn"></button>
-                            <button type="button" id="balanceBtn" className="acctbtn"></button>        
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Deposit</button>
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Withdraw</button>
+                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Balance</button>        
                         </div>
                     </div>
                 </div>            
 
-                <div id="classgrid" className="zone blue grid-wrapper frame">
+                <div className="zone blue grid-wrapper frame">
+                    {this.state.card}
                 </div>
             </div>
         );
     }    
 
-    // createAccount() {
-    //     let className = window.prompt("Enter Account Name: ","Saving");            
+    renderList(list, msg) {        
+        if(list.length === 5) {
+            list.shift();
+        }        
+        list.push(<li>{msg}</li>);
+
+        return list;        
+    }
+
+    addCard(array, name, msg) {
+        array.push(
+            <div update={name} key={`${name}_div`} className="box" onClick={(e) => this.cardClick(e)}>
+                <ul update={name} key={`${name}_ul`} className="boxul">
+                    <li update={name} key={`${name}_li1`}>{name}</li>
+                    <li update={name} key={`${name}_li2`}>{msg}</li>
+                </ul>
+            </div>            
+        )
+    }
+
+    createAccount() {
+        const name = window.prompt("Enter Account Name: ","Saving");
+        const holder = this.state.user;   
+        let cards = this.state.card.slice();         
             
-    //     if (className !== null && className !== "") {
-    //         if(!page_state["user"].isNameExisting(className)) {
-    //             this.elements["control"].updateLabel(className);
-    //             this.elements["display"].eraseList();
-    //             this.elements["cards"].addOne(className);
+        if (name !== null && name !== "") {
+            if(!holder.isNameExisting(name)) {
 
-    //             // Maintain Page State
-    //             page_state["user"].add_account(className,0);
-    //             page_state["currentAccount"] = className;
+                holder.add_account(name,0);
+                this.addCard(cards, name, "Balance: $" + 0);
 
-    //             // Save State to the Server
-    //             NET.putData(url, page_state);
-    //         }
-    //         else {
-    //             window.alert("Invalid account name, please try again.");
-    //         }
-    //     }
-    // }
+                // Maintain Page State
+                this.setState({currentAccount: name,
+                               user: holder,
+                               list: [],
+                               card: cards,
+                            });                
 
-    // removeAccount() {        
-    //     if (page_state["currentAccount"] == null || page_state["currentAccount"] == "") {
+                // Save State to the Server
+                // NET.putData(url, page_state);
+            }
+            else {
+                window.alert("Invalid account name, please try again.");
+            }
+        }
+    }
 
-    //         window.alert("Invalid Account to Remove.");
-    //         return;     
-    //     }
-    //     else {
-    //         if(!page_state["user"].isNameExisting(page_state["currentAccount"])) {
+    removeAccount() {    
+        const holder = this.state.user;
+        const currentAccount = this.state.currentAccount;   
+        let cards = this.state.card.slice(); 
 
-    //             window.alert("Invalid Account to Remove.");
-    //             return;
-    //         }
-    //         else {
-    //             page_state["user"].remove_account(page_state["currentAccount"]);
+        if (currentAccount === null || currentAccount === "") {
 
-    //             // Maintain Page State
-    //             page_state["currentAccount"] = "None";
+            window.alert("Invalid Account to Remove.");
+            return;     
+        }
+        else {
+            if(!holder.isNameExisting(currentAccount)) {
 
-    //             // Save State to the Server
-    //             NET.putData(url, page_state);                    
+                window.alert("Invalid Account to Remove.");
+                return;
+            }
+            else {
+                holder.remove_account(currentAccount);
+                cards = cards.filter(card => card.key.replace("_div","") !== currentAccount);
 
-    //             // Refresh page
-    //             this.elements["control"].updateLabel("None");
-    //             this.elements["display"].eraseList();
-    //             this.elements["cards"].updateAll(page_state["user"].accounts);                 
-    //             return; 
-    //         }
-    //     }        
-    // }
+                // Maintain Page State
+                this.setState({currentAccount: "None",
+                    user: holder,
+                    list: [],
+                    card: cards,
+                }); 
 
-    // renameAccount() {        
-    //     if (page_state["currentAccount"] == null || page_state["currentAccount"] == "") {
+                // Save State to the Server
+                // NET.putData(url, page_state);                    
+                return; 
+            }
+        }        
+    }
 
-    //         window.alert("Invalid Account to Rename.");
-    //         return;     
-    //     }
-    //     else {
-    //         if(!page_state["user"].isNameExisting(page_state["currentAccount"])) {
+    renameAccount() {  
+        const holder = this.state.user;
+        const currentAccount = this.state.currentAccount;   
+        let cards = [];
 
-    //             window.alert("Invalid Account to Rename.");
-    //             return;
-    //         }
-    //         else {
-    //             let className = window.prompt("Enter New Name for the Account: ");
+        if (currentAccount === null || currentAccount === "") {
 
-    //             if(!page_state["user"].isNameExisting(className)) {
-    //                 page_state["user"].rename_account(page_state["currentAccount"], className);
+            window.alert("Invalid Account to Rename.");
+            return;     
+        }
+        else {
+            if(!holder.isNameExisting(currentAccount)) {
+
+                window.alert("Invalid Account to Rename.");
+                return;
+            }
+            else {
+                let name = window.prompt("Enter New Name for the Account: ");
+
+                if(!holder.isNameExisting(name)) {
+                    holder.rename_account(currentAccount, name);
+
+                    for (let i=0; i<holder.accounts.length; i++) {                        
+                        this.addCard(cards, holder.accounts[i].accountName, "Balance: $" + holder.accounts[i].startingBalance);
+                    }
+
+                    // Maintain Page State
+                    this.setState({currentAccount: name,
+                        user: holder,
+                        list: [],
+                        card: cards,
+                    });    
+
+                    // Save State to the Server
+                    // NET.putData(url, page_state);                        
+                    return;
+                }
+                else {
+                    window.alert("Invalid Account to Rename.");
+                    return;
+                }                                                          
+            }
+        }     
+    }
+
+    sumBalance() {
+        const holder = this.state.user;
+        const list = this.state.list;
+
+        if (holder.accounts.length > 0) {
+            this.renderList(list, "Total Balance: $" + holder.sum_balance());
+        }
+
+        // Maintain Page State
+        this.setState({list: list});         
+    }
+
+    maxBalance() {
+        const holder = this.state.user;
+        const list = this.state.list;
+
+        if (holder.accounts.length > 0) {
+            this.renderList(list, "Max Balance: $" + holder.max_balance());
+        }
+
+        // Maintain Page State
+        this.setState({list: list}); 
+    } 
+    
+    minBalance() {
+        const holder = this.state.user;
+        const list = this.state.list;
+
+        if (holder.accounts.length > 0) {
+            this.renderList(list, "Min Balance: $" + holder.min_balance());
+        }
+
+        // Maintain Page State
+        this.setState({list: list}); 
+    }
+    
+    deposit() {
+        const holder = this.state.user;
+        const currentAccount = this.state.currentAccount;
+        const list = this.state.list;   
+        let cards = [];        
+
+        if(currentAccount !== "None"){
                 
-    //                 // Maintain Page State
-    //                 page_state["currentAccount"] = className;
+            let index = holder.return_index(currentAccount);
+            holder.accounts[index].deposit(this.state.inputAmt);
+            if (holder.accounts.length > 0) {
+                this.renderList(list, "Deposit: $" + this.state.inputAmt);
+            }
 
-    //                 // Save State to the Server
-    //                 NET.putData(url, page_state);                        
+            for (let i=0; i<holder.accounts.length; i++) {                        
+                this.addCard(cards, holder.accounts[i].accountName, "Balance: $" + holder.accounts[i].startingBalance);
+            }
 
-    //                 // Refresh page
-    //                 this.elements["control"].updateLabel(className);
-    //                 this.elements["display"].eraseList();
-    //                 this.elements["cards"].updateAll(page_state["user"].accounts); 
-    //                 return;
-    //             }
-    //             else {
-    //                 window.alert("Invalid Account to Rename.");
-    //                 return;
-    //             }                                                          
-    //         }
-    //     }     
-    // }
+            // Maintain Page State
+            this.setState({
+                list: list,
+                card: cards,
+                inputAmt: 0,
+            }); 
 
-    // sumBalance() {
-    //     if (page_state["user"].accounts.length > 0) {
+            // Save State to the Server
+            // NET.putData(url, page_state);
+        }      
+    }
 
-    //         this.elements["display"].generateList("Total Balance: $", page_state["user"].sum_balance());
-    //         return;     
-    //     }
-    // }
+    withdraw() {
+        const holder = this.state.user;
+        const currentAccount = this.state.currentAccount;
+        const list = this.state.list;   
+        let cards = [];        
 
-    // maxBalance() {
-    //     if (page_state["user"].accounts.length > 0) {
-
-    //         this.elements["display"].generateList("Max Balance: $", page_state["user"].max_balance());
-    //         return;     
-    //     }
-    // } 
-    
-    // minBalance() {
-    //     if (page_state["user"].accounts.length > 0) {
-
-    //         this.elements["display"].generateList("Min Balance: $", page_state["user"].min_balance());
-    //         return;     
-    //     }
-    // }
-    
-    // deposit() {
-
-    //     if(page_state["currentAccount"] !== "None"){
+        if(currentAccount !== "None"){
                 
-    //         let index = page_state["user"].return_index(page_state["currentAccount"]);
-    //         page_state["user"].accounts[index].deposit(this.elements["control"].inputObj.value);
-    //         this.elements["display"].generateList("Deposit: $", this.elements["control"].inputObj.value);            
-    //         this.elements["control"].inputObj.value = 0;
+            let index = holder.return_index(currentAccount);
+            holder.accounts[index].withdraw(this.state.inputAmt);
+            if (holder.accounts.length > 0) {
+                this.renderList(list, "Withdraw: $" + this.state.inputAmt);
+            }
 
-    //         this.elements["cards"].updateOne(page_state["currentAccount"],page_state["user"].accounts[index].balance());
+            for (let i=0; i<holder.accounts.length; i++) {                        
+                this.addCard(cards, holder.accounts[i].accountName, "Balance: $" + holder.accounts[i].startingBalance);
+            }
 
-    //         // Save State to the Server
-    //         NET.putData(url, page_state);
-    //     }      
-    // }
+            // Maintain Page State
+            this.setState({
+                list: list,
+                card: cards,
+                inputAmt: 0,
+            }); 
 
-    // withdraw() {
-    //     if(page_state["currentAccount"] !== "None"){
+            // Save State to the Server
+            // NET.putData(url, page_state);
+        }                 
+    }
+    
+    balance() {
+        const holder = this.state.user;
+        const currentAccount = this.state.currentAccount;
+        const list = this.state.list;   
+
+        if(currentAccount !== "None"){
                 
-    //         let index = page_state["user"].return_index(page_state["currentAccount"]);
-    //         page_state["user"].accounts[index].withdraw(this.elements["control"].inputObj.value);
-    //         this.elements["display"].generateList("Withdraw: $", this.elements["control"].inputObj.value);            
-    //         this.elements["control"].inputObj.value = 0;
+            let index = holder.return_index(currentAccount);
+            this.renderList(list, "Balance: $" + holder.accounts[index].balance());
 
-    //         this.elements["cards"].updateOne(page_state["currentAccount"],page_state["user"].accounts[index].balance());
-
-    //         // Save State to the Server
-    //         NET.putData(url, page_state);
-    //     }                 
-    // }
-    
-    // balance() {
-    //     if(page_state["currentAccount"] !== "None"){                
-    //         let index = page_state["user"].return_index(page_state["currentAccount"]);
-    //         this.elements["display"].generateList("Balance: $", page_state["user"].accounts[index].balance());            
-    //     }             
-    // }
-    
-    // updateCardSel(sel) {
-    //     page_state["currentAccount"] = sel;
-    //     this.elements["control"].updateLabel(sel);
-    // }
+            // Maintain Page State
+            this.setState({
+                list: list,
+            });       
+        }       
+    }
 }
 
-export default { Bank };
+export default Bank;

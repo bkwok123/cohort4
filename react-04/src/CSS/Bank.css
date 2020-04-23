@@ -1,0 +1,161 @@
+/***********************************************************************
+ *  Main Controller
+ **********************************************************************/
+ .container {
+    /*show heigh: auto*/
+    height: 60vmin; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.panel{
+    display: grid;
+    grid-template-columns: minmax(70px, 1fr);
+    justify-content: center;
+    justify-items: center;
+    padding: 0.5% 0%;
+    width: 50%;
+    height: 65%;
+    font-size: 80%;
+}
+
+.panel > label {
+    height: max-content;
+}
+
+@media only screen and (max-width: 700px) {
+    .panel{
+        display: grid;
+        grid-template-columns: 1;
+        justify-content: center;
+        padding: 0px;
+        width: 50%;
+        height: 50%;
+        font-size: 50%;
+    }
+}
+
+@media only screen and (max-height: 800px) {
+    .panel{
+        display: grid;
+        grid-template-columns: 1;
+        justify-content: center;
+        padding: 0px;
+        width: 60%;
+        height: 60%;
+        font-size: 60%;
+    }
+}
+
+.panel > ul{
+    list-style: none;
+    margin: 0px;
+}
+
+.subpanel{
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(70px, 1fr));
+    justify-content: center;
+    width: 100%;
+    padding: 1%;
+}
+
+.subpanel > button {
+    width: auto;
+    height: auto;
+    font-size: 0.7em;    
+    margin: 1%;
+}
+
+.subpanel > p {
+    margin: 0em;
+    padding: 0em;
+    text-align: center;
+    font-size: 1em;
+}
+
+.subpanel > input {
+    width: auto;
+    height: auto;
+    max-height: min-content;
+    font-size: 0.7em;
+    padding-left: 5%;
+}
+
+.acctbtn {
+    width: auto;
+    font-size: 1em;
+    border-radius: 0.3em;
+    background-color: silver;
+    transition: all 0.3s linear;
+}
+
+.acctbtn:hover {
+    -webkit-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
+    -moz-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
+    -o-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
+    box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
+    border-style: solid;
+    border-color: red;
+}
+
+.acctinput{
+    text-align: left;
+    padding: 0.5em 0em;
+    border-radius: 0.5em;
+}
+
+.acctinput:hover{
+    border-style: solid;
+    border-color: red;
+}
+
+.accctdisplay{
+    font-size: 90%;
+}
+
+/***********************************************************************
+ *  Grid Panel
+ **********************************************************************/
+.grid-wrapper {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    grid-gap: 20px;
+    height: min-content;
+}
+
+.box {
+    background-color: #444;
+    padding: 10px;
+    margin: 20px;
+    font-size: 50%;
+    text-align: center;
+}
+
+.box:hover{
+    border-style: solid;
+    border-color: red;
+}
+
+.box > ul {
+    list-style: none;
+    padding: 0px;
+}
+
+/***********************************************************************
+ *  Green Background
+ **********************************************************************/
+ .green {
+    background: #56B870; /* Old browsers */
+    background: linear-gradient(to bottom, #56B870 0%,#a5c956 100%); /* W3C */
+}
+
+/***********************************************************************
+ *  Yellow Background
+ **********************************************************************/
+ .yellow {
+    background: #F3AAAA; /* Old browsers */
+    background: linear-gradient(to bottom, #F3AAAA 0%,#febf04 100%); /* W3C */
+}

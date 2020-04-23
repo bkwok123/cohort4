@@ -4,6 +4,7 @@ import '../CSS/Header.css';
 import himg from "../images/logo.svg";
 import bimg from "../images/bank.png";
 import cimg from "../images/community.png";
+import timg from "../images/ttt.svg";
 
 class NavHeader extends React.Component {
 
@@ -34,56 +35,12 @@ class NavFooter extends React.Component {
         return (
             <footer className="zone yellow bottom-nav stickyb">
                 <div>
-                <input type="image" src={himg} alt="Home" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
+                    <input type="image" src={himg} alt="Home" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
                     <input type="image" src={bimg} alt="Banking" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
                     <input type="image" src={cimg} alt="Demographic" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
+                    <input type="image" src={timg} alt="Tic Tac Toe" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
                 </div>
             </footer>
-        );
-    }
-}
-
-class DisplayPanel extends React.Component {
-
-    renderItem() {        
-        const msg = this.props.msg;
-        const list = msg.map((item, i) => {
-
-            return (
-                <li>{item}</li>
-            );
-          });
-
-        return list;        
-    }
-
-    // eraseList() {
-    //     utility.eraseitems (this.updateObj["list"]);
-    // }   
-
-    // generateList(message, qty) {
-    //     const list = this.updateObj["list"];
-    //     const linode = document.createElement("li");
-    //     const textnode = document.createTextNode(message + qty);
-
-    //     let count = list.childElementCount;
-
-    //     // keep display log to a fixed number of items        
-    //     if(count === 5){
-    //         list.removeChild(list.firstElementChild);
-    //     }
-        
-    //     // Add new log item
-    //     linode.appendChild(textnode);
-    //     list.appendChild(linode);        
-    // }     
-
-    render() {
-        return (
-            <div class="panel green">
-                <label id="activity_label" class="highlight"></label>      
-                <ul id="activitylist" class="accctdisplay"></ul>
-            </div>
         );
     }
 }

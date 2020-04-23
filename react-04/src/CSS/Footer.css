@@ -88,5 +88,5 @@ footer {
  **********************************************************************/
 .yellow {
     background: #F3AAAA; /* Old browsers */
-    background: linear-gradient(to top, #F3AAAA 0%,#febf04 100%); /* W3C */
+    background: linear-gradient(to bottom, #F3AAAA 0%,#febf04 100%); /* W3C */
 }
