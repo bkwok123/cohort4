@@ -10,18 +10,37 @@
 
 .square {
   background: #fff;
-  border: 1px solid #999;
+  border: 2px solid #999;
   float: left;
-  font-size: 24px;
+  font-size: 2em;
   font-weight: bold;
-  line-height: 34px;
-  height: 34px;
+  line-height: 3.5em;
+  height: 3.5em;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 3.5em;
 }
+
+@media only screen and (max-width: 700px) {
+  .square {
+    font-size: 0.7em;
+    line-height: 2em;
+    height: 4em;
+    width: 4em;
+  }
+}
+
+@media only screen and (max-height: 800px) {
+  .square {
+    font-size: 0.7em;
+    line-height: 2em;
+    height: 4em;
+    width: 4em;
+  }
+}
+
 
 .square:focus {
   outline: none;
@@ -33,16 +52,34 @@
 
 .game {
   display: grid;
-  grid-template-columns: repeat(2, minmax(200px, auto));
-  grid-auto-rows: minmax(8vh, auto);
+  grid-template-columns: repeat(2, minmax(24em, auto));
+  grid-template-rows: 4em 16em;
   grid-template-areas: "option ."
                        "board info";                
   justify-content: center;
-  margin: 10vh;
+  margin: 20vh 0 0 0;
+  width: 100%;
+  height: 50vh;  
 }
 
+@media only screen and (max-width: 700px) {
+  .game {
+    grid-template-columns: repeat(2, minmax(12em, auto));
+    grid-template-rows: 4em 16em;
+  }
+}
+
+@media only screen and (max-height: 800px) {
+  .game {
+    grid-template-columns: repeat(2, minmax(12em, auto));
+    grid-template-rows: 4em 16em;
+  }
+}
+
+
 .game-option {
-  grid-area: option;     
+  grid-area: option;    
+  font-size: 1em; 
 }
 
 .game-board {
@@ -52,9 +89,22 @@
 .game-info {
   grid-area: info;
   justify-self: start;
+  font-size: 1em;
 }
 
 .game-info > ol {
   padding: 0px;
   margin: 0px;
+}
+
+@media only screen and (max-width: 700px) {
+  .game-info {
+    font-size: 0.5em;
+  }
+}
+
+@media only screen and (max-height: 800px) {
+  .game-info {
+    font-size: 0.5em;
+  }
 }
