@@ -1,8 +1,9 @@
 import React from 'react';
-import DOM from '../components/domelement';
-import Bank from './bank';
-import Game from './Game';
 import Home from '../components/Home';
+import DOM from '../components/pagenav';
+import Bank from './bank';
+import Place from './location';
+import Game from './Game';
 
 class AppsController extends React.Component {
 
@@ -24,7 +25,7 @@ class AppsController extends React.Component {
                 app = <Bank />;
                 break;
             case "Demographic":
-                app = <Game />;
+                app = <Place />;
                 break;
             case "Tic Tac Toe":
                 app = <Game />;

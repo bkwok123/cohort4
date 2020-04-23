@@ -9,7 +9,6 @@
     justify-content: center;
 }
 
-
 .panel{
     display: grid;
     grid-template-columns: minmax(70px, 1fr);
