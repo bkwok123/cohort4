@@ -129,7 +129,7 @@ class LinkedList {
         let total = 0;
 
         while (current !== null) {
-            total = total + current.amount;
+            total = total + Number(current.amount);
             current = current.forwardNode;
         }        
 

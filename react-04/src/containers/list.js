@@ -4,11 +4,10 @@ import LL from '../scripts/linkedlist';
 import '../CSS/List.css';
 
 function List() {
-  // Declare a new state variable, which we'll call "count"
   const [list, setList] = useState(new LL.LinkedList());
   const[train, setTrain] = useState([]);
   const [amount, setAmount] = useState(0);  
-  const [subject, setSubject] = useState("");  
+  const [subject, setSubject] = useState("Coal");  
   const [size, setSize] = useState(0);  
   const [capMsg, setCapMsg] = useState("");  
   const [display, setDisplay] = useState("");
@@ -59,8 +58,9 @@ function List() {
       setSize(list.size);           
     }
 
-    if (list.size === 20) {      
-      setCapMsg("MAX capacity is reached!!!");
+    if (list.size === 20) {            
+      setCapMsg(<span><br></br><span style={{color: 'red'}}>MAX</span> capacity is reached!!!</span>);
+      
     }    
   }
 
@@ -76,7 +76,9 @@ function List() {
 
   function showHandler() {
     if (list.size > 0) {
-      setDisplay(`Current subject: ${list.show().subject} Current amount: ${list.show().amount}`);    
+      
+      // setDisplay(`Current Payload: ${list.show().subject} Current Quantity: ${list.show().amount}`);    
+      setDisplay(<span>Current Payload: {list.show().subject}<br></br>Current Quantity: {list.show().amount}</span>);
     }
   }
 
@@ -115,39 +117,40 @@ function List() {
   }
   
   return (
-    <div className="list">
-      <p>Train Size: {size}   {capMsg}</p>     
+    <div className="list">          
       <div className="llMonitor">
-        <button onClick={() => addHandler()}>
+        <p className="llmp1">Train Size: {size}   {capMsg}</p> 
+        <button className="llmbtn llmB1" onClick={() => addHandler()}>
           Insert
         </button>
-        <button onClick={() => deleteHandler()}>
+        <button className="llmbtn llmB2" onClick={() => deleteHandler()}>
           Delete
         </button>
-        <button onClick={() => showHandler()}>
+        <button className="llmbtn llmB3" onClick={() => showHandler()}>
           Show
         </button>
-        <button onClick={() => firstHandler()}>
+        <button className="llmbtn llmB4" onClick={() => showtotalHandler()}>
+          Show Total
+        </button>            
+        <button className="llmbtn llmB5" onClick={() => firstHandler()}>
           First
         </button>
-        <button onClick={() => lastHandler()}>
+        <button className="llmbtn llmB6" onClick={() => lastHandler()}>
           Last
         </button>
-        <button onClick={() => nextHandler()}>
+        <button className="llmbtn llmB7" onClick={() => nextHandler()}>
           Next
         </button>
-        <button onClick={() => previousHandler()}>
+        <button className="llmbtn llmB8" onClick={() => previousHandler()}>
           Previous
         </button>
-        <button onClick={() => showtotalHandler()}>
-          Show Total
-        </button>                                        
+                                    
 
-        <p>Subject:</p>
-        <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)}></input>
-        <p>Amount:</p>
-        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)}></input>
-          <p>{display}</p>
+        <p className="llmp2">Payload:</p>
+        <input className="llmInp llmIn1" type="text" value={subject} onChange={(e) => setSubject(e.target.value)}></input>
+        <p className="llmp3"> Quantity:</p>
+        <input className="llmInp llmIn2" type="number" value={amount} onChange={(e) => setAmount(e.target.value)}></input>
+        <p className="llmp4">{display}</p>
       </div>
       <div className="linkedlist">
         {train}

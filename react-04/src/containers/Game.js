@@ -127,21 +127,23 @@ class Game extends React.Component {
       const clear = <button className='game-ctl' onClick={() => this.clearGame()}>Clear Game</button>;
 
       return (
-        <div className="game">    
-          <div className="game-option">
-            <div>{switchAI} {difficulty}</div>
-            <div>{clear}</div>            
-          </div>          
-          <div className="game-board">                 
-            <Board
-              squares={current.squares}
-              onClick={(i) => this.handleClick(i)}
-            />
-          </div>          
-          <div className="game-info">            
-              <div>{status}</div>
-              <ol>{moves}</ol>            
-          </div>          
+        <div className="game">
+          <div className="game-content">    
+            <div className="game-option">
+              <div>{switchAI} {difficulty}</div>
+              <div>{clear}</div>            
+            </div>          
+            <div className="game-board">                 
+              <Board
+                squares={current.squares}
+                onClick={(i) => this.handleClick(i)}
+              />
+            </div>          
+            <div className="game-info">            
+                <div>{status}</div>
+                <ol>{moves}</ol>            
+            </div>          
+          </div>
         </div>
       );
     }
