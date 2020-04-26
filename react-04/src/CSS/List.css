@@ -1,0 +1,61 @@
+.list {             
+  display: flex;
+  flex-direction: column;               
+  justify-content: center;
+  align-items: center;
+
+  padding: 0% 0 0 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #282c34; 
+}
+
+.llMonitor {
+  padding: 5vh
+}
+
+.linkedlist {             
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;               
+  justify-content: center;
+  align-items: center;
+
+  width: 90%;
+}
+
+.node {
+  display: flex;
+  flex-direction: column;     
+  background-color: #cccccc;
+  justify-content: center;
+  align-items: center;  
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  width: 4vw;
+  height: 8vw;
+  font-size: 0.7vw;  
+}
+
+.node > p{
+  margin: 0;
+}
+
+/* .node:hover {
+  border-width: 2px;
+  border-style: solid;
+  border-color: red;
+} */
+
+.redborder {
+  border-width: 2px;
+  border-style: solid;
+  border-color: red;
+}
+
+.train {
+  width: 5vw;
+  height: 5vw;
+}
+

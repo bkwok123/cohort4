@@ -28,23 +28,18 @@ export default class City {
         switch(true) {
             case this.population > 100000:
                 return "City";
-            break; 
 
             case (20000 < this.population) && (this.population <= 100000):
                 return "Large town";
-            break;
 
             case (1000 < this.population) && (this.population <= 20000):
                 return "Town";
-            break;
 
             case (100 < this.population) && (this.population <= 1000):
                 return "Village";
-            break;
 
             case this.population <= 100:
                 return "Hamlet";
-            break;            
 
             default:
         }
