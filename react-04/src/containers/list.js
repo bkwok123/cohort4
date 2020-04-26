@@ -4,217 +4,155 @@ import LL from '../scripts/linkedlist';
 import '../CSS/List.css';
 
 function List() {
-  // Declare a new state variable, which we'll call "count"
   const [list, setList] = useState(new LL.LinkedList());
   const[train, setTrain] = useState([]);
-  const[trainIdx, setTrainIdx] = useState(-1);
   const [amount, setAmount] = useState(0);  
-  const [subject, setSubject] = useState("");  
+  const [subject, setSubject] = useState("Coal");  
   const [size, setSize] = useState(0);  
   const [capMsg, setCapMsg] = useState("");  
+  const [display, setDisplay] = useState("");
 
+  function renderTrain(){
 
-  function addTrain() {
-
-    switch (true) {
-      case list.size === 1:
-        train.push(<Node.NodeHead subject={subject} amount={amount} nodecss="node redborder"/>);
-        setTrain(train);
-        break;
-      case list.size < 20:
-        if(trainIdx === (list.size-2)) {  // new cart is last train cart
-          const p = train[trainIdx].props;
-          if (trainIdx === 0) {         // current cart is head train cart            
-            train[0]=<Node.NodeHead subject={p.subject} amount={p.amount} nodecss="node"/>;          
-          }
-          else {                        
-            train[trainIdx]=<Node.Node subject={p.subject} amount={p.amount} nodecss="node"/>;          
-          }
-
-          // update previous last cart image with middle cart image          
-          train.push(<Node.NodeTail subject={subject} amount={amount} nodecss="node redborder"/>);               
+    const newtrain = [];
+    let current = list.head;
+    let i=0;
+    while(current != null) {
+      if (current===list.current) {
+        switch (true) {
+          case i===0:
+            newtrain[0]=<Node.NodeHead subject={current.subject} amount={current.amount} nodecss="node redborder"/>;
+            break;
+          case i===list.size-1:
+            newtrain[i]=<Node.NodeTail subject={current.subject} amount={current.amount} nodecss="node redborder"/>;
+            break;
+          default:
+            newtrain[i]=<Node.Node subject={current.subject} amount={current.amount} nodecss="node redborder"/>;
         }
-        else {                          // new cart is middle train cart
-          const p = train[trainIdx].props;
-          train.push(<Node.Node subject={subject} amount={amount} nodecss="node redborder"/>);                          
-        }    
-        setTrain(train);
-        break;
-      case list.size === 20:
-        const p = train[trainIdx].props;
-        train[trainIdx]=<Node.Node subject={p.subject} amount={p.amount} nodecss="node"/>;          
-        train.push(<Node.NodeTail subject={subject} amount={amount} nodecss="node redborder"/>);
-        setCapMsg("Reach MAX capacity!!!");
-        break;
-      default:
-    }    
-  }
-
-  function deleteTrain() {
-    
-    // replace the last node with NodeTail
-    if (list.size > 1) {      
-      const p = train[list.size-1].props;
-
-      if (trainIdx === list.size) {   // Current node to be deleted is the last node
-        // Assign the predecessor of the current node as the new current node
-        train[trainIdx-1]=<Node.NodeTail subject={p.subject} amount={p.amount} nodecss="node redborder"/>;      
       }
       else {
-        train[trainIdx-1]=<Node.Node subject={p.subject} amount={p.amount} nodecss="node redborder"/>;      
+        switch (true) {
+          case i===0:
+            newtrain[0]=<Node.NodeHead subject={current.subject} amount={current.amount} nodecss="node"/>;
+            break;
+          case i===list.size-1:
+            newtrain[i]=<Node.NodeTail subject={current.subject} amount={current.amount} nodecss="node"/>;
+            break;
+          default:
+            newtrain[i]=<Node.Node subject={current.subject} amount={current.amount} nodecss="node"/>;
+        }        
       }
-    }
-    else {  // Only one node remaining
-      const p = train[trainIdx].props;
-      train[trainIdx-1]=<Node.NodeHead subject={p.subject} amount={p.amount} nodecss="node redborder"/>;      
-    }
 
-    train[trainIdx]="";
-    setTrain(train.filter(el => el !== ""));
-    setCapMsg("");    
-  }    
-  
+      current = current.forwardNode;
+      i++;
+    }
+    
+    setTrain(newtrain);
+  }
 
   function addHandler() {
-    if (list.size < 20) {
+    if (list.size < 20) {      
       list.insert(subject,amount);
-      addTrain();
+      renderTrain();
 
-      setSize(list.size);
-      setTrainIdx(trainIdx+1)      
+      setSize(list.size);           
+    }
+
+    if (list.size === 20) {            
+      setCapMsg(<span><br></br><span style={{color: 'red'}}>MAX</span> capacity is reached!!!</span>);
+      
     }    
   }
 
   function deleteHandler() {
     if (list.size > 0) {
       list.delete();
-      deleteTrain(); 
+      renderTrain(); 
 
-      setSize(list.size);
-      setTrainIdx(trainIdx-1);      
+      setSize(list.size);      
     }    
+    setCapMsg("");
   }
 
   function showHandler() {
-    
-  }
-
-  function resetTrainBorder() {
-    const p = train[trainIdx].props;
-    switch (true) {
-      case trainIdx === 0:
-        train[trainIdx]=<Node.NodeHead subject={p.subject} amount={p.amount} nodecss="node"/>; 
-        break;
-      case trainIdx === list.size-1:
-        train[trainIdx]=<Node.NodeTail subject={p.subject} amount={p.amount} nodecss="node"/>; 
-        break;
-      default:
-        train[trainIdx]=<Node.Node subject={p.subject} amount={p.amount} nodecss="node"/>; 
-        break;                    
+    if (list.size > 0) {
+      
+      // setDisplay(`Current Payload: ${list.show().subject} Current Quantity: ${list.show().amount}`);    
+      setDisplay(<span>Current Payload: {list.show().subject}<br></br>Current Quantity: {list.show().amount}</span>);
     }
   }
 
   function firstHandler() {
 
     if(list.size > 0) {
-      resetTrainBorder();
-    
-      const p = train[0].props;
-      train[0]=<Node.NodeHead subject={p.subject} amount={p.amount} nodecss="node redborder"/>; 
+      
       list.first();
-      setTrainIdx(0);
+      renderTrain();
     }
   }
 
   function lastHandler() {
 
     if(list.size > 0) {
-      resetTrainBorder();
-
       list.last();
-      const p = train[list.size-1].props;
-      train[list.size-1]=<Node.NodeTail subject={p.subject} amount={p.amount} nodecss="node redborder"/>;     
-      setTrainIdx(list.size-1);
+      renderTrain(); 
     }
   }
 
   function nextHandler() {
-    if((list.size > 0) && (trainIdx < list.size-1)) {
-      resetTrainBorder();
-    
-      const p = train[trainIdx+1].props;
-      if (trainIdx===list.size-2) {
-        train[trainIdx+1]=<Node.NodeTail subject={p.subject} amount={p.amount} nodecss="node redborder"/>; 
-      }
-      else {
-        train[trainIdx+1]=<Node.Node subject={p.subject} amount={p.amount} nodecss="node redborder"/>; 
-      }
       
       list.next();
-      setTrainIdx(trainIdx+1);
-    }    
+      renderTrain(); 
   }
   
-  function previousHandler() {
-    if((list.size > 0) && (trainIdx > 0)) {
-      resetTrainBorder();
-    
-      const p = train[trainIdx-1].props;
-      if (trainIdx===1) {
-        train[trainIdx-1]=<Node.NodeHead subject={p.subject} amount={p.amount} nodecss="node redborder"/>; 
-      }
-      else {
-        train[trainIdx-1]=<Node.Node subject={p.subject} amount={p.amount} nodecss="node redborder"/>; 
-      }
-      
+  function previousHandler() {      
       list.previous();
-      setTrainIdx(trainIdx-1);
-    }     
+      renderTrain();
   }
   
   function showtotalHandler() {
-    
+    if (list.size > 0) {
+      setDisplay(`Total: ${list.showtotal()}`);    
+    }
   }
   
   return (
-    <div className="list">
-      <p>Train Size: {size}   {capMsg}</p>
-      <p>Train Inx: {trainIdx}</p>      
+    <div className="list">          
       <div className="llMonitor">
-        <button onClick={() => addHandler()}>
+        <p className="llmp1">Train Size: {size}   {capMsg}</p> 
+        <button className="llmbtn llmB1" onClick={() => addHandler()}>
           Insert
         </button>
-        <button onClick={() => deleteHandler()}>
+        <button className="llmbtn llmB2" onClick={() => deleteHandler()}>
           Delete
         </button>
-        <button onClick={() => showHandler()}>
+        <button className="llmbtn llmB3" onClick={() => showHandler()}>
           Show
         </button>
-        <button onClick={() => firstHandler()}>
+        <button className="llmbtn llmB4" onClick={() => showtotalHandler()}>
+          Show Total
+        </button>            
+        <button className="llmbtn llmB5" onClick={() => firstHandler()}>
           First
         </button>
-        <button onClick={() => lastHandler()}>
+        <button className="llmbtn llmB6" onClick={() => lastHandler()}>
           Last
         </button>
-        <button onClick={() => nextHandler()}>
+        <button className="llmbtn llmB7" onClick={() => nextHandler()}>
           Next
         </button>
-        <button onClick={() => previousHandler()}>
+        <button className="llmbtn llmB8" onClick={() => previousHandler()}>
           Previous
         </button>
-        <button onClick={() => showtotalHandler()}>
-          Show Total
-        </button>                                        
+                                    
 
-        <p>Subject:</p>
-        <input type="text" value={subject} onChange={(e) => setSubject(e.target.value)}></input>
-        <p>Amount:</p>
-        <input type="number" value={amount} onChange={(e) => setAmount(e.target.value)}></input>        
+        <p className="llmp2">Payload:</p>
+        <input className="llmInp llmIn1" type="text" value={subject} onChange={(e) => setSubject(e.target.value)}></input>
+        <p className="llmp3"> Quantity:</p>
+        <input className="llmInp llmIn2" type="number" value={amount} onChange={(e) => setAmount(e.target.value)}></input>
+        <p className="llmp4">{display}</p>
       </div>
       <div className="linkedlist">
-        {/* <Node.NodeHead />
-        <Node.Node />
-        <Node.NodeTail /> */}
         {train}
       </div>
     </div>

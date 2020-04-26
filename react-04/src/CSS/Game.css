@@ -1,3 +1,16 @@
+.game {
+  display: flex;
+  flex-direction: row;               
+  justify-content: center;
+  align-items: center;
+  justify-content: center;
+
+  padding: 0% 0 0 0;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #282c34;
+}
+
 .board-row:after {
   clear: both;
   content: "";
@@ -12,36 +25,18 @@
   background: #fff;
   border: 2px solid #999;
   float: left;
-  font-size: 2em;
+  font-size: 8vmin;
   font-weight: bold;
-  line-height: 3.5em;
-  height: 3.5em;
+  /* line-height: 34px; */
+  width: 10vmin;
+  height: 10vmin;
   margin-right: -1px;
   margin-top: -1px;  
   padding: 0;
-  text-align: center;
-  width: 3.5em;
+  text-align: center;  
   color: #61dafb;
   border-color: #61dafb;
   background-color: #344f85;  
-}
-
-@media only screen and (max-width: 700px) {
-  .square {
-    font-size: 0.7em;
-    line-height: 2em;
-    height: 4em;
-    width: 4em;
-  }
-}
-
-@media only screen and (max-height: 800px) {
-  .square {
-    font-size: 0.7em;
-    line-height: 2em;
-    height: 4em;
-    width: 4em;
-  }
 }
 
 .square:focus {
@@ -52,81 +47,44 @@
   background: #ddd;
 }
 
-.game {
+.game-content {
   display: grid;
-  grid-template-columns: repeat(2, minmax(24em, auto));
-  grid-template-rows: 8em 16em;
+  grid-template-columns: repeat(2, minmax(10vw, auto));
+  grid-template-rows: 4vw 8vw;
   grid-template-areas: "option ."
                        "board info";                
   justify-content: center;
-  padding: 15vh 0 0 0;
-  width: 100%;
-  min-height: 100vh;
-  background-color: #282c34;  
+  padding-bottom: 30vh;
 }
-
-@media only screen and (max-width: 700px) {
-  .game {
-    grid-template-columns: repeat(2, minmax(12em, auto));
-    grid-template-rows: 4em 16em;
-  }
-}
-
-@media only screen and (max-height: 800px) {
-  .game {
-    grid-template-columns: repeat(2, minmax(12em, auto));
-    grid-template-rows: 4em 16em;
-  }
-}
-
 
 .game-option {  
   grid-area: option;    
-  font-size: 1em; 
+  font-size: 1vw; 
 }
 
 .game-board {
-  grid-area: board;  
+  grid-area: board;
+  padding-top: 2vw;
+  padding-right: 2vw;  
 }
 
 .game-info {
   color: #61dafb;
   grid-area: info;
   justify-self: start;
-  font-size: 1.5em;
+  font-size: 1vw;
 }
 
 .game-info > ol {
   padding: 0px;
   margin: 0px;
+  list-style-type: none;
 }
 
 .game-ctl {
   background-color: #344f85;
-  margin: 0.1em;
-  border-radius: 0.3em;
-  font-size: 1.5em;
+  margin: 0.1vw;
+  border-radius: 0.1vw;
+  font-size: 1vw;
   color: #61dafb;
-}
-
-@media only screen and (max-width: 700px) {
-  .game-info {
-    font-size: 1em;
-  }
-
-  .game-ctl {
-    margin: 0.05em;
-    font-size: 1em;
-  }  
-}
-
-@media only screen and (max-height: 800px) {
-  .game-info {
-    font-size: 1em;
-  }
-
-  .game-ctl {
-    margin: 0.05em;
-    font-size: 1em;
-  }    
 }

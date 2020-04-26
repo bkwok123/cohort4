@@ -3,7 +3,7 @@ class ListNode {
         this.forwardNode = null;
         this.backwardNode = null;
         this.subject = subject;
-        this.amount = amount;
+        this.amount = amount;        
     }    
 }
 
@@ -37,7 +37,9 @@ class LinkedList {
     // Move to the next node
     next() {        
         if (this.current !== null) {
-            this.current = this.current.forwardNode;
+            if (this.current.forwardNode !== null) {
+                this.current = this.current.forwardNode;
+            }            
         }
         return this.current;
     }
@@ -45,7 +47,9 @@ class LinkedList {
     // Backup one node
     previous() {
         if (this.current !== null) {
-            this.current = this.current.backwardNode;
+            if (this.current.backwardNode !== null) {
+                this.current = this.current.backwardNode;
+            }            
         }
         return this.current;      
     }
@@ -125,7 +129,7 @@ class LinkedList {
         let total = 0;
 
         while (current !== null) {
-            total = total + current.amount;
+            total = total + Number(current.amount);
             current = current.forwardNode;
         }        
 
