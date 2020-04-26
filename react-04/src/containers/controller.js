@@ -4,6 +4,8 @@ import DOM from '../components/pagenav';
 import Bank from './bank';
 import Place from './location';
 import Game from './Game';
+import List from './list';
+import Linear from './linear';
 
 class AppsController extends React.Component {
 
@@ -29,7 +31,13 @@ class AppsController extends React.Component {
                 break;
             case "Tic Tac Toe":
                 app = <Game />;
-                break;                
+                break;
+            case "Linked List":
+                app = <List />;
+                break;
+            case "Stack and Queue":
+                app = <Linear />;
+                break;                                                   
         }
 
         this.setState({        

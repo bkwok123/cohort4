@@ -110,7 +110,7 @@ class Game extends React.Component {
 
         return (
           <li key={move}>
-            <button onClick={() => this.jumpTo(move)} disabled={this.state.AIon ? (move%2 === 0 ? on : off) : on}>{desc}</button>
+            <button className='game-ctl' onClick={() => this.jumpTo(move)} disabled={this.state.AIon ? (move%2 === 0 ? on : off) : on}>{desc}</button>
           </li>
         );
       });
@@ -122,9 +122,9 @@ class Game extends React.Component {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
       }
   
-      const difficulty = <button onClick={() => this.switchMode()}>{this.state.mode}</button>;
-      const switchAI = <button onClick={() => this.turnAIswitch()}>{this.state.AIon ? 'Single Player': 'Two Players'}</button>;
-      const clear = <button onClick={() => this.clearGame()}>Clear Game</button>;
+      const difficulty = <button className='game-ctl' onClick={() => this.switchMode()}>{this.state.mode}</button>;
+      const switchAI = <button className='game-ctl' onClick={() => this.turnAIswitch()}>{this.state.AIon ? 'Single Player': 'Two Players'}</button>;
+      const clear = <button className='game-ctl' onClick={() => this.clearGame()}>Clear Game</button>;
 
       return (
         <div className="game">    
@@ -162,7 +162,8 @@ class Game extends React.Component {
         break;
       case "Hard":        
         AImoveIndex = produceBestMove(squares, isPlayerX);
-        break;                  
+        break;
+      default:                  
     }    
 
     if (AImoveIndex > -1) {
