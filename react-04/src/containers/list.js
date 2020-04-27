@@ -21,25 +21,25 @@ function List() {
       if (current===list.current) {
         switch (true) {
           case i===0:
-            newtrain[0]=<Node.NodeHead subject={current.subject} amount={current.amount} nodecss="node redborder"/>;
+            newtrain[0]=<Node.NodeHead subject={current.subject} amount={current.amount} nodecss="node borderAct" trcss="trainimgAct"/>;
             break;
           case i===list.size-1:
-            newtrain[i]=<Node.NodeTail subject={current.subject} amount={current.amount} nodecss="node redborder"/>;
+            newtrain[i]=<Node.NodeTail subject={current.subject} amount={current.amount} nodecss="node borderAct" trcss="trainimgAct"/>;
             break;
           default:
-            newtrain[i]=<Node.Node subject={current.subject} amount={current.amount} nodecss="node redborder"/>;
+            newtrain[i]=<Node.Node subject={current.subject} amount={current.amount} nodecss="node borderAct" trcss="trainimgAct"/>;
         }
       }
       else {
         switch (true) {
           case i===0:
-            newtrain[0]=<Node.NodeHead subject={current.subject} amount={current.amount} nodecss="node"/>;
+            newtrain[0]=<Node.NodeHead subject={current.subject} amount={current.amount} nodecss="node"  trcss="trainimg"/>;
             break;
           case i===list.size-1:
-            newtrain[i]=<Node.NodeTail subject={current.subject} amount={current.amount} nodecss="node"/>;
+            newtrain[i]=<Node.NodeTail subject={current.subject} amount={current.amount} nodecss="node"  trcss="trainimg"/>;
             break;
           default:
-            newtrain[i]=<Node.Node subject={current.subject} amount={current.amount} nodecss="node"/>;
+            newtrain[i]=<Node.Node subject={current.subject} amount={current.amount} nodecss="node"  trcss="trainimg"/>;
         }        
       }
 
@@ -143,9 +143,7 @@ function List() {
         </button>
         <button className="llmbtn llmB8" onClick={() => previousHandler()}>
           Previous
-        </button>
-                                    
-
+        </button>                               
         <p className="llmp2">Payload:</p>
         <input className="llmInp llmIn1" type="text" value={subject} onChange={(e) => setSubject(e.target.value)}></input>
         <p className="llmp3"> Quantity:</p>

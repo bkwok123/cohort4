@@ -45,7 +45,8 @@ class Bank extends React.Component {
                 break;   
             case "Balance":
                 this.balance();
-                break;                                                                                                                                                      
+                break;  
+            default:                                                                                                                                                    
         }      
     }    
     

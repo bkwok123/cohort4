@@ -89,6 +89,7 @@
   height: 1vw;
   font-size: 0.8vw;
   color: yellow;
+  animation: fadeOut ease 8s;
 }
 
 .nstack {
@@ -102,5 +103,14 @@
 }
 
 .drop-in {
-  animation: dropIn 5s 0s cubic-bezier(.32,.96,.47,.95) forwards;
+  animation: dropIn 1s 0s cubic-bezier(.32,.96,.47,.95) forwards;
+}
+
+@keyframes dropIn{
+  from {
+      transform: translate(-30px, -100px)
+  }
+  to {
+      transform: translate((0px, 0px))
+  }
 }

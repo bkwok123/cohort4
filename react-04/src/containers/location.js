@@ -44,7 +44,8 @@ class Demographics extends React.Component {
                 break;   
             case "How Big":
                 this.howBig();
-                break;                                                                                                                                                      
+                break;      
+            default:                                                                                                                                                
         }      
     }    
     
@@ -162,7 +163,7 @@ class Demographics extends React.Component {
         const place = this.state.community;   
         let cards = this.state.card.slice(); 
 
-        if (currentCity == null || currentCity == "") {
+        if (currentCity === null || currentCity === "") {
 
             window.alert("Invalid Settlement to Remove.");
             return;     

@@ -37,7 +37,8 @@ class AppsController extends React.Component {
                 break;
             case "Stack and Queue":
                 app = <Linear />;
-                break;                                                   
+                break;   
+            default:                                                
         }
 
         this.setState({        
