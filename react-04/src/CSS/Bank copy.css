@@ -1,21 +1,12 @@
 /***********************************************************************
  *  Main Controller
  **********************************************************************/
- .Bank {
-    display: block;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
-    overflow-x: hidden;
-}
-
  .container {    
     height: 60vmin; 
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 100%;
-        
+    overflow-x: hidden;    
 }
 
 .panel{

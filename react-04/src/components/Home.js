@@ -1,5 +1,6 @@
 import React from 'react';
 import ThemeContext from '../context/ThemeContext';
+import { ReactSvgInjector, Mutate } from "react-svg-injector";
 import logo from '../images/logo.svg';
 import '../CSS/Home.css';
 
@@ -9,7 +10,11 @@ function App() {
   return (
     <div className={`App ${themeCSS.background}`}>
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+
+        <ReactSvgInjector src={logo} className="App-logo" alt="logo">
+          <Mutate selector="path" class={themeCSS.fill} />
+          <Mutate selector="circle" class={themeCSS.fill} />
+        </ReactSvgInjector>          
         <a
           className="App-link"
           href="https://reactjs.org"
