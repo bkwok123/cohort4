@@ -1,8 +1,12 @@
 import React from 'react';
+import ThemeContext from '../context/ThemeContext';
 import Board from '../components/Board';
 import '../CSS/Game.css';
+import '../CSS/Theme.css';
 
 class Game extends React.Component {
+
+    static contextType = ThemeContext;
 
     constructor(props) {
       super(props);
@@ -110,7 +114,7 @@ class Game extends React.Component {
 
         return (
           <li key={move}>
-            <button className='game-ctl' onClick={() => this.jumpTo(move)} disabled={this.state.AIon ? (move%2 === 0 ? on : off) : on}>{desc}</button>
+            <button className={`game-ctl ${this.context.btnBG}`} onClick={() => this.jumpTo(move)} disabled={this.state.AIon ? (move%2 === 0 ? on : off) : on}>{desc}</button>
           </li>
         );
       });
@@ -120,14 +124,14 @@ class Game extends React.Component {
         status = 'Winner: ' + winner;
       } else {
         status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-      }
-  
-      const difficulty = <button className='game-ctl' onClick={() => this.switchMode()}>{this.state.mode}</button>;
-      const switchAI = <button className='game-ctl' onClick={() => this.turnAIswitch()}>{this.state.AIon ? 'Single Player': 'Two Players'}</button>;
-      const clear = <button className='game-ctl' onClick={() => this.clearGame()}>Clear Game</button>;
+      }        
+
+      const difficulty = <button className={`game-ctl ${this.context.btnBG}`} onClick={() => this.switchMode()}>{this.state.mode}</button>;
+      const switchAI = <button className={`game-ctl ${this.context.btnBG}`} onClick={() => this.turnAIswitch()}>{this.state.AIon ? 'Single Player': 'Two Players'}</button>;
+      const clear = <button className={`game-ctl ${this.context.btnBG}`} onClick={() => this.clearGame()}>Clear Game</button>;
 
       return (
-        <div className="game">
+        <div className={`game ${this.context.background}`}>
           <div className="game-content">    
             <div className="game-option">
               <div>{switchAI} {difficulty}</div>
@@ -139,7 +143,7 @@ class Game extends React.Component {
                 onClick={(i) => this.handleClick(i)}
               />
             </div>          
-            <div className="game-info">            
+            <div className={`game-info ${this.context.background}`}>            
                 <div>{status}</div>
                 <ol>{moves}</ol>            
             </div>          

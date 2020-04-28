@@ -1,4 +1,5 @@
 import React from 'react';
+import ThemeContext, { themes }  from '../context/ThemeContext';
 import Home from '../components/Home';
 import DOM from '../components/pagenav';
 import Bank from './bank';
@@ -14,11 +15,19 @@ class AppsController extends React.Component {
         this.state = {
             activeApp: <Home />,
             activePage: "Home",
+            activeTheme: themes.dark,
         };
-      } 
+    } 
+
+    toggleTheme = () => {
+        this.setState({
+            activeTheme: this.state.activeTheme === themes.dark ? themes.light : themes.dark,
+        });        
+    }
 
     pageClick(e) {
         let app;
+        let page = e.target.alt;
         switch (e.target.alt) {
             case "Home":
                 app = <Home />;
@@ -37,12 +46,18 @@ class AppsController extends React.Component {
                 break;
             case "Stack and Queue":
                 app = <Linear />;
-                break;                                                   
+                break;
+            case "Settings":
+                app = this.state.activeApp;
+                page = this.state.activePage;
+                this.toggleTheme();
+                break;                   
+            default:                                                
         }
 
         this.setState({        
             activeApp: app,
-            activePage: e.target.alt,
+            activePage: page,
         });        
     }
 
@@ -51,9 +66,11 @@ class AppsController extends React.Component {
 
         return (
             <div>
-                <DOM.NavHeader applabel={this.state.activePage}/>                
-                {this.state.activeApp}            
-                <DOM.NavFooter on={switchon} onClick={(e) => this.pageClick(e)}/>
+                <ThemeContext.Provider value={this.state.activeTheme}>
+                    <DOM.NavHeader applabel={this.state.activePage}/>                
+                    {this.state.activeApp}            
+                    <DOM.NavFooter on={switchon} onClick={(e) => this.pageClick(e)}/>
+                </ThemeContext.Provider>
             </div>
         );
 

@@ -13,6 +13,7 @@ class Bank extends React.Component {
             list: [],
             card: [],
             inputAmt: 0,
+            key: 0,
         };
     }
 
@@ -45,7 +46,8 @@ class Bank extends React.Component {
                 break;   
             case "Balance":
                 this.balance();
-                break;                                                                                                                                                      
+                break;  
+            default:                                                                                                                                                    
         }      
     }    
     
@@ -107,11 +109,11 @@ class Bank extends React.Component {
         );
     }    
 
-    renderList(list, msg) {        
+    renderList(list, msg, key) {        
         if(list.length === 5) {
             list.shift();
         }        
-        list.push(<li>{msg}</li>);
+        list.push(<li key={`k${key}`}>{msg}</li>);        
 
         return list;        
     }
@@ -236,51 +238,55 @@ class Bank extends React.Component {
     sumBalance() {
         const holder = this.state.user;
         const list = this.state.list;
+        let key = this.state.key+1;
 
         if (holder.accounts.length > 0) {
-            this.renderList(list, "Total Balance: $" + holder.sum_balance());
+            this.renderList(list, "Total Balance: $" + holder.sum_balance(), key);
         }
 
         // Maintain Page State
-        this.setState({list: list});         
+        this.setState({list: list, key: key});         
     }
 
     maxBalance() {
         const holder = this.state.user;
         const list = this.state.list;
+        let key = this.state.key+1;
 
         if (holder.accounts.length > 0) {
-            this.renderList(list, "Max Balance: $" + holder.max_balance());
+            this.renderList(list, "Max Balance: $" + holder.max_balance(), key);
         }
 
         // Maintain Page State
-        this.setState({list: list}); 
+        this.setState({list: list, key: key}); 
     } 
     
     minBalance() {
         const holder = this.state.user;
         const list = this.state.list;
+        let key = this.state.key+1;
 
         if (holder.accounts.length > 0) {
-            this.renderList(list, "Min Balance: $" + holder.min_balance());
+            this.renderList(list, "Min Balance: $" + holder.min_balance(), key);
         }
 
         // Maintain Page State
-        this.setState({list: list}); 
+        this.setState({list: list, key: key}); 
     }
     
     deposit() {
         const holder = this.state.user;
         const currentAccount = this.state.currentAccount;
         const list = this.state.list;   
-        let cards = [];        
+        let cards = [];  
+        let key = this.state.key+1;      
 
         if(currentAccount !== "None"){
                 
             let index = holder.return_index(currentAccount);
             holder.accounts[index].deposit(this.state.inputAmt);
             if (holder.accounts.length > 0) {
-                this.renderList(list, "Deposit: $" + this.state.inputAmt);
+                this.renderList(list, "Deposit: $" + this.state.inputAmt, key);
             }
 
             for (let i=0; i<holder.accounts.length; i++) {                        
@@ -292,6 +298,7 @@ class Bank extends React.Component {
                 list: list,
                 card: cards,
                 inputAmt: 0,
+                key: key,
             }); 
 
             // Save State to the Server
@@ -303,14 +310,15 @@ class Bank extends React.Component {
         const holder = this.state.user;
         const currentAccount = this.state.currentAccount;
         const list = this.state.list;   
-        let cards = [];        
+        let cards = [];      
+        let key = this.state.key+1;  
 
         if(currentAccount !== "None"){
                 
             let index = holder.return_index(currentAccount);
             holder.accounts[index].withdraw(this.state.inputAmt);
             if (holder.accounts.length > 0) {
-                this.renderList(list, "Withdraw: $" + this.state.inputAmt);
+                this.renderList(list, "Withdraw: $" + this.state.inputAmt, key);
             }
 
             for (let i=0; i<holder.accounts.length; i++) {                        
@@ -322,6 +330,7 @@ class Bank extends React.Component {
                 list: list,
                 card: cards,
                 inputAmt: 0,
+                key: key,
             }); 
 
             // Save State to the Server
@@ -332,16 +341,18 @@ class Bank extends React.Component {
     balance() {
         const holder = this.state.user;
         const currentAccount = this.state.currentAccount;
-        const list = this.state.list;   
+        const list = this.state.list;
+        let key = this.state.key+1;
 
         if(currentAccount !== "None"){
                 
             let index = holder.return_index(currentAccount);
-            this.renderList(list, "Balance: $" + holder.accounts[index].balance());
+            this.renderList(list, "Balance: $" + holder.accounts[index].balance(), key);
 
             // Maintain Page State
             this.setState({
                 list: list,
+                key: key,
             });       
         }       
     }

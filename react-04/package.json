@@ -10,7 +10,8 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-native-input-prompt": "^1.0.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "3.4.1",
+    "react-svg-injector": "^2.0.2"
   },
   "scripts": {
     "start": "cross-env BROWSER=chrome react-scripts start",

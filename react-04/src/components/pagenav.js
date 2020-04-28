@@ -7,6 +7,7 @@ import cimg from "../images/community.svg";
 import timg from "../images/ttt.svg";
 import limg from "../images/link.svg";
 import simg from "../images/book.svg";
+import thimg from "../images/theme.svg";
 
 
 class NavHeader extends React.Component {
@@ -44,6 +45,7 @@ class NavFooter extends React.Component {
                     <input type="image" src={timg} alt="Tic Tac Toe" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
                     <input type="image" src={limg} alt="Linked List" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
                     <input type="image" src={simg} alt="Stack and Queue" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
+                    <input type="image" src={thimg} alt="Settings" className="navbox" disabled={this.props.on} onClick={this.props.onClick}></input>
                 </div>
             </footer>
         );

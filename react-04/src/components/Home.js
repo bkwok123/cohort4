@@ -1,10 +1,13 @@
 import React from 'react';
+import ThemeContext from '../context/ThemeContext';
 import logo from '../images/logo.svg';
 import '../CSS/Home.css';
 
 function App() {
+  const themeCSS = React.useContext(ThemeContext);
+
   return (
-    <div className="App">
+    <div className={`App ${themeCSS.background}`}>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <a
