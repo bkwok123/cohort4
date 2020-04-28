@@ -1,0 +1,103 @@
+/* ################################################################################
+ LIGHT Theme
+################################################################################ */
+.ThemeLightFG {
+    border-color: #420f49;
+    background-color: #a5a53c;
+    color: #420f49; 
+}
+
+.ThemeLightBG {
+    border-color: #420f49;
+    background-color: #e2e2bc;
+    color: #420f49; 
+}
+
+.ThemeLightBtnFG {
+    color: #420f49;
+    border-color: #420f49;    
+    background-color: #e2e2bc;
+}
+
+.ThemeLightBtnBG {
+    color: #420f49;
+    border-color: #420f49;    
+    background-color: #696907;
+}
+
+.ThemeLightBox {
+    border-color: #280331;
+    background-color: #e2e2bc;
+}
+
+.ThemeLightStack {
+    background-color: #807e23;
+    border-color: #accc6f;
+    color: rgb(50, 3, 56);
+}
+
+.ThemeLightNstack {
+    background: repeating-linear-gradient(
+        45deg,
+        #807e23,
+        #80a141 10px,
+        #4b5210 10px,
+        #6b741a 20px
+    );
+}
+
+.ThemeLightFill {
+    fill: #420f49;
+}
+
+/* ################################################################################
+ DARK Theme
+################################################################################ */
+.ThemeDarkFG {
+    border-color: #61dafb;
+    background-color: #395896; 
+    color: #61dafb;
+}
+
+.ThemeDarkBG {
+    border-color: #61dafb;
+    background-color: #282c34; 
+    color: #61dafb;
+}
+
+.ThemeDarkBtnFG {
+    color: #61dafb;
+    border-color: #61dafb;    
+    background-color: #282c34;
+}
+
+.ThemeDarkBtnBG {
+    color: #61dafb;
+    border-color: #61dafb;    
+    background-color: #344f85;
+}
+
+.ThemeDarkBox {
+    border-color: #73fb61;
+    background-color: #282c34;
+}
+
+.ThemeDarkStack {
+    background-color: #344f85;
+    border-color: #61dafb;
+    color: yellow;
+}
+
+.ThemeDarkNstack {
+    background: repeating-linear-gradient(
+        45deg,
+        #344f85,
+        #606dbc 10px,
+        #465298 10px,
+        #465298 20px
+    );
+}
+
+.ThemeDarkFill {
+    fill: #61dafb;
+}

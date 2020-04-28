@@ -12,6 +12,7 @@ class Demographics extends React.Component {
             list: [],
             card: [],
             inputAmt: 0,
+            key: 0,
         };
     }
 
@@ -107,11 +108,11 @@ class Demographics extends React.Component {
         );
     }    
 
-    renderList(list, msg) {        
+    renderList(list, msg, key) {        
         if(list.length === 5) {
             list.shift();
         }        
-        list.push(<li>{msg}</li>);
+        list.push(<li key={`k${key}`}>{msg}</li>);
 
         return list;        
     }
@@ -196,56 +197,61 @@ class Demographics extends React.Component {
         const currentCity = this.state.currentCity;        
         const place = this.state.community;       
         const list = this.state.list;   
-        
+        let key = this.state.key+1;
+
         if(currentCity !== "None"){
-            this.renderList(list, "In: " + place.whichSphere(currentCity));
+            this.renderList(list, "In: " + place.whichSphere(currentCity), key);
         }
 
         // Maintain Page State
-        this.setState({list: list});        
+        this.setState({list: list, key: key});        
     }
 
     sumPopulation() {
         const place = this.state.community;       
         const list = this.state.list;
+        let key = this.state.key+1;
 
         if (place.citys.length > 0) {
-            this.renderList(list, "Total Population: " + place.getPopulation());
+            this.renderList(list, "Total Population: " + place.getPopulation(), key);
         }
 
         // Maintain Page State
-        this.setState({list: list});        
+        this.setState({list: list, key: key});        
     }    
 
     showMostNorthern() {
         const place = this.state.community;       
         const list = this.state.list;
+        let key = this.state.key+1;
 
         if (place.citys.length > 0) {
-            this.renderList(list, "Most Northern Settlement: " + place.getMostNorthern());
+            this.renderList(list, "Most Northern Settlement: " + place.getMostNorthern(), key);
         }
 
         // Maintain Page State
-        this.setState({list: list});        
+        this.setState({list: list, key: key});        
     } 
 
     showMostSouthern() {
         const place = this.state.community;       
         const list = this.state.list;
+        let key = this.state.key+1;
 
         if (place.citys.length > 0) {
-            this.renderList(list, "Most Southern Settlement: " + place.getMostSouthern());
+            this.renderList(list, "Most Southern Settlement: " + place.getMostSouthern(), key);
         }
 
         // Maintain Page State
-        this.setState({list: list});        
+        this.setState({list: list, key: key});        
     }     
     
     movedIn() {
         const currentCity = this.state.currentCity;        
         const place = this.state.community;       
         const list = this.state.list;
-        let cards = [];   
+        let cards = [];  
+        let key = this.state.key+1; 
 
         if(currentCity !== "None"){
                 
@@ -253,7 +259,7 @@ class Demographics extends React.Component {
             place.citys[index].movedIn(this.state.inputAmt);
 
             if (place.citys.length > 0) {                                
-                this.renderList(list, "Moved In: " + this.state.inputAmt);
+                this.renderList(list, "Moved In: " + this.state.inputAmt, key);
             }
 
             for (let i=0; i<place.citys.length; i++) {                        
@@ -265,6 +271,7 @@ class Demographics extends React.Component {
                 list: list,
                 card: cards,
                 inputAmt: 0,
+                key: key,
              });       
 
             // Save State to the Server
@@ -276,7 +283,8 @@ class Demographics extends React.Component {
         const currentCity = this.state.currentCity;        
         const place = this.state.community;       
         const list = this.state.list;
-        let cards = [];   
+        let cards = [];
+        let key = this.state.key+1;   
 
         if(currentCity !== "None"){
                 
@@ -284,7 +292,7 @@ class Demographics extends React.Component {
             place.citys[index].movedOut(this.state.inputAmt);
 
             if (place.citys.length > 0) {                                
-                this.renderList(list, "Moved Out: " + this.state.inputAmt);
+                this.renderList(list, "Moved Out: " + this.state.inputAmt, key);
             }
 
             for (let i=0; i<place.citys.length; i++) {                        
@@ -296,6 +304,7 @@ class Demographics extends React.Component {
                 list: list,
                 card: cards,
                 inputAmt: 0,
+                key: key,
              });       
 
             // Save State to the Server
@@ -306,16 +315,18 @@ class Demographics extends React.Component {
     howBig() {
         const place = this.state.community; 
         const currentCity = this.state.currentCity;        
-        const list = this.state.list;   
+        const list = this.state.list;
+        let key = this.state.key+1;   
 
         if(currentCity !== "None"){
                 
             let index = place.return_index(currentCity);
-            this.renderList(list, "Classification: " + place.citys[index].howBig());
+            this.renderList(list, "Classification: " + place.citys[index].howBig(), key);
 
             // Maintain Page State
             this.setState({
                 list: list,
+                key: key,
             });       
         }       
     }

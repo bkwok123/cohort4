@@ -7,7 +7,6 @@
   padding: 0% 0 0 0;
   width: 100%;
   min-height: 100vh;
-  background-color: #282c34; 
 }
 
 .llMonitor {  
@@ -22,15 +21,27 @@
                        "b5 b8 b7 b6";    
   justify-content: center;
   align-items: center;
-  border: black;
   border-radius: 2vh;
-  background-color: #344f85;
-  color: #61dafb;
   width: 25vw;
   min-height: 10vh;   
   padding: 5vh;
   margin: 3vh;
 }
+
+.llmp1 {grid-area: p1;}
+.llmp2 {grid-area: p2;}
+.llmp3 {grid-area: p3;}
+.llmp4 {grid-area: p4;}
+.llmB1 {grid-area: b1;}
+.llmB2 {grid-area: b2;}
+.llmB3 {grid-area: b3;}
+.llmB4 {grid-area: b4;}
+.llmB5 {grid-area: b5;}
+.llmB6 {grid-area: b6;}
+.llmB7 {grid-area: b7;}
+.llmB8 {grid-area: b8;}
+.llmIn1 {grid-area: i1;}
+.llmIn2 {grid-area: i2;}
 
 .llMonitor > p {
   text-align: center;
@@ -40,10 +51,8 @@
 
 .llmbtn {    
   font-size: 1vw;
-  color: #61dafb;
   margin: 0.25vw;  
-  border-radius: 0.5vw;
-  background-color: #282c34;    
+  border-radius: 0.5vw; 
 }
 
 .llmInp {
@@ -51,68 +60,9 @@
   justify-self: center;
   font-size: 1vw;
   width: 8vw;
-  color: #61dafb;
   margin: 0.25vw;  
-  border-radius: 0.5vw;
-  background-color: #282c34;    
+  border-radius: 0.5vw;  
 }
-
-.llmp1 {
-  grid-area: p1;
-}
-
-.llmp2 {
-  grid-area: p2;
-}
-
-.llmp3 {
-  grid-area: p3;
-}
-
-.llmp4 {
-  grid-area: p4;
-}
-
-.llmB1 {
-  grid-area: b1;
-}
-
-.llmB2 {
-  grid-area: b2;
-}
-
-.llmB3 {
-  grid-area: b3;
-}
-
-.llmB4 {
-  grid-area: b4;
-}
-
-.llmB5 {
-  grid-area: b5;
-}
-
-.llmB6 {
-  grid-area: b6;
-}
-
-.llmB7 {
-  grid-area: b7;
-}
-
-.llmB8 {
-  grid-area: b8;
-}
-
-.llmIn1 {
-  grid-area: i1;
-}
-
-.llmIn2 {
-  grid-area: i2;
-}
-
 
 .linkedlist {             
   display: flex;
@@ -128,16 +78,13 @@
 .node {
   display: flex;
   flex-direction: column;     
-  background-color: #282c34;
   justify-content: center;
   align-items: center;  
   padding: 0;
   margin: 0;
-  cursor: pointer;
   width: 4vw;
   height: 8vw;
   font-size: 0.7vw;
-  color: #61dafb;    
 }
 
 .node > p{
@@ -154,10 +101,6 @@
 .train {
   width: 10vw;
   height: 4vw;  
-}
-
-.trainimg {  
-  fill: #61dafb;
 }
 
 .trainimgAct{
