@@ -13,47 +13,50 @@ function List() {
   const [size, setSize] = useState(0);  
   const [capMsg, setCapMsg] = useState("");  
   const [display, setDisplay] = useState("");
-  const [key, setKey] = useState(0);
+  const [otheme, setOtheme] = useState("");
   const themeCSS = React.useContext(ThemeContext);
+
+  // Render the display on theme change
+  if(themeCSS !== otheme){    
+    renderTrain();
+    setOtheme(themeCSS);
+  }
 
   function renderTrain(){
 
     const newtrain = [];
     let current = list.head;
     let i=0;
-    let k=key;
     while(current != null) {
       if (current===list.current) {
         switch (true) {
           case i===0:
-            newtrain[0]=<Node.NodeHead key={`K${k}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[0]=<Node.NodeHead key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
             break;
           case i===list.size-1:
-            newtrain[i]=<Node.NodeTail key={`K${k}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[i]=<Node.NodeTail key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
             break;
           default:
-            newtrain[i]=<Node.Node key={`K${k}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[i]=<Node.Node key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
         }
       }
       else {
         switch (true) {
           case i===0:
-            newtrain[0]=<Node.NodeHead key={`K${k}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[0]=<Node.NodeHead key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
             break;
           case i===list.size-1:
-            newtrain[i]=<Node.NodeTail key={`K${k}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[i]=<Node.NodeTail key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
             break;
           default:
-            newtrain[i]=<Node.Node key={`K${k}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[i]=<Node.Node key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
         }        
       }
 
       current = current.forwardNode;
       i++;
-      k++;
     }
     
-    setKey(k);
     setTrain(newtrain);
   }
 

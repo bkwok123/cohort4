@@ -66,7 +66,7 @@ class Bank extends React.Component {
     render() {
 
         return (
-            <div>            
+            <div className="Bank">            
                 <div className="container zone">        
                     <div className="panel green">
                         <label className="highlight">Transaction Activities</label>      

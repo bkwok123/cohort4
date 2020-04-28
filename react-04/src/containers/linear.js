@@ -14,7 +14,43 @@ function Linear() {
   const [qobj, setQOBJ] = useState([]);
   const [key, setKey] = useState(0);
   const [isNew, setIsNew] = useState(false);
+  const [otheme, setOtheme] = useState("");
   const themeCSS = React.useContext(ThemeContext);
+
+    // Render the display on theme change
+    if(themeCSS !== otheme){          
+      setOtheme(themeCSS);
+      setSOBJ(renderStack());
+      setQOBJ(renderQueue());
+    }
+
+  function renderStack() {
+    const linearobj = [];
+    let current = stack.head;
+    let i=0;
+    while(current != null) {
+      linearobj[i] = <PL.Plate key={`k${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
+      current = current.forwardNode;
+      console.log(current);
+      i++;
+      }
+
+    return linearobj
+  }
+
+  function renderQueue() {
+    const linearobj = [];
+    let current = queue.head;
+    let i=0;
+    while(current != null) {
+      linearobj[i] = <PL.Plate key={`k${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
+      current = current.forwardNode;
+      console.log(current);
+      i++;
+      }
+
+    return linearobj
+  }
 
   function clearLIFOHandler() {
     setStack(new LI.LIFO());
@@ -82,15 +118,16 @@ function Linear() {
     if (queue.size < 20) {
       const q = qobj.slice();
       const dq = dqueue.slice();
-      queue.enqueue(sub,amt);
       if(dq.length > 0) {
         const prop = dq[dq.length-1].props;
-        dq.pop();
+        dq.pop();        
         q.push(<PL.Plate key={`k${key}`} nodecss={`stackable ${themeCSS.stack}`} subject={prop.subject} amount={prop.amount} unique={key}/>);
+        queue.enqueue(prop.subject,prop.amount);
         setDqueue(dq);
       }
-      else {
-        q.push(<PL.Plate key={`k${key}`} nodecss={`stackable ${themeCSS.stack}`} subject={sub} amount={amt} unique={key}/>);
+      else {        
+        q.push(<PL.Plate key={`k${key}`} nodecss={`stackable ${themeCSS.stack}`} subject={sub} amount={amt} unique={key}/>);        
+        queue.enqueue(sub,amt);
       }      
       
       setQOBJ(q);            
