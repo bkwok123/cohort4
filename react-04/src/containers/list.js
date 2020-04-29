@@ -31,13 +31,13 @@ function List() {
       if (current===list.current) {
         switch (true) {
           case i===0:
-            newtrain[0]=<Node.NodeHead key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[0]=<Node.NodeHead key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss="trainimgAct"/>;
             break;
           case i===list.size-1:
-            newtrain[i]=<Node.NodeTail key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[i]=<Node.NodeTail key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss="trainimgAct"/>;
             break;
           default:
-            newtrain[i]=<Node.Node key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss={themeCSS.fill}/>;
+            newtrain[i]=<Node.Node key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss="trainimgAct"/>;
         }
       }
       else {

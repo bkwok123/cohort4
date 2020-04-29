@@ -29,7 +29,8 @@ function Linear() {
     let current = stack.head;
     let i=0;
     while(current != null) {
-      linearobj[i] = <PL.Plate key={`k${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
+      // Key prefix is changed to prevent duplicated key generated outside this render function
+      linearobj[i] = <PL.Plate key={`ki${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
       current = current.forwardNode;
       console.log(current);
       i++;
@@ -43,7 +44,8 @@ function Linear() {
     let current = queue.head;
     let i=0;
     while(current != null) {
-      linearobj[i] = <PL.Plate key={`k${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
+      // Key prefix is changed to prevent duplicated key generated outside this render function
+      linearobj[i] = <PL.Plate key={`ki${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
       current = current.forwardNode;
       console.log(current);
       i++;
@@ -69,11 +71,6 @@ function Linear() {
     // Added animation in the new stack
     // NOTE: This step is added only to demonstrate useEffect => this step
     // can be incorporated in the push and dequeue handler
-    // It is imperative to have "changes" in stack or queue (such as CSS) to
-    // force the virtual DOM to update the DOM to render new display.
-    // Without cleaning up in the useEffect, the virtual DOM does not detect
-    // any changes in the stack or queue and results in all stackables to be NEW
-    // despite of the stack or queue elements contain the correct CSS className.
     const nstackable = document.getElementById(`k${key-1}`);
     if ((nstackable !== null) && (isNew)) {
       nstackable.setAttribute("class", `stackable drop-in ${themeCSS.stack} ${themeCSS.nstack}`);
