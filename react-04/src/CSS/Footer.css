@@ -1,8 +1,7 @@
 .zone {
-    /*padding:30px 50px;*/
     cursor: default;;
     color:#FFF;
-    font-size:2em;
+    font-size:calc(0.5vw + 0.5vh);
     border-radius:4px;
     border:1px solid #bbb;
     transition: all 0.3s linear;
@@ -23,11 +22,11 @@
 
 .navbox {
     background-color: rgb(85, 2, 78);
-    padding: 0.4em;
-    margin: 0.4em;
+    padding: calc(0.2vw + 0.2vh);
+    margin: calc(0.2vw + 0.2vh);
     cursor: pointer;
-    width: 4em;
-    height: 4em;
+    width: calc(2vw + 2vh);
+    height: calc(2vw + 2vh);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -43,18 +42,6 @@
         /* Start the shake animation and make the animation last for 0.5 seconds */
         animation: shake 0.5s;       
     }
-}
-
-@media only screen and (max-height: 800px) {
-    .bottom-nav {
-        font-size: 0.5em;
-        padding: 0;
-    }
-
-    .navbox {
-        width: 2em;
-        height: 2em;
-    }        
 }
 
 @keyframes shake {

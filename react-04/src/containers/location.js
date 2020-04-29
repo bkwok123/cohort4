@@ -1,8 +1,11 @@
 import React from 'react';
-import { Community } from '../scripts/city.js'
-import NET from '../scripts/netcomm.js'
+import { Community } from '../scripts/city.js';
+import ThemeContext from '../context/ThemeContext';
+import NET from '../scripts/netcomm.js';
 
 class Demographics extends React.Component {
+
+    static contextType = ThemeContext;
 
     constructor(props) {
         super(props);
@@ -65,7 +68,7 @@ class Demographics extends React.Component {
     render() {
 
         return (
-            <div>            
+            <div className={`CardApp ${this.context.background}`}>            
                 <div className="container zone">        
                     <div className="panel green">
                         <label className="highlight">Population Movement</label>      
@@ -73,8 +76,24 @@ class Demographics extends React.Component {
                             {this.state.list}
                         </ul>
                     </div>
-                
+
                     <div className="panel yellow">
+                        <label id="active_class" className="highlight">Current Location: {this.state.currentCity}</label>
+                        <div className="subpanel">                             
+                            <button type="button" className="spbtn1" onClick={(e) => this.buttonClick(e)}>Create Settlement</button>
+                            <button type="button" className="spbtn2" onClick={(e) => this.buttonClick(e)}>Delete Settlement</button>
+                            <button type="button" className="spbtn3" onClick={(e) => this.buttonClick(e)}>Show Sphere</button>        
+                            <button type="button" className="spbtn4" onClick={(e) => this.buttonClick(e)}>Sum Population</button>
+                            <button type="button" className="spbtn5" onClick={(e) => this.buttonClick(e)}>Show Most Northern</button>
+                            <button type="button" className="spbtn6" onClick={(e) => this.buttonClick(e)}>Show Most Southern</button>
+                            <p className="spp1">Population:</p>
+                            <input type="number" className="inbtn1" value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
+                            <button type="button" className="spbtn7" onClick={(e) => this.buttonClick(e)}>Moved In</button>
+                            <button type="button" className="spbtn8" onClick={(e) => this.buttonClick(e)}>Moved Out</button>
+                            <button type="button" className="spbtn9" onClick={(e) => this.buttonClick(e)}>How Big</button>                                    
+                        </div>
+                    </div>                
+                    {/* <div className="panel yellow">
                         <div id="active_class" className="highlight">Current Location: {this.state.currentCity}</div>
                         <div className="subpanel">        
                             <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Create Settlement</button>
@@ -98,7 +117,7 @@ class Demographics extends React.Component {
                             <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Moved Out</button>
                             <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>How Big</button>        
                         </div>
-                    </div>
+                    </div> */}
                 </div>            
 
                 <div className="zone blue grid-wrapper frame">
@@ -263,7 +282,7 @@ class Demographics extends React.Component {
             }
 
             for (let i=0; i<place.citys.length; i++) {                        
-                this.addCard(cards, place.citys[i].name, "Moved In: " + place.citys[index].population);
+                this.addCard(cards, place.citys[i].name, "Population: " + place.citys[index].population);
             }
 
             // Maintain Page State
@@ -296,7 +315,7 @@ class Demographics extends React.Component {
             }
 
             for (let i=0; i<place.citys.length; i++) {                        
-                this.addCard(cards, place.citys[i].name, "Moved Out: " + place.citys[index].population);
+                this.addCard(cards, place.citys[i].name, "Population: " + place.citys[index].population);
             }
 
             // Maintain Page State

@@ -1,22 +1,3 @@
-.zone {
-    /*padding:30px 50px;*/
-    cursor: default;;
-    color:#FFF;
-    font-size:2em;
-    border-radius:4px;
-    border:1px solid #bbb;
-    transition: all 0.3s linear;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-    .zone:hover {
-        -webkit-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
-        -moz-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
-        -o-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
-        box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
-    }
-}
-
 .sticky {
     position: fixed;
     top: 0;
@@ -30,8 +11,8 @@
     display: flex;
     list-style: none;
     margin: 0;
-    font-size: 0.7em;
-    padding: 20px;
+    font-size: calc(1vw + 1vh);
+    padding: calc(0.25vw + 0.25vh);
 }
 
 .sys-nav {
@@ -47,24 +28,8 @@
 .warning {
     display: flex;
     margin: 0;
-    font-size: 0.5em;
+    font-size: calc(0.25vw + 0.25vh);
     padding: 0;
-}
-
-@media only screen and (max-height: 800px) {
-    .main-nav {
-        font-size: 0.5em;
-        padding: 0.3em;
-    }
-
-    .bottom-nav {
-        font-size: 0.5em;
-        padding: 0;
-    }
-
-    .warning {
-        font-size: 0.3em;
-    }      
 }
 
 /***********************************************************************

@@ -1,9 +1,12 @@
 import React from 'react';
-import { AccountController } from '../scripts/account.js'
+import { AccountController } from '../scripts/account.js';
+import ThemeContext from '../context/ThemeContext';
 import '../CSS/Bank.css';
-import NET from '../scripts/netcomm.js'
+import NET from '../scripts/netcomm.js';
 
 class Bank extends React.Component {
+
+    static contextType = ThemeContext;
 
     constructor(props) {
         super(props);
@@ -66,7 +69,7 @@ class Bank extends React.Component {
     render() {
 
         return (
-            <div className="Bank">            
+            <div className={`CardApp ${this.context.background}`}>            
                 <div className="container zone">        
                     <div className="panel green">
                         <label className="highlight">Transaction Activities</label>      
@@ -76,28 +79,19 @@ class Bank extends React.Component {
                     </div>
                 
                     <div className="panel yellow">
-                        <div id="active_class" className="highlight">Active Account: {this.state.currentAccount}</div>
-                        <div className="subpanel">        
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Create Account</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Remove Account</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Rename Account</button>        
-                        </div>  
-            
-                        <div className="subpanel">
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Sum Balance</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Max Balance</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Min Balance</button>
-                        </div>        
-                
-                        <div className="subpanel">      
-                            <p>Amount:</p>
-                            <input type="number" className="acctinput" value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
-                        </div>
-                
-                        <div className="subpanel">
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Deposit</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Withdraw</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Balance</button>        
+                        <label id="active_class" className="highlight">Active Account: {this.state.currentAccount}</label>
+                        <div className="subpanel">                             
+                            <button type="button" className="spbtn1" onClick={(e) => this.buttonClick(e)}>Create Account</button>
+                            <button type="button" className="spbtn2" onClick={(e) => this.buttonClick(e)}>Remove Account</button>
+                            <button type="button" className="spbtn3" onClick={(e) => this.buttonClick(e)}>Rename Account</button>        
+                            <button type="button" className="spbtn4" onClick={(e) => this.buttonClick(e)}>Sum Balance</button>
+                            <button type="button" className="spbtn5" onClick={(e) => this.buttonClick(e)}>Max Balance</button>
+                            <button type="button" className="spbtn6" onClick={(e) => this.buttonClick(e)}>Min Balance</button>
+                            <p className="spp1">Amount:</p>
+                            <input type="number" className="inbtn1" value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
+                            <button type="button" className="spbtn7" onClick={(e) => this.buttonClick(e)}>Deposit</button>
+                            <button type="button" className="spbtn8" onClick={(e) => this.buttonClick(e)}>Withdraw</button>
+                            <button type="button" className="spbtn9" onClick={(e) => this.buttonClick(e)}>Balance</button>                                    
                         </div>
                     </div>
                 </div>            
