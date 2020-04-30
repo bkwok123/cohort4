@@ -1,10 +1,6 @@
 .zone {
-    cursor: default;;
-    color:#FFF;
     font-size:calc(0.5vw + 0.5vh);
     border-radius:4px;
-    border:1px solid #bbb;
-    transition: all 0.3s linear;
 }
 
 .bottom-nav {
@@ -21,10 +17,8 @@
 }
 
 .navbox {
-    background-color: rgb(85, 2, 78);
     padding: calc(0.2vw + 0.2vh);
-    margin: calc(0.2vw + 0.2vh);
-    cursor: pointer;
+    margin: calc(0.2vw + 0.2vh);    
     width: calc(2vw + 2vh);
     height: calc(2vw + 2vh);
 }
@@ -67,13 +61,4 @@
  **********************************************************************/
 footer {
     text-align: center;
-    background-color: #444;
-}
-
-/***********************************************************************
- *  Yellow Background
- **********************************************************************/
-.yellow {
-    background: #F3AAAA; /* Old browsers */
-    background: linear-gradient(to bottom, #F3AAAA 0%,#febf04 100%); /* W3C */
 }

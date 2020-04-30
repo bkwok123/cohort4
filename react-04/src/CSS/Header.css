@@ -15,12 +15,6 @@
     padding: calc(0.25vw + 0.25vh);
 }
 
-.sys-nav {
-    color:black;  
-    cursor: pointer;
-
-}
-
 .push {
     margin-left: auto;
 }
@@ -30,14 +24,6 @@
     margin: 0;
     font-size: calc(0.25vw + 0.25vh);
     padding: 0;
-}
-
-/***********************************************************************
- *  Blue Background
- **********************************************************************/
-.blue {
-    background: #7abcff; /* Old browsers */
-    background: linear-gradient(to top, #7abcff 0%,#60abf8 44%,#4096ee 100%); /* W3C */
 }
 
 /***********************************************************************

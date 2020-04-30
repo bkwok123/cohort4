@@ -5,12 +5,13 @@
     display: block;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
     overflow-x: hidden;
 }
 
  .container {    
-    height: 50vmin; 
+    height: 50vh; 
     display: flex;
     align-items: center;
     justify-content: center;
@@ -39,7 +40,7 @@
     list-style: none;
     margin: 0px;
     padding: 0px;
-    font-size: calc(0.5vw + 0.5vh);
+    font-size: calc(0.8vw + 0.8vh);
 }
 
 .subpanel{
@@ -69,11 +70,10 @@
 .spbtn9 {grid-area: b9;}
 
 .subpanel > button {
-    width: auto;
+    width: calc(7vw + 7vh);
     margin: calc(0.25vw + 0.25vh);
     font-size: calc(0.6vw + 0.6vh);
     border-radius: 0.5vw;
-    background-color: silver;
     transition: all 0.3s linear;
 }
 
@@ -91,43 +91,22 @@
     margin: calc(0.4vw + 0.4vh);   
 }
 
-.subpanel > button:hover {
-    -webkit-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
-    -moz-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
-    -o-box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
-    box-shadow:rgba(0,0,0,0.8) 0px 5px 15px, inset rgba(0,0,0,0.15) 0px -10px 20px;
-    border-style: solid;
-    border-color: red;
-}
-
-.subpanel > input:hover{
-    border-style: solid;
-    border-color: red;
-}
-
 /***********************************************************************
  *  Grid Panel
  **********************************************************************/
 .grid-wrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20vw, 1fr));
-    grid-gap: 0.5vw;
+    grid-template-columns: repeat(auto-fit, minmax(calc(10vw + 10vh), 1fr));
+    grid-gap: calc(0.25vw + 0.25vh);;
     height: min-content;
-    margin-bottom: calc(10vw + 30vh);
     overflow-y: visible;
 }
 
 .box {
-    background-color: #444;
     padding: 1vw;
     margin: 2vw 1vw 2vw 1vw;
     font-size: 1.5vw;
     text-align: center;
-}
-
-.box:hover{
-    border-style: solid;
-    border-color: red;
 }
 
 .box > ul {
@@ -136,26 +115,9 @@
 }
 
 /***********************************************************************
- *  Green Background
- **********************************************************************/
- .green {
-    background: #56B870; /* Old browsers */
-    background: linear-gradient(to bottom, #56B870 0%,#a5c956 100%); /* W3C */
-}
-
-/***********************************************************************
- *  Yellow Background
- **********************************************************************/
- .yellow {
-    background: #F3AAAA; /* Old browsers */
-    background: linear-gradient(to bottom, #F3AAAA 0%,#febf04 100%); /* W3C */
-}
-
-/***********************************************************************
  *  Highlighted text
  **********************************************************************/
  .highlight{
-    color: purple;
     font-style: italic;
     text-decoration: underline;
 }

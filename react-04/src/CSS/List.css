@@ -11,18 +11,19 @@
 
 .llMonitor {  
   display: grid;
-  grid-template-columns: repeat(4, minmax(5vw, auto));
-  grid-template-rows: 3vw 2vw 2vw 4vw 2vw 2vw;
-  grid-template-areas: "p1 p1 p1 p1"
-                       "p2 p2 p3 p3"                       
-                       "i1 i1 i2 i2"
-                       "p4 p4 p4 p4"
-                       "b1 b2 b3 b4"
-                       "b5 b8 b7 b6";    
+  grid-template-columns: repeat(4, minmax(6vw, auto));
+  grid-template-rows: 3vw 2vw 2vw 4vw 2vw 2vw 2vw;
+  grid-template-areas: "p1  p1  p1  p1"
+                       "p2  p2  p3  p3"                       
+                       "i1  i1  i2  i2"
+                       "p4  p4  p4  p4"
+                       "b1  b2  b3  b4"
+                       "b5  b8  b7  b6"
+                       "b9  b9  b10 b10";    
   justify-content: center;
   align-items: center;
   border-radius: 2vh;
-  width: 25vw;
+  width: 40vw;
   min-height: 10vh;   
   padding: 5vh;
   margin: 3vh;
@@ -42,6 +43,8 @@
 .llmB8 {grid-area: b8;}
 .llmIn1 {grid-area: i1;}
 .llmIn2 {grid-area: i2;}
+.llmIn9 {grid-area: b9;}
+.llmIn10 {grid-area: b10;}
 
 .llMonitor > p {
   text-align: center;
@@ -91,18 +94,7 @@
   margin: 0;
 }
 
-.borderAct {
-  border-width: 2px;
-  border-style: solid;
-  border-color: red;
-  color: red;
-}
-
 .train {
   width: 10vw;
   height: 4vw;  
-}
-
-.trainimgAct{
-  fill: red;
 }

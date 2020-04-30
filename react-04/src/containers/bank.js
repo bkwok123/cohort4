@@ -17,6 +17,7 @@ class Bank extends React.Component {
             card: [],
             inputAmt: 0,
             key: 0,
+            otheme: this.context,
         };
     }
 
@@ -66,37 +67,54 @@ class Bank extends React.Component {
           }); 
     }    
 
+    componentDidUpdate() {
+
+        if (this.state.otheme !== this.context) {
+            const holder = this.state.user;   
+            const cards = [];
+    
+            for (let i=0; i<holder.accounts.length; i++) {
+                this.addCard(cards, holder.accounts[i].accountName, "Balance: $" + holder.accounts[i].startingBalance);
+            }
+            
+            this.setState({
+                card: cards,
+                otheme: this.context,
+             });
+        }   
+    }
+
     render() {
 
         return (
             <div className={`CardApp ${this.context.background}`}>            
                 <div className="container zone">        
-                    <div className="panel green">
-                        <label className="highlight">Transaction Activities</label>      
+                    <div className={`panel ${this.context.panel1}`}>
+                        <label className={`highlight ${this.context.glow}`}>Transaction Activities</label>      
                         <ul className="accctdisplay">
                             {this.state.list}
                         </ul>
                     </div>
                 
-                    <div className="panel yellow">
-                        <label id="active_class" className="highlight">Active Account: {this.state.currentAccount}</label>
-                        <div className="subpanel">                             
-                            <button type="button" className="spbtn1" onClick={(e) => this.buttonClick(e)}>Create Account</button>
-                            <button type="button" className="spbtn2" onClick={(e) => this.buttonClick(e)}>Remove Account</button>
-                            <button type="button" className="spbtn3" onClick={(e) => this.buttonClick(e)}>Rename Account</button>        
-                            <button type="button" className="spbtn4" onClick={(e) => this.buttonClick(e)}>Sum Balance</button>
-                            <button type="button" className="spbtn5" onClick={(e) => this.buttonClick(e)}>Max Balance</button>
-                            <button type="button" className="spbtn6" onClick={(e) => this.buttonClick(e)}>Min Balance</button>
+                    <div className={`panel ${this.context.panel2}`}>
+                        <label id="active_class" className={`highlight ${this.context.glow}`}>Active Account: {this.state.currentAccount}</label>
+                        <div className={`subpanel ${this.context.selectChd}`}>                             
+                            <button type="button" className={`spbtn1 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Create Account</button>
+                            <button type="button" className={`spbtn2 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Remove Account</button>
+                            <button type="button" className={`spbtn3 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Rename Account</button>        
+                            <button type="button" className={`spbtn4 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Sum Balance</button>
+                            <button type="button" className={`spbtn5 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Max Balance</button>
+                            <button type="button" className={`spbtn6 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Min Balance</button>
                             <p className="spp1">Amount:</p>
-                            <input type="number" className="inbtn1" value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
-                            <button type="button" className="spbtn7" onClick={(e) => this.buttonClick(e)}>Deposit</button>
-                            <button type="button" className="spbtn8" onClick={(e) => this.buttonClick(e)}>Withdraw</button>
-                            <button type="button" className="spbtn9" onClick={(e) => this.buttonClick(e)}>Balance</button>                                    
+                            <input type="number" className={`inbtn1 ${this.context.btnFG}`} value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
+                            <button type="button" className={`inbtn7 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Deposit</button>
+                            <button type="button" className={`inbtn8 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Withdraw</button>
+                            <button type="button" className={`inbtn9 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Balance</button>                                    
                         </div>
                     </div>
                 </div>            
 
-                <div className="zone blue grid-wrapper frame">
+                <div className={`zone grid-wrapper frame ${this.context.card}`}>
                     {this.state.card}
                 </div>
             </div>
@@ -114,8 +132,8 @@ class Bank extends React.Component {
 
     addCard(array, name, msg) {
         array.push(
-            <div update={name} key={`${name}_div`} className="box" onClick={(e) => this.cardClick(e)}>
-                <ul update={name} key={`${name}_ul`} className="boxul">
+            <div update={name} key={`${name}_div`} className={`box ${this.context.cardbox} ${this.context.selectSelf}`} onClick={(e) => this.cardClick(e)}>
+                <ul update={name} key={`${name}_ul`}>
                     <li update={name} key={`${name}_li1`}>{name}</li>
                     <li update={name} key={`${name}_li2`}>{msg}</li>
                 </ul>

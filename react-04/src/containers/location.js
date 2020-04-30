@@ -16,6 +16,7 @@ class Demographics extends React.Component {
             card: [],
             inputAmt: 0,
             key: 0,
+            otheme: this.context,
         };
     }
 
@@ -65,62 +66,53 @@ class Demographics extends React.Component {
           }); 
     }    
 
-    render() {
+    componentDidUpdate() {
+        if (this.state.otheme !== this.context) {
+            const place = this.state.community;   
+            const cards = [];
+    
+            for (let i=0; i<place.citys.length; i++) {
+                this.addCard(cards, place.citys[i].name, "Population: " + place.citys[i].population);
+            }
+            
+            this.setState({
+                card: cards,
+                otheme: this.context,
+             });
+        }   
+    }    
+
+    render() { 
 
         return (
             <div className={`CardApp ${this.context.background}`}>            
                 <div className="container zone">        
-                    <div className="panel green">
-                        <label className="highlight">Population Movement</label>      
+                    <div className={`panel ${this.context.panel1}`}>
+                        <label className={`highlight ${this.context.glow}`}>Population Movement</label>      
                         <ul className="accctdisplay">
                             {this.state.list}
                         </ul>
                     </div>
 
-                    <div className="panel yellow">
-                        <label id="active_class" className="highlight">Current Location: {this.state.currentCity}</label>
-                        <div className="subpanel">                             
-                            <button type="button" className="spbtn1" onClick={(e) => this.buttonClick(e)}>Create Settlement</button>
-                            <button type="button" className="spbtn2" onClick={(e) => this.buttonClick(e)}>Delete Settlement</button>
-                            <button type="button" className="spbtn3" onClick={(e) => this.buttonClick(e)}>Show Sphere</button>        
-                            <button type="button" className="spbtn4" onClick={(e) => this.buttonClick(e)}>Sum Population</button>
-                            <button type="button" className="spbtn5" onClick={(e) => this.buttonClick(e)}>Show Most Northern</button>
-                            <button type="button" className="spbtn6" onClick={(e) => this.buttonClick(e)}>Show Most Southern</button>
+                    <div className={`panel ${this.context.panel2}`}>
+                        <label id="active_class" className={`highlight ${this.context.glow}`}>Current Location: {this.state.currentCity}</label>
+                        <div className={`subpanel ${this.context.selectChd}`}>                             
+                            <button type="button" className={`spbtn1 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Create Settlement</button>
+                            <button type="button" className={`spbtn2 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Delete Settlement</button>
+                            <button type="button" className={`spbtn3 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Show Sphere</button>        
+                            <button type="button" className={`spbtn4 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Sum Population</button>
+                            <button type="button" className={`spbtn5 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Show Most Northern</button>
+                            <button type="button" className={`spbtn6 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Show Most Southern</button>
                             <p className="spp1">Population:</p>
-                            <input type="number" className="inbtn1" value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
-                            <button type="button" className="spbtn7" onClick={(e) => this.buttonClick(e)}>Moved In</button>
-                            <button type="button" className="spbtn8" onClick={(e) => this.buttonClick(e)}>Moved Out</button>
-                            <button type="button" className="spbtn9" onClick={(e) => this.buttonClick(e)}>How Big</button>                                    
+                            <input type="number" className={`inbtn1 ${this.context.btnFG}` } value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
+                            <button type="button" className={`spbtn7 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Moved In</button>
+                            <button type="button" className={`spbtn8 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Moved Out</button>
+                            <button type="button" className={`spbtn9 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>How Big</button>                                    
                         </div>
                     </div>                
-                    {/* <div className="panel yellow">
-                        <div id="active_class" className="highlight">Current Location: {this.state.currentCity}</div>
-                        <div className="subpanel">        
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Create Settlement</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Delete Settlement</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Show Sphere</button>        
-                        </div>  
-            
-                        <div className="subpanel">
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Sum Population</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Show Most Northern</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Show Most Southern</button>
-                        </div>        
-                
-                        <div className="subpanel">      
-                            <p>Population:</p>
-                            <input type="number" className="acctinput" value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
-                        </div>
-                
-                        <div className="subpanel">
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Moved In</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>Moved Out</button>
-                            <button type="button" className="acctbtn" onClick={(e) => this.buttonClick(e)}>How Big</button>        
-                        </div>
-                    </div> */}
                 </div>            
 
-                <div className="zone blue grid-wrapper frame">
+                <div className={`zone grid-wrapper frame ${this.context.card}`}>
                     {this.state.card}
                 </div>
             </div>
@@ -138,8 +130,8 @@ class Demographics extends React.Component {
 
     addCard(array, name, msg) {
         array.push(
-            <div update={name} key={`${name}_div`} className="box" onClick={(e) => this.cardClick(e)}>
-                <ul update={name} key={`${name}_ul`} className="boxul">
+            <div update={name} key={`${name}_div`} className={`box ${this.context.cardbox} ${this.context.selectSelf}`} onClick={(e) => this.cardClick(e)}>
+                <ul update={name} key={`${name}_ul`}>
                     <li update={name} key={`${name}_li1`}>{name}</li>
                     <li update={name} key={`${name}_li2`}>{msg}</li>
                 </ul>

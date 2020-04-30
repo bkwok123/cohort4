@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import ThemeContext from '../context/ThemeContext';
 import Node from '../components/linkednode';
 import LL from '../scripts/linkedlist';
@@ -16,12 +16,6 @@ function List() {
   const [otheme, setOtheme] = useState("");
   const themeCSS = React.useContext(ThemeContext);
 
-  // Render the display on theme change
-  if(themeCSS !== otheme){    
-    renderTrain();
-    setOtheme(themeCSS);
-  }
-
   function renderTrain(){
 
     const newtrain = [];
@@ -31,13 +25,13 @@ function List() {
       if (current===list.current) {
         switch (true) {
           case i===0:
-            newtrain[0]=<Node.NodeHead key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss="trainimgAct"/>;
+            newtrain[0]=<Node.NodeHead key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.activeSelf} ${themeCSS.btnFG}`} trcss={themeCSS.activefill}/>;
             break;
           case i===list.size-1:
-            newtrain[i]=<Node.NodeTail key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss="trainimgAct"/>;
+            newtrain[i]=<Node.NodeTail key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.activeSelf} ${themeCSS.btnFG}`} trcss={themeCSS.activefill}/>;
             break;
           default:
-            newtrain[i]=<Node.Node key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node borderAct ${themeCSS.btnFG}`} trcss="trainimgAct"/>;
+            newtrain[i]=<Node.Node key={`K${i}`} subject={current.subject} amount={current.amount} nodecss={`node ${themeCSS.activeSelf} ${themeCSS.btnFG}`} trcss={themeCSS.activefill}/>;
         }
       }
       else {
@@ -69,8 +63,7 @@ function List() {
     }
 
     if (list.size === 20) {            
-      setCapMsg(<span><br></br><span style={{color: 'red'}}>MAX</span> capacity is reached!!!</span>);
-      
+      setCapMsg(<span><br></br><span style={{color: 'red'}}>MAX</span> capacity is reached!!!</span>);      
     }    
   }
 
@@ -122,7 +115,26 @@ function List() {
     if (list.size > 0) {
       setDisplay(`Total: ${list.showtotal()}`);    
     }
-  }  
+  }
+  
+  function sortAmtHandler() {
+    list.sort(true);
+    renderTrain();
+  }
+
+  function sortSubjHandler() {
+    list.sort(false);
+    renderTrain();
+  }
+
+  useEffect(() => {
+
+    // Render the display on theme change
+    if(themeCSS !== otheme){    
+      renderTrain();
+      setOtheme(themeCSS);
+    }    
+  });
 
   return (
     <div className={`list ${themeCSS.background}`}>              
@@ -151,7 +163,14 @@ function List() {
         </button>
         <button className={`llmbtn llmB8 ${themeCSS.btnFG}`} onClick={() => previousHandler()}>
           Previous
-        </button>                               
+        </button>
+        <button className={`llmbtn llmB9 ${themeCSS.btnFG}`} onClick={() => sortAmtHandler()}>
+          Sort Amount
+        </button>
+        <button className={`llmbtn llmB10 ${themeCSS.btnFG}`} onClick={() => sortSubjHandler()}>
+          Sort Payload
+        </button>                
+
         <p className="llmp2">Payload:</p>
         <input className={`llmInp llmIn1 ${themeCSS.btnFG}`} type="text" value={subject} onChange={(e) => setSubject(e.target.value)}></input>
         <p className="llmp3"> Quantity:</p>
