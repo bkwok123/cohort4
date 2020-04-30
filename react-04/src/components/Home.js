@@ -10,7 +10,6 @@ function App() {
   return (
     <div className={`App ${themeCSS.background}`}>
       <header className="App-header">
-
         <ReactSvgInjector src={logo} className="App-logo" alt="logo">
           <Mutate selector="path" class={themeCSS.fill} />
           <Mutate selector="circle" class={themeCSS.fill} />

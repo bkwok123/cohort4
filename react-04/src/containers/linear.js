@@ -17,13 +17,6 @@ function Linear() {
   const [otheme, setOtheme] = useState("");
   const themeCSS = React.useContext(ThemeContext);
 
-    // Render the display on theme change
-    if(themeCSS !== otheme){          
-      setOtheme(themeCSS);
-      setSOBJ(renderStack());
-      setQOBJ(renderQueue());
-    }
-
   function renderStack() {
     const linearobj = [];
     let current = stack.head;
@@ -74,6 +67,13 @@ function Linear() {
     const nstackable = document.getElementById(`k${key-1}`);
     if ((nstackable !== null) && (isNew)) {
       nstackable.setAttribute("class", `stackable drop-in ${themeCSS.stack} ${themeCSS.nstack}`);
+    }
+
+    // Render the display on theme change
+    if(themeCSS !== otheme){          
+      setOtheme(themeCSS);
+      setSOBJ(renderStack());
+      setQOBJ(renderQueue());
     }
 
     return () => {

@@ -65,7 +65,7 @@ class AppsController extends React.Component {
         const switchon = false;
 
         return (
-            <div className={this.state.activeTheme.background}>
+            <div>
                 <ThemeContext.Provider value={this.state.activeTheme}>
                     <DOM.NavHeader applabel={this.state.activePage}/>                
                     {this.state.activeApp}            
