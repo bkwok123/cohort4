@@ -49,7 +49,7 @@
     grid-template-rows: calc(1.5vw + 1.5vh) calc(1.5vw + 1.5vh) calc(1.5vw + 1.5vh) calc(1.5vw + 1.5vh);
     grid-template-areas: "b1 b2 b3"
                          "b4 b5 b6"                       
-                         "p2 i1 i1"
+                         "p2 i1 b10"
                          "b7 b8 b9";
     justify-content: center;    
     align-items: center;   
@@ -68,6 +68,7 @@
 .spbtn7 {grid-area: b7;}
 .spbtn8 {grid-area: b8;}
 .spbtn9 {grid-area: b9;}
+.spbtn10 {grid-area: b10;}
 
 .subpanel > button {
     width: calc(7vw + 7vh);

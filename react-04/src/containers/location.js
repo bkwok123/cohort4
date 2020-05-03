@@ -2,9 +2,10 @@ import React from 'react';
 import { Community } from '../scripts/city.js';
 import ThemeContext from '../context/ThemeContext';
 import NET from '../scripts/netcomm.js';
+import '../CSS/CardApp.css';
 
 class Demographics extends React.Component {
-
+    
     static contextType = ThemeContext;
 
     constructor(props) {
@@ -17,54 +18,9 @@ class Demographics extends React.Component {
             inputAmt: 0,
             key: 0,
             otheme: this.context,
+            cacheCitys: [],
         };
     }
-
-    buttonClick(e) {
-
-        switch (e.target.textContent) {
-            case "Create Settlement":
-                this.createSettlement();
-                break;            
-            case "Delete Settlement":
-                this.deleteSettlement();
-                break;
-            case "Show Sphere":
-                this.showSphere();
-                break;
-            case "Sum Population":
-                this.sumPopulation();                
-                break;
-            case "Show Most Northern":
-                this.showMostNorthern();
-                break;            
-            case "Show Most Southern":
-                this.showMostSouthern();
-                break;
-            case "Moved In":
-                this.movedIn();
-                break;
-            case "Moved Out":
-                this.movedOut();
-                break;   
-            case "How Big":
-                this.howBig();
-                break;      
-            default:                                                                                                                                                
-        }      
-    }    
-    
-    inputChg (e){
-        this.setState({
-            inputAmt: e.target.value
-          });        
-    }
-
-    cardClick(e) {
-        this.setState({
-            currentCity: e.target.getAttribute("update") 
-          }); 
-    }    
 
     componentDidUpdate() {
         if (this.state.otheme !== this.context) {
@@ -97,17 +53,18 @@ class Demographics extends React.Component {
                     <div className={`panel ${this.context.panel2}`}>
                         <label id="active_class" className={`highlight ${this.context.glow}`}>Current Location: {this.state.currentCity}</label>
                         <div className={`subpanel ${this.context.selectChd}`}>                             
-                            <button type="button" className={`spbtn1 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Create Settlement</button>
-                            <button type="button" className={`spbtn2 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Delete Settlement</button>
-                            <button type="button" className={`spbtn3 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Show Sphere</button>        
-                            <button type="button" className={`spbtn4 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Sum Population</button>
-                            <button type="button" className={`spbtn5 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Show Most Northern</button>
-                            <button type="button" className={`spbtn6 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Show Most Southern</button>
+                            <button type="button" className={`spbtn1 ${this.context.btnFG}`} onClick={(e) => this.createSettlement()}>Create Settlement</button>
+                            <button type="button" className={`spbtn2 ${this.context.btnFG}`} onClick={(e) => this.deleteSettlement()}>Delete Settlement</button>
+                            <button type="button" className={`spbtn3 ${this.context.btnFG}`} onClick={(e) => this.showSphere()}>Show Sphere</button>        
+                            <button type="button" className={`spbtn4 ${this.context.btnFG}`} onClick={(e) => this.sumPopulation()}>Sum Population</button>
+                            <button type="button" className={`spbtn5 ${this.context.btnFG}`} onClick={(e) => this.showMostNorthern()}>Show Most Northern</button>
+                            <button type="button" className={`spbtn6 ${this.context.btnFG}`} onClick={(e) => this.showMostSouthern()}>Show Most Southern</button>
                             <p className="spp1">Population:</p>
                             <input type="number" className={`inbtn1 ${this.context.btnFG}` } value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
-                            <button type="button" className={`spbtn7 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Moved In</button>
-                            <button type="button" className={`spbtn8 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Moved Out</button>
-                            <button type="button" className={`spbtn9 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>How Big</button>                                    
+                            <button type="button" className={`spbtn7 ${this.context.btnFG}`} onClick={(e) => this.movedIn()}>Moved In</button>
+                            <button type="button" className={`spbtn8 ${this.context.btnFG}`} onClick={(e) => this.movedOut()}>Moved Out</button>
+                            <button type="button" className={`spbtn9 ${this.context.btnFG}`} onClick={(e) => this.howBig()}>How Big</button>                                    
+                            <button type="button" className={`spbtn10 ${this.context.btnFG}`} onClick={(e) => this.randSettlement()}>Random</button>
                         </div>
                     </div>                
                 </div>            
@@ -138,6 +95,73 @@ class Demographics extends React.Component {
             </div>            
         )
     }
+    
+    inputChg (e){
+        this.setState({
+            inputAmt: e.target.value
+          });        
+    }
+
+    cardClick(e) {
+        this.setState({
+            currentCity: e.target.getAttribute("update") 
+          }); 
+    }   
+
+    async randSettlement () {
+        
+        const url = "https://restcountries.eu/rest/v2/region/Americas?fields=name;population;latlng";
+        let webdata = null;
+        let locCache = this.state.cacheCitys;
+        const place = this.state.community;   
+        let cards = this.state.card.slice();                      
+
+        if (locCache.length < 1) {  // No cache data, retrieve it before proceeding
+            try {
+                webdata = await NET.getData(url);
+    
+                if (webdata.status >= 400) {
+                    throw (new Error(`${webdata.status} ${webdata.message}`));
+                }
+                else {
+                    locCache = webdata;
+
+                    this.setState({
+                        cacheCitys: webdata,
+                     });
+                }
+            }
+            catch (error) {
+                console.error ("Failed in retrievig data: ", error);
+                window.alert("Failed to randomly generate settlement, please enter it manually.");
+            }            
+        }    
+
+        let isAdd=false;
+        let i=0;
+        while((i < locCache.length) && (!isAdd)) {
+            if(!place.isNameExisting(locCache[i].name)) {
+                place.createCity(locCache[i].name, locCache[i].latlng[0], locCache[i].latlng[1], locCache[i].population);
+                this.addCard(cards, locCache[i].name, "Population: " + locCache[i].population);
+
+                isAdd = true;
+
+                // Maintain Page State
+                this.setState({
+                    currentCity: locCache[i].name,
+                    community: place,
+                    list: [],
+                    card: cards,
+                 });                                
+            }
+        
+            i++;
+        }
+
+        if (!isAdd) {
+            window.alert("Invalid settlement name, please enter it manually.");
+        }        
+    }
 
     createSettlement() {
         const name = window.prompt("Enter Settlement Name: ","Calgary");
@@ -160,9 +184,6 @@ class Demographics extends React.Component {
                     list: [],
                     card: cards,
                  });                                
-
-                // Save State to the Server
-                // NET.putData(url, page_state);
             }
             else {
                 window.alert("Invalid settlement name, please try again.");
@@ -197,8 +218,6 @@ class Demographics extends React.Component {
                     card: cards,
                  });                 
 
-                // Save State to the Server
-                // NET.putData(url, page_state);                    
                 return; 
             }
         }  
@@ -284,9 +303,6 @@ class Demographics extends React.Component {
                 inputAmt: 0,
                 key: key,
              });       
-
-            // Save State to the Server
-            // NET.putData(url, page_state);
         }        
     }
 
@@ -317,9 +333,6 @@ class Demographics extends React.Component {
                 inputAmt: 0,
                 key: key,
              });       
-
-            // Save State to the Server
-            // NET.putData(url, page_state);
         }        
     }
     
