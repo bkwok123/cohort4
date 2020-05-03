@@ -1,8 +1,7 @@
 import React from 'react';
 import { AccountController } from '../scripts/account.js';
 import ThemeContext from '../context/ThemeContext';
-import '../CSS/Bank.css';
-import NET from '../scripts/netcomm.js';
+import '../CSS/CardApp.css';
 
 class Bank extends React.Component {
 
@@ -19,53 +18,7 @@ class Bank extends React.Component {
             key: 0,
             otheme: this.context,
         };
-    }
-
-    buttonClick(e) {
-
-        switch (e.target.textContent) {
-            case "Create Account":
-                this.createAccount();
-                break;            
-            case "Remove Account":
-                this.removeAccount();
-                break;
-            case "Rename Account":
-                this.renameAccount();
-                break;
-            case "Sum Balance":
-                this.sumBalance();                
-                break;
-            case "Max Balance":
-                this.maxBalance();
-                break;            
-            case "Min Balance":
-                this.minBalance();
-                break;
-            case "Deposit":
-                this.deposit();
-                break;
-            case "Withdraw":
-                this.withdraw();
-                break;   
-            case "Balance":
-                this.balance();
-                break;  
-            default:                                                                                                                                                    
-        }      
-    }    
-    
-    inputChg (e){
-        this.setState({
-            inputAmt: e.target.value
-          });        
-    }
-
-    cardClick(e) {
-        this.setState({
-            currentAccount: e.target.getAttribute("update") 
-          }); 
-    }    
+    }     
 
     componentDidUpdate() {
 
@@ -95,21 +48,21 @@ class Bank extends React.Component {
                             {this.state.list}
                         </ul>
                     </div>
-                
                     <div className={`panel ${this.context.panel2}`}>
                         <label id="active_class" className={`highlight ${this.context.glow}`}>Active Account: {this.state.currentAccount}</label>
                         <div className={`subpanel ${this.context.selectChd}`}>                             
-                            <button type="button" className={`spbtn1 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Create Account</button>
-                            <button type="button" className={`spbtn2 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Remove Account</button>
-                            <button type="button" className={`spbtn3 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Rename Account</button>        
-                            <button type="button" className={`spbtn4 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Sum Balance</button>
-                            <button type="button" className={`spbtn5 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Max Balance</button>
-                            <button type="button" className={`spbtn6 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Min Balance</button>
+                            <button type="button" className={`spbtn1 ${this.context.btnFG}`} onClick={(e) => this.createAccount()}>Create Account</button>
+                            <button type="button" className={`spbtn2 ${this.context.btnFG}`} onClick={(e) => this.removeAccount()}>Remove Account</button>
+                            <button type="button" className={`spbtn3 ${this.context.btnFG}`} onClick={(e) => this.renameAccount()}>Rename Account</button>        
+                            <button type="button" className={`spbtn4 ${this.context.btnFG}`} onClick={(e) => this.sumBalance()}>Sum Balance</button>
+                            <button type="button" className={`spbtn5 ${this.context.btnFG}`} onClick={(e) => this.maxBalance()}>Max Balance</button>
+                            <button type="button" className={`spbtn6 ${this.context.btnFG}`} onClick={(e) => this.minBalance()}>Min Balance</button>
                             <p className="spp1">Amount:</p>
                             <input type="number" className={`inbtn1 ${this.context.btnFG}`} value={this.state.inputAmt} onChange={(e) => this.inputChg(e)}></input>       
-                            <button type="button" className={`inbtn7 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Deposit</button>
-                            <button type="button" className={`inbtn8 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Withdraw</button>
-                            <button type="button" className={`inbtn9 ${this.context.btnFG}`} onClick={(e) => this.buttonClick(e)}>Balance</button>                                    
+                            <button type="button" className={`inbtn7 ${this.context.btnFG}`} onClick={(e) => this.deposit()}>Deposit</button>
+                            <button type="button" className={`inbtn8 ${this.context.btnFG}`} onClick={(e) => this.withdraw()}>Withdraw</button>
+                            <button type="button" className={`inbtn9 ${this.context.btnFG}`} onClick={(e) => this.balance()}>Balance</button>                                    
+                            <button type="button" className={`spbtn10 ${this.context.btnFG}`} onClick={(e) => this.randAccount()}>Random</button>
                         </div>
                     </div>
                 </div>            
@@ -120,6 +73,18 @@ class Bank extends React.Component {
             </div>
         );
     }    
+
+    inputChg (e){
+        this.setState({
+            inputAmt: e.target.value
+          });        
+    }
+
+    cardClick(e) {
+        this.setState({
+            currentAccount: e.target.getAttribute("update") 
+          }); 
+    }   
 
     renderList(list, msg, key) {        
         if(list.length === 5) {
@@ -141,6 +106,44 @@ class Bank extends React.Component {
         )
     }
 
+    randAccount() {
+        const acct = ["Investment", "High Interest", "TFSA", "RRSP", "Bit Coin", "Blockchain", "Spending"];
+        const holder = this.state.user;   
+        let cards = this.state.card.slice(); 
+
+        let isAdd=false;
+        let maxTry=0;
+        let i=0;
+        let name = acct[0];
+        while((maxTry < 50) && !isAdd) {
+
+            name = acct[i] + maxTry;
+
+            if (!holder.isNameExisting(name)) {
+                holder.add_account(name,Math.round(Math.random()*100));
+                this.addCard(cards, name, "Balance: $" + Math.round(Math.random()*100));
+                    
+                isAdd=true;
+
+                // Maintain Page State
+                this.setState({
+                    currentAccount: name,
+                    user: holder,
+                    list: [],
+                    card: cards,
+                });                                
+            }
+
+            i=maxTry%(acct.length-1);
+            maxTry++;
+        }
+
+        if (!isAdd) {
+            window.alert("Failed to randomly generate account, please enter it manually.");
+        }
+
+    }
+
     createAccount() {
         const name = window.prompt("Enter Account Name: ","Saving");
         const holder = this.state.user;   
@@ -158,9 +161,6 @@ class Bank extends React.Component {
                                list: [],
                                card: cards,
                             });                
-
-                // Save State to the Server
-                // NET.putData(url, page_state);
             }
             else {
                 window.alert("Invalid account name, please try again.");
@@ -195,8 +195,6 @@ class Bank extends React.Component {
                     card: cards,
                 }); 
 
-                // Save State to the Server
-                // NET.putData(url, page_state);                    
                 return; 
             }
         }        
@@ -221,7 +219,7 @@ class Bank extends React.Component {
             else {
                 let name = window.prompt("Enter New Name for the Account: ");
 
-                if(!holder.isNameExisting(name)) {
+                if(!holder.isNameExisting(name) && (name !== null) && (name !== "")) {
                     holder.rename_account(currentAccount, name);
 
                     for (let i=0; i<holder.accounts.length; i++) {                        
@@ -234,9 +232,7 @@ class Bank extends React.Component {
                         list: [],
                         card: cards,
                     });    
-
-                    // Save State to the Server
-                    // NET.putData(url, page_state);                        
+                      
                     return;
                 }
                 else {
@@ -312,9 +308,6 @@ class Bank extends React.Component {
                 inputAmt: 0,
                 key: key,
             }); 
-
-            // Save State to the Server
-            // NET.putData(url, page_state);
         }      
     }
 
@@ -344,9 +337,6 @@ class Bank extends React.Component {
                 inputAmt: 0,
                 key: key,
             }); 
-
-            // Save State to the Server
-            // NET.putData(url, page_state);
         }                 
     }
     

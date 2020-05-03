@@ -7,7 +7,7 @@ import traint from "../images/train cart3.svg";
 function NodeHead(props) {
   return (
     <div className={props.nodecss}>
-      <p>{props.subject}</p> <p>Amount: {props.amount}</p>
+      <p>{props.subject}</p> <p>Qty: {props.amount}</p>
       <ReactSvgInjector src={trainh} className="train">
                     <Mutate selector="path" class={props.trcss} />
       </ReactSvgInjector>            
@@ -18,7 +18,7 @@ function NodeHead(props) {
 function Node(props) {
   return (
     <div className={props.nodecss}>
-      <p>{props.subject}</p> <p>Amount: {props.amount}</p>
+      <p>{props.subject}</p> <p>Qty: {props.amount}</p>
       <ReactSvgInjector src={trainc1} className="train">
                     <Mutate selector="path" class={props.trcss} />
       </ReactSvgInjector>      
@@ -29,7 +29,7 @@ function Node(props) {
 function NodeTail(props) {
   return (
     <div className={props.nodecss}>
-      <p>{props.subject}</p> <p>Amount: {props.amount}</p>
+      <p>{props.subject}</p> <p>Qty: {props.amount}</p>
       <ReactSvgInjector src={traint} className="train" >
                     <Mutate selector="path" class={props.trcss} />
       </ReactSvgInjector>       

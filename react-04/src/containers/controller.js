@@ -28,6 +28,7 @@ class AppsController extends React.Component {
     pageClick(e) {
         let app;
         let page = e.target.alt;
+
         switch (e.target.alt) {
             case "Home":
                 app = <Home />;

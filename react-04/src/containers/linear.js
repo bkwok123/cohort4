@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ThemeContext from '../context/ThemeContext';
 import PL from '../components/stackable';
 import LI from '../scripts/linearobj';
@@ -12,40 +12,47 @@ function Linear() {
   const [dqueue, setDqueue] = useState([]);
   const [sobj, setSOBJ] = useState([]);
   const [qobj, setQOBJ] = useState([]);
-  const [key, setKey] = useState(0);
-  const [isNew, setIsNew] = useState(false);
-  const [otheme, setOtheme] = useState("");
+  const [isNews, setIsNewS] = useState(false);
+  const [isNewq, setIsNewQ] = useState(false);
   const themeCSS = React.useContext(ThemeContext);
 
-  function renderStack() {
+  const renderStack = useCallback(() => {
     const linearobj = [];
     let current = stack.head;
     let i=0;
-    while(current != null) {
-      // Key prefix is changed to prevent duplicated key generated outside this render function
-      linearobj[i] = <PL.Plate key={`ki${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
+    while(current != null) {      
+      linearobj[i] = <PL.Plate key={`k${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
       current = current.forwardNode;
-      console.log(current);
       i++;
-      }
+    }
+
+    // Change the latest stackable style
+    if(isNews && (linearobj.length>0)) {
+      const prop = linearobj[linearobj.length-1].props;
+      linearobj[linearobj.length-1] = <PL.Plate key={`k${i}`} nodecss={`stackable drop-in ${themeCSS.stack} ${themeCSS.nstack}`} subject={prop.subject} amount={prop.amount} unique={prop.unique}/>;   
+    }
 
     return linearobj
-  }
+  }, [themeCSS, stack, isNews]);
 
-  function renderQueue() {
+  const renderQueue = useCallback(() => {
     const linearobj = [];
     let current = queue.head;
     let i=0;
-    while(current != null) {
-      // Key prefix is changed to prevent duplicated key generated outside this render function
-      linearobj[i] = <PL.Plate key={`ki${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
+    while(current != null) {      
+      linearobj[i] = <PL.Plate key={`k${i}`} nodecss={`stackable ${themeCSS.stack}`} subject={current.subject} amount={current.amount} unique={i}/>;
       current = current.forwardNode;
-      console.log(current);
       i++;
-      }
+    }
+
+    // Change the latest stackable style
+    if(isNewq && (linearobj.length>0)) {
+      const prop = linearobj[linearobj.length-1].props;
+      linearobj[linearobj.length-1] = <PL.Plate key={`k${i}`} nodecss={`stackable drop-in ${themeCSS.stack} ${themeCSS.nstack}`} subject={prop.subject} amount={prop.amount} unique={prop.unique}/>;   
+    }    
 
     return linearobj
-  }
+  }, [themeCSS, queue, isNewq]);
 
   function clearLIFOHandler() {
     setStack(new LI.LIFO());
@@ -61,76 +68,47 @@ function Linear() {
   }
 
   useEffect(() => {
-    // Added animation in the new stack
-    // NOTE: This step is added only to demonstrate useEffect => this step
-    // can be incorporated in the push and dequeue handler
-    const nstackable = document.getElementById(`k${key-1}`);
-    if ((nstackable !== null) && (isNew)) {
-      nstackable.setAttribute("class", `stackable drop-in ${themeCSS.stack} ${themeCSS.nstack}`);
-    }
-
-    // Render the display on theme change
-    if(themeCSS !== otheme){          
-      setOtheme(themeCSS);
-      setSOBJ(renderStack());
-      setQOBJ(renderQueue());
-    }
-
-    return () => {
-      const pstackable = document.getElementById(`k${key-1}`);
-      if (pstackable !== null) {       
-        pstackable.setAttribute("class", `stackable ${themeCSS.stack}`);
-      }
-    };    
-  });
+    setSOBJ(renderStack());
+    setQOBJ(renderQueue()); 
+  }, [renderStack, renderQueue]);
 
   function pushHandler(sub, amt) {
   
-    if (stack.size < 20) {
-      const nstack = sobj.slice();            
-      stack.push(sub,amt);               
-      nstack.push(<PL.Plate key={`k${key}`} nodecss={`stackable ${themeCSS.stack}`} subject={sub} amount={amt} unique={key}/>);      
-
-      setSOBJ(nstack);
+    if (stack.size < 20) {           
+      stack.push(sub,amt);                  
+      setSOBJ(renderStack());            
       setSsize(ssize+1); 
-      setKey(key+1);
-      setIsNew(true);
+      setIsNewS(true);
     }
   }
 
   function popHandler() {
 
     if (stack.size > 0) {
-      const nstack = sobj.slice();
       stack.pop();
-      nstack.pop();   
-      setSOBJ(nstack);  
+      setSOBJ(renderStack());  
       setSsize(ssize-1);
-      setIsNew(false);       
+      setIsNewS(false);       
     }
   }
 
   function enqueueHandler(sub, amt) {
 
     if (queue.size < 20) {
-      const q = qobj.slice();
       const dq = dqueue.slice();
       if(dq.length > 0) {
         const prop = dq[dq.length-1].props;
         dq.pop();        
-        q.push(<PL.Plate key={`k${key}`} nodecss={`stackable ${themeCSS.stack}`} subject={prop.subject} amount={prop.amount} unique={key}/>);
         queue.enqueue(prop.subject,prop.amount);
         setDqueue(dq);
       }
       else {        
-        q.push(<PL.Plate key={`k${key}`} nodecss={`stackable ${themeCSS.stack}`} subject={sub} amount={amt} unique={key}/>);        
         queue.enqueue(sub,amt);
       }      
-      
-      setQOBJ(q);            
+                  
+      setQOBJ(renderQueue());      
       setQsize(qsize+1);
-      setKey(key+1);
-      setIsNew(true);       
+      setIsNewQ(true);       
     }       
   }
 
@@ -145,7 +123,7 @@ function Linear() {
       setQOBJ(q);  
       setQsize(qsize-1);    
       setDqueue(dq);
-      setIsNew(false);       
+      setIsNewQ(false);       
     }
   }
 

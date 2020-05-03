@@ -12,18 +12,16 @@
 .llMonitor {  
   display: grid;
   grid-template-columns: repeat(4, minmax(6vw, auto));
-  grid-template-rows: 3vw 2vw 2vw 4vw 2vw 2vw 2vw;
+  grid-template-rows: 3vw 2vw 2vw 4vw 5vw;
   grid-template-areas: "p1  p1  p1  p1"
                        "p2  p2  p3  p3"                       
                        "i1  i1  i2  i2"
                        "p4  p4  p4  p4"
-                       "b1  b2  b3  b4"
-                       "b5  b8  b7  b6"
-                       "b9  b9  b10 b10";    
+                       "n1  n1  n1  n1";
   justify-content: center;
   align-items: center;
   border-radius: 2vh;
-  width: 40vw;
+  width: 25vw;
   min-height: 10vh;   
   padding: 5vh;
   margin: 3vh;
@@ -33,6 +31,26 @@
 .llmp2 {grid-area: p2;}
 .llmp3 {grid-area: p3;}
 .llmp4 {grid-area: p4;}
+.llmIn1 {grid-area: i1;}
+.llmIn2 {grid-area: i2;}
+
+.llMonitor > p {
+  text-align: center;
+  margin: 0px;
+  font-size: 1vw;
+}
+
+.llMnav {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(3vw, auto));
+  grid-template-rows: 2.5vw 2.5vw;
+  grid-template-areas: "b1 b2 b3 b4 b9"
+                       "b5 b8 b7 b6 b10";
+  justify-content: center;
+  align-items: center;
+  grid-area: n1;
+}
+
 .llmB1 {grid-area: b1;}
 .llmB2 {grid-area: b2;}
 .llmB3 {grid-area: b3;}
@@ -41,21 +59,32 @@
 .llmB6 {grid-area: b6;}
 .llmB7 {grid-area: b7;}
 .llmB8 {grid-area: b8;}
-.llmIn1 {grid-area: i1;}
-.llmIn2 {grid-area: i2;}
 .llmIn9 {grid-area: b9;}
 .llmIn10 {grid-area: b10;}
 
-.llMonitor > p {
-  text-align: center;
-  margin: 0px;
-  font-size: 1vw;
+.llmRbtn {    
+  width: calc(1.5vw + 1.5vh);
+  height: calc(1.5vw + 1.5vh);
+  padding: 0.1vw;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: calc(1vw + 1vh);
 }
 
-.llmbtn {    
-  font-size: 1vw;
-  margin: 0.25vw;  
-  border-radius: 0.5vw; 
+.llmRMbtn {    
+  width: calc(1.5vw + 1.5vh);
+  height: calc(1.5vw + 1.5vh);
+  padding: 0.1vw;
+  border-radius: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  transform: rotateY(180deg);
+}
+
+.llmSVG {
+  width: calc(1.2vw + 1.2vh);
+  height: calc(1.2vw + 1.2vh);
 }
 
 .llmInp {
@@ -87,7 +116,7 @@
   margin: 0;
   width: 4vw;
   height: 8vw;
-  font-size: 0.7vw;
+  font-size: 1vw;
 }
 
 .node > p{
@@ -95,6 +124,6 @@
 }
 
 .train {
-  width: 10vw;
-  height: 4vw;  
+  width: 4vw;
+  height: calc(2vw+2vh);  
 }
