@@ -1,3 +1,4 @@
+import functools
 # define attributes / variables
 # number
 # string
@@ -517,18 +518,109 @@ print(search(friends, "Rolf Smith", get_friend_name))
 ###################################################
 # Simple decorators in Python
 ###################################################
+user = {"username": "jose", "access_level": "guest"}
+
+def get_admin_password():
+    return "1234"
+
+def make_secure(func):
+    def secure_function():
+        if user["access_level"] == "admin":
+            return func()
+        else:
+            return f"No admin permissions for {user['username']}."
+    
+    return secure_function
+
+get_admin_password = make_secure(get_admin_password)
+
+print(get_admin_password)
 
 ###################################################
 # The 'at' syntax for decorators
 ###################################################
+def make_secure2(func):
+    def secure_function():
+        if user["access_level"] == "admin":
+            return func()
+        else:
+            return f"No admin permissions for {user['username']}."
+    
+    return secure_function
+
+@make_secure2               #  Apply make_secure2 decorator without explicitly call it later
+def get_admin_password2():
+    return "1234"    
+
+print(get_admin_password2)
+print(get_admin_password2.__name__) # Internal function name is "secure_function" instead of "get_admin_password2"
+                                    # Use the next functools to solve this issue
+
+# import functools
+# 
+# def make_secure2(func):
+#     @functools.wraps(func)
+#     def secure_function():
+#         if user["access_level"] == "admin":
+#             return func()
+#         else:
+#             return f"No admin permissions for {user['username']}."
+# 
+#     return secure_function
+
 
 ###################################################
 # Decorating functions with parameters
 ###################################################
+user = {"username": "jose", "access_level": "admin"}
+
+def make_secure4(func):
+    @functools.wraps(func)
+    def secure_function4(*args, **kwargs):
+        if user["access_level"] == "admin":
+            return func(*args, **kwargs)
+        else:
+            return f"No admin permissions for {user['username']}."
+    
+    return secure_function4
+
+@make_secure4
+def get_password4(panel):
+    if panel == "admin":
+        return "1234" 
+    elif panel == "billing":
+        return "super_secure_password"
+
+print(get_password4("billing"))
+
 
 ###################################################
 # Decorators with parameters
 ###################################################
+def make_secure5(access_level):
+    def decorator(func):
+        @functools.wraps(func)
+        def secure_function5(*args, **kwargs):
+            if user["access_level"] == access_level:
+                return func(*args, **kwargs)
+            else:
+                return f"No {access_level} permissions for {user['username']}."
+        
+        return secure_function5
+
+    return decorator
+
+@make_secure5("admin")
+def get_admin_password5():
+    return "admin: 1234"
+
+@make_secure5("guest")
+def get_dashboard_password():
+    return "user: user_password"
+
+print(get_admin_password5())
+print(get_dashboard_password())
+
 
 ###################################################
 # Mutable default parameters (and why they're a bad idea)
