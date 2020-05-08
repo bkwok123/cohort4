@@ -505,7 +505,14 @@ friends = [
 def get_friend_name(friend):
     return friend["name"]
 
-print(search(friends, "Bob Smith", get_friend_name))
+print(search(friends, "Rolf Smith", get_friend_name))
+
+# or use a Lambda function without get_friend_name
+# print(search(friends, "Rolf Smith", lambda friend: friend["name"]))
+
+# or use itemgetter
+# from operator import itemgetter
+# print(search(friends, "Rolf Smith", itemgetter("name")))
 
 ###################################################
 # Simple decorators in Python
