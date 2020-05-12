@@ -5,9 +5,9 @@ verify_ssl = true
 
 [dev-packages]
 pylint = "*"
+pytest = "*"
 
 [packages]
-pytest = "*"
 
 [requires]
 python_version = "3.8"
