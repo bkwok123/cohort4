@@ -1,3 +1,4 @@
+# https://realpython.com/pipenv-guide/#pipenv-introduction
 # 1. Install virtual environment if not installed
 # pip install pipenv
 # 2. Switch to virtual environment
@@ -30,6 +31,8 @@
 # 5. Deactivate virtual environment
 # deactivate
 # exit
+# 6. Show dependency graph
+# pipenv graph
 import os
 import pytest
 from pytest import raises
