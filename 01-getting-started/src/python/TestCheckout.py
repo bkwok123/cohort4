@@ -27,6 +27,9 @@
 # -m "expression"
 #       - matches tests found that have a "pytest.mark" decorator that matches the
 #       specified expression.
+# 5. Deactivate virtual environment
+# deactivate
+# exit
 import os
 import pytest
 from pytest import raises
