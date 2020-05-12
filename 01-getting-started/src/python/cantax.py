@@ -1,18 +1,18 @@
-# import smtplib
+def calculate_taxamt(income):
 
-# sender = 'no_reply@mydomain.com'
-# receivers = ['person@otherdomain.com']
+    if (income <= 48535):
+        fedtax = income * 0.15
+    elif (income <= 97069):
+        fedtax = (income - 48535) * 0.205 + 7280
+    elif (income <= 150473):
+        fedtax = (income - 97069) * 0.26 + 17230
+    elif (income <= 214368):
+        fedtax = (income - 150473) * 0.29 + 31115
+    else:
+        fedtax = (income - 214368) * 0.33 + 49645
 
-# message = """From: No Reply <no_reply@mydomain.com>
-# To: Person <person@otherdomain.com>
-# Subject: Test Email
+    return fedtax
 
-# This is a test e-mail message.
-# """
-
-# try:
-#    smtpObj = smtplib.SMTP('localhost')
-#    smtpObj.sendmail(sender, receivers, message)         
-#    print("Successfully sent email")
-# except SMTPException:
-#    print("Error: unable to send email")
+def calculate_taxrate(income):
+    
+    return calculate_taxamt(income)/income
