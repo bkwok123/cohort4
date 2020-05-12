@@ -1,8 +1,10 @@
-# 1. Switch to virtual environment
+# 1. Install virtual environment if not installed
+# pip install pipenv
+# 2. Switch to virtual environment
 # pipenv shell
-# 2. Install pytest if not installed
+# 3. Install pytest if not installed
 # pipenv install pytest
-# 3. Run test
+# 4. Run test
 # pytest -v
 #       - only works when test file start with test_ or end with _test
 #         Report in verbose mode
@@ -25,7 +27,6 @@
 # -m "expression"
 #       - matches tests found that have a "pytest.mark" decorator that matches the
 #       specified expression.
-
 import os
 import pytest
 from pytest import raises
@@ -86,4 +87,3 @@ def test_verifyReadFileException(checkout, monkeypatch):
     monkeypatch.setattr("os.path.exists", mock_exists)
     with raises(Exception):
         checkout.readPricesFile("testfile")
-
