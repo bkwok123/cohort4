@@ -8,10 +8,33 @@ import os
 def readfile(dirpath, filename):
 
     path = os.path.join(dirpath, filename)
+    # 'r' - This is the default mode. It Opens file for reading.
+    # 'w' - This Mode Opens file for writing. If file does not exist,
+    #       it creates a new file. If file exists it truncates the file.
+    # 'x' - Creates a new file. If file already exists, the operation fails.
+    # 'a' - Open file in append mode. 
+    #       If file does not exist, it creates a new file.
+    # 't' - This is the default mode. It opens in text mode.
+    # 'b' - This opens in binary mode.
+    # '+' - This will open a file for reading and writing (updating)
     with open(path, 'rb') as input:
         data = input.read()   
     return data
 
+def writefile(dirpath, filename, content):
+    
+    path = os.path.join(dirpath, filename)
+    # w+ - write and will create a file if it does not exist in library
+    # a+ - plus sign indicates that it will create a new file if it does not exist
+    with open(path, 'w+') as output:
+        output.write(f"{content}\n")    
+
+def analyzefile(dirpath, filename):
+
+    filestr = readfile(dirpath, filename).decode("ascii")
+    filelen = len(filestr)
+        
+    return filelen
 
 
 # Exercise - Reading Directories
