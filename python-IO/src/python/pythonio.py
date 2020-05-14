@@ -17,8 +17,9 @@ def readfile(dirpath, filename):
     # 't' - This is the default mode. It opens in text mode.
     # 'b' - This opens in binary mode.
     # '+' - This will open a file for reading and writing (updating)
-    with open(path, 'rb') as input:
-        data = input.read()   
+    with open(path, 'r') as input:
+        data = input.read()  
+
     return data
 
 def writefile(dirpath, filename, content):
@@ -26,16 +27,90 @@ def writefile(dirpath, filename, content):
     path = os.path.join(dirpath, filename)
     # w+ - write and will create a file if it does not exist in library
     # a+ - plus sign indicates that it will create a new file if it does not exist
-    with open(path, 'w+') as output:
+    with open(path, 'a+') as output:
         output.write(f"{content}\n")    
 
-def analyzefile(dirpath, filename):
+def countlines(dirpath, filename):
 
-    filestr = readfile(dirpath, filename).decode("ascii")
-    filelen = len(filestr)
-        
-    return filelen
+    path = os.path.join(dirpath, filename)
+    # Without the 'rb' argument to open, this will work anywhere, 
+    # but performance may suffer greatly on Windows or Macintosh platforms.
+    count = 0
+    with open(path, 'rb') as input:        
+        for line in input:
+            count += 1
+    return count
 
+# https://kite.com/python/answers/how-to-count-the-lines,-word,-and-characters-within-a-text-file-in-python
+def countcontent(dirpath, filename):
+
+    path = os.path.join(dirpath, filename)
+    number_of_lines = 0
+    number_of_words = 0
+    number_of_characters = 0
+    with open(path, 'rb') as input:        
+        for line in input:
+            line = line.decode("ascii").strip("\n")
+            words = line.split()
+            
+            number_of_lines += 1
+            number_of_words += len(words)
+            number_of_characters += len(line)
+
+    return {"line": number_of_lines, "word": number_of_words, "char": number_of_characters}
+
+def countcodestmt(dirpath, filename, codekeyword, commentdictionary):
+
+    path = os.path.join(dirpath, filename)
+    number_of_lines = 0
+    number_of_words = 0
+    number_of_stmt = 0
+    number_of_characters = 0
+    wpos = 0
+    lpos = -1
+    scpos = -1
+    mcowpos = -1
+    mccwpos = -1
+    with open(path, 'rb') as input:        
+        for line in input:
+            line = line.decode("ascii").strip("\n")
+            words = line.split()
+
+            for word in words:
+                wpos += 1                 
+                if word.startswith(commentdictionary["scomment"]):
+                    # Track single line comment symbol position                    
+                    lpos =  number_of_lines
+                    scpos = wpos                 
+                elif word.startswith(commentdictionary["mcommento"]):
+                    mcowpos = wpos                    
+                elif word.endswith(commentdictionary["mcommentc"]):
+                    mccwpos = wpos         
+                elif word==codekeyword:
+                    if (mcowpos < 0):
+                        # No mutiple line comment opening symbol
+                        if (wpos < scpos):
+                            # Before single line comment symbol position
+                            number_of_stmt +=1
+                        elif (lpos != number_of_lines):
+                            # After single line comment symbol position but not on the same line
+                            number_of_stmt +=1  
+                    elif (mcowpos < mccwpos):
+                        # Mutiple line comment closing symbol position is after opening symbol position
+                        if (wpos > mccwpos):
+                            # After mutiple line comment closing symbol position
+                            if (wpos < scpos):
+                                # Before single line comment symbol position
+                                number_of_stmt +=1
+                            elif (lpos != number_of_lines):
+                                # After single line comment symbol position but not on the same line
+                                number_of_stmt +=1                    
+
+            number_of_lines += 1
+            number_of_words += len(words)
+            number_of_characters += len(line)
+
+    return number_of_stmt
 
 # Exercise - Reading Directories
 # ●	read all the files and their sizes from a directory
