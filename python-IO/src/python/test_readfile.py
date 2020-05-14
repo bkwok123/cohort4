@@ -1,12 +1,14 @@
 import pytest
+import os
 from pathlib import Path
 from testfixtures import TempDirectory
-from pythonio import readfile, writefile, countlines, countcontent, countcodestmt
+from readfile import readfile, writefile, countlines, countcontent, countcodestmt
 
+#################################################################
+# Exercise - Reading a file
+#################################################################
 # https://testfixtures.readthedocs.io/en/latest/files.html
 # https://docs.python.org/3/reference/lexical_analysis.html#string-and-bytes-literals
-
-# Exercise - Reading a file
 @pytest.fixture(params=[
         {"content": 'Test File Content\n123\n456', 
         "len": 23, "line": 3, "word": 5, 
@@ -57,12 +59,3 @@ def test_countcodestmt(setup):
     assert stmtcount == setup["stmtcount"]
     # stmt = countcodestmt(Path("C:/code/cohort4/01-getting-started/src/scripts/"), "syntax.js", "else", {"scomment": "//", "mcommento": "/*", "mcommentc": "*/"})    
     # assert stmt == 0
-
-
-# https://docs.pytest.org/en/latest/capture.html
-
-# Exercise - Reading Directories
-def test_myoutput(capsys):  # or use "capfd" for fd-level
-    print("hello")
-    captured = capsys.readouterr()
-    assert captured.out == "hello\n"
