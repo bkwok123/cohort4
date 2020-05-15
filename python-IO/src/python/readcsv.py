@@ -17,9 +17,8 @@
 # ○	print a nice little report at the end
 # ○	as a stretch goal; can you do this with no “if” statement 
 # ●	write the report to a file called report.txt.
-
 def readcsv(dirpath, filename):
-
+    
     # https://stackabuse.com/reading-files-with-python/
     # https://docs.python.org/2/library/functions.html#open
     path = f"{dirpath}/{filename}"
@@ -27,41 +26,44 @@ def readcsv(dirpath, filename):
     linenum = 1
     coltitle = {}
     colKeyValue = {"CLASS": 0, "SECTOR": 0, "RES_CNT": 0}
+    bufferKeyValue = {}
     resultKeyValue = {}
 
     with open(path, 'r') as file:
+
+        # Mark the column index for each column        
+        line = file.readline()  
+        line = line.strip("\n")      
+        words = line.split(",")
+        col = 1                                
+        for word in words:                    
+            coltitle[word] = col
+            col += 1                                
+        colKeyValue["CLASS"] = coltitle["CLASS"]
+        colKeyValue["SECTOR"] = coltitle["SECTOR"]
+        colKeyValue["RES_CNT"] = coltitle["RES_CNT"]        
+        linenum +=1
+        
         for line in file:            
             line = line.strip("\n")
             col = 1            
 
-            # Mark the column index for each column
-            if (linenum == 1):                                
-                words = line.split(",")                                
-                for word in words:                    
-                    coltitle[word] = col
-                    col += 1                                
-            colKeyValue["CLASS"] = coltitle["CLASS"]
-            colKeyValue["SECTOR"] = coltitle["SECTOR"]
-            colKeyValue["RES_CNT"] = coltitle["RES_CNT"]
+            # Process the second line and beyond            
+            words = line.split(",")                                
+            for word in words:
+                bufferKeyValue[col] = word             
+                col += 1  
+            
+            key1 = bufferKeyValue[colKeyValue["CLASS"]]
+            key2 = bufferKeyValue[colKeyValue["SECTOR"]]
+            value1 = bufferKeyValue[colKeyValue["RES_CNT"]]
+            
+            try:
+                temp = resultKeyValue[(key1, key2)]
+            except KeyError:
+                temp = 0
 
-            # Process the second line and beyond
-            if (linenum > 1):
-                words = line.split(",")                                
-                for word in words:                    
-                    if (col == colKeyValue["CLASS"]):
-                        key1 = word
-                    if (col == colKeyValue["SECTOR"]):
-                        key2 = word
-                    if (col == colKeyValue["RES_CNT"]):
-                        value1 = word                        
-                    col += 1  
-                
-                try:
-                    temp = resultKeyValue[(key1, key2)]
-                except KeyError:
-                    temp = 0
-
-                resultKeyValue[(key1, key2)] = int(value1) + int(temp)
+            resultKeyValue[(key1, key2)] = int(value1) + int(temp)            
 
             linenum +=1        
     
