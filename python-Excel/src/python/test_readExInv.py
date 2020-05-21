@@ -3,7 +3,7 @@ import os
 import datetime
 from pathlib import Path
 from openpyxl import load_workbook
-from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateCustomer
+from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateDictionary, checkType, checkPostalCode, checkPhone, validateCustomer, validateInv, validateInvItem, validateProduct, printError
 
 @pytest.fixture
 def dirpath():
@@ -102,10 +102,43 @@ def test_loadWStoDictionary(dirpath, infile, setup):
         for field in setup["fields"]:
             assert field in dictionary.keys()
 
+def test_checkType():    
+    assert checkType(123, int) == ""                            
+    assert checkType("123", int) == "Incorrect Data Type, Expected: <class 'int'>, Received: <class 'str'>\n"
+    assert checkType("123", str) == ""                            
+    assert checkType("ABC", str) == ""                            
+    assert checkType("ABC", int) == "Incorrect Data Type, Expected: <class 'int'>, Received: <class 'str'>\n"
+    assert checkType(12.3, float) == ""
+    assert checkType(12, float) == ""
+    assert checkType(12.0, float) == ""
+    assert checkType("12.3", float) == "Incorrect Data Type, Expected: <class 'float'>, Received: <class 'str'>\n"
+
+def test_checkPostalCode():    
+    assert checkPostalCode("123") == "Incorrect Postal Format"  
+    assert checkPostalCode("123567") == "Incorrect Postal Format"  
+    assert checkPostalCode("1a3a6a") == "Incorrect Postal Format"  
+    assert checkPostalCode("a2a5a7") == ""  
+    assert checkPostalCode("a2a 5a7") == ""
+
+def test_checkPhone():
+    assert checkPhone("4031234567") == ""      
+    assert checkPhone("403 -123 -4567") == ""
+    assert checkPhone("(403)123-4567") == ""
+    assert checkPhone("(403)123-45678") == "Incorrect Phone Format"
+    assert checkPhone("(403)123-45A7") == "Incorrect Phone Format"
+    assert checkPhone("(403)abc-45A7") == "Incorrect Phone Format"
 
 @pytest.mark.parametrize(
-    "dictionary,expected",
-    [({'customer_id': {1: 1, 2: 2, 3: 3}, 
+    "fields,dictionary,expected",
+    [({"customer_id": {"func": [], "type": int},
+       "first_name": {"func": [], "type": str},
+       "last_name": {"func": [], "type": str},
+       "phone": {"func": [checkPhone], "type": str},
+       "address": {"func": [], "type": str},
+       "city": {"func": [], "type": str},
+       "province": {"func": [], "type": str},
+       "postal_code": {"func": [checkPostalCode], "type": str}},
+      {'customer_id': {1: 1, 2: 2, 3: 3}, 
        'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
        'last_name': {1: 'Doe', 2: 'Smith', 3: None}, 
        'phone': {1: 4031234567, 2: 7081234567, 3: 9051234567}, 
@@ -113,48 +146,159 @@ def test_loadWStoDictionary(dirpath, infile, setup):
        'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Halifax'}, 
        'province': {1: 'AB', 2: 'AB', 3: 'NS'}, 
        'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'A1B1C1'}},        
-      {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value'}, 
+      {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value\n'}, 
        'phone': {}, 'address': {}, 'city': {}, 'province': {}, 'postal_code': {}, 
-       'MissingField': {}}),
+       'MissingField': {}, 'errorCount': 1}),
+
+     ({"customer_id": {"func": [], "type": int},
+       "first_name": {"func": [], "type": str},
+       "last_name": {"func": [], "type": str},
+       "phone": {"func": [checkPhone], "type": str},
+       "address": {"func": [], "type": str},
+       "city": {"func": [], "type": str},
+       "province": {"func": [], "type": str},
+       "postal_code": {"func": [checkPostalCode], "type": str}},
+      {'customer_id': {1: 1, 2: 2, 3: 3}, 
+       'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
+       'last_name': {1: 'Doe', 2: 'Smith', 3: None}, 
+       'phone': {1: "403AB34567", 2: 7081234567, 3: 9051234567}, 
+       'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Test Dr'},  
+       'province': {1: 'AB', 2: 'AB', 3: 'NS'}},
+      {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value\n'}, 
+       'phone': {1: 'Incorrect Phone Format\n'}, 'address': {}, 'province': {}, 
+       'MissingField': {'city': 'city', 'postal_code': 'postal_code'}, 'errorCount': 2}),
+
+     ({"invoice_id": {"func": [], "type": int},
+      "customer_id": {"func": [], "type": int},
+      "invoice_date": {"func": [], "type": datetime.datetime}},
+     {'invoice_id': {1: 1, 2: 2, 3: 3}, 
+      'customer_id': {1: 1, 2: 2, 3: 1}, 
+      'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 
+                       2: datetime.datetime(2020, 5, 19, 0, 0), 
+                       3: datetime.datetime(2020, 5, 19, 0, 0)}},
+     {'invoice_id': {}, 'customer_id': {}, 'invoice_date': {}, 'MissingField': {}, 'errorCount': 0}),
+
+     ({"invoice_line_Item_id": {"func": [], "type": int},
+       "invoice_id": {"func": [], "type": int},
+       "product_id": {"func": [], "type": int},
+       "item_ref": {"func": [], "type": str},
+       "quantity": {"func": [], "type": int}},
+      {'invoice_line_Item_id': {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}, 
+       'invoice_id': {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 3}, 
+       'product_id': {1: 1, 2: 2, 3: 3, 4: 2, 5: 3, 6: 2}, 
+       'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3', 4: 'Item 1', 5: 'Item 2', 6: 'Item 1'}, 
+       'quantity': {1: 3, 2: 1, 3: 1, 4: 3, 5: 2, 6: 4}},
+      {'invoice_line_Item_id': {}, 'invoice_id': {}, 'product_id': {}, 'item_ref': {}, 'quantity': {},
+       'MissingField': {}, 'errorCount': 0}),
+
+     ({'product_id': {"func": [], "type": int}, 
+       'name': {"func": [], "type": str}, 
+       'description': {"func": [], "type": str}, 
+       'unit_price': {"func": [], "type": float}},                  
+      {'product_id': {1: 1, 2: 2, 3: 3}, 
+       'name': {1: 'Pen', 2: 'Pencil', 3: 'Eraser'}, 
+       'description': {1: 'Ball Pointed, Black Ink', 2: 'Mechanical, 0.3mm', 3: 'White'}, 
+       'unit_price': {1: 3, 2: 5.0, 3: 2}},
+      {'product_id': {}, 'name': {}, 'description': {}, 'unit_price': {}, 'MissingField': {}, 'errorCount': 0})
+    ],                                
+)
+
+def test_validateDictionary(fields,dictionary,expected):                
+
+    errDict = validateDictionary(dictionary, fields)            
+    assert errDict == expected
+
+@pytest.mark.parametrize(
+    "dictionary,expected",    
+    [({'customer_id': {1: 1, 2: 2, 3: 3}, 
+       'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
+       'last_name': {1: 'Doe', 2: 'Smith', 3: 'Gee'}, 
+       'phone': {1: 4031234567, 2: 7081234567, 3: 9051234567}, 
+       'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Test Dr'}, 
+       'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Halifax'}, 
+       'province': {1: 'AB', 2: 'AB', 3: 'NS'}, 
+       'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'A1B1C1'}},        
+      {'customer_id': {}, 'first_name': {}, 'last_name': {}, 
+       'phone': {}, 'address': {}, 'city': {}, 'province': {}, 'postal_code': {}, 
+       'MissingField': {}, 'errorCount': 0}),
 
      ({'customer_id': {1: 1, 2: 2, 3: 3}, 
        'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
        'last_name': {1: 'Doe', 2: 'Smith', 3: None}, 
        'phone': {1: 4031234567, 2: 7081234567, 3: 9051234567}, 
-       'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Test Dr'},  
-       'province': {1: 'AB', 2: 'AB', 3: 'NS'}},
-      {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value'}, 
-       'phone': {}, 'address': {}, 'province': {}, 
-       'MissingField': {'city': 'city', 'postal_code': 'postal_code'}}),
-    # ({'invoice_id': {1: 1, 2: 2, 3: 3}, 
-    #   'customer_id': {1: 1, 2: 2, 3: 1}, 
-    #   'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 
-    #                    2: datetime.datetime(2020, 5, 19, 0, 0), 
-    #                    3: datetime.datetime(2020, 5, 19, 0, 0)}},
-    #   {})
-       ],                  
+       'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Test Dr'}, 
+       'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Halifax'}, 
+       'province': {1: 'AB', 2: 'AB', 3: 'NS'}, 
+       'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'A1B1C1'}},        
+      {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value\n'}, 
+       'phone': {}, 'address': {}, 'city': {}, 'province': {}, 'postal_code': {}, 
+       'MissingField': {}, 'errorCount': 1}),       
+    ],                                
 )
 
 def test_validateCustomer(dictionary,expected):                
-    # dictionary = {'invoice_id': {1: 1, 2: 2, 3: 3}, 
-    #               'customer_id': {1: 1, 2: 2, 3: 1}, 
-    #               'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 
-    #                                2: datetime.datetime(2020, 5, 19, 0, 0), 
-    #                                3: datetime.datetime(2020, 5, 19, 0, 0)}}
 
-    # dictionary = {'invoice_line_Item_id': {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}, 
-    #               'invoice_id': {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 3}, 
-    #               'product_id': {1: 1, 2: 2, 3: 3, 4: 2, 5: 3, 6: 2}, 
-    #               'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3', 4: 'Item 1', 5: 'Item 2', 6: 'Item 1'}, 
-    #               'quantity': {1: 3, 2: 1, 3: 1, 4: 3, 5: 2, 6: 4}}
-
-    # dictionary = {'product_id': {1: 1, 2: 2, 3: 3}, 
-    #               'name': {1: 'Pen', 2: 'Pencil', 3: 'Eraser'}, 
-    #               'description': {1: 'Ball Pointed, Black Ink', 2: 
-    #               'Mechanical, 0.3mm', 3: 'White'}, 
-    #               'unit_price': {1: 3, 2: 5, 3: 2}}
-
-    errDict = validateCustomer(dictionary)    
-    print(errDict)
+    errDict = validateCustomer(dictionary)        
     assert errDict == expected
-                              
+                                       
+@pytest.mark.parametrize(
+    "dictionary,expected",        
+    [({'invoice_id': {1: 1, 2: 2, 3: 3}, 
+       'customer_id': {1: 1, 2: 2, 3: 1}, 
+       'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 
+                       2: datetime.datetime(2020, 5, 19, 0, 0), 
+                       3: datetime.datetime(2020, 5, 19, 0, 0)}},
+      {'invoice_id': {}, 'customer_id': {}, 'invoice_date': {}, 'MissingField': {}, 'errorCount': 0}),
+    ],                                
+)
+
+def test_validateInv(dictionary,expected):
+                    
+    errDict = validateInv(dictionary)        
+    assert errDict == expected
+
+@pytest.mark.parametrize(
+    "dictionary,expected",        
+    [({'invoice_line_Item_id': {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}, 
+       'invoice_id': {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 3}, 
+       'product_id': {1: 1, 2: 2, 3: 3, 4: 2, 5: 3, 6: 2}, 
+       'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3', 4: 'Item 1', 5: 'Item 2', 6: 'Item 1'}, 
+       'quantity': {1: 3, 2: 1, 3: 1, 4: 3, 5: 2, 6: 4}},
+      {'invoice_line_Item_id': {}, 'invoice_id': {}, 'product_id': {}, 'item_ref': {}, 'quantity': {},
+       'MissingField': {}, 'errorCount': 0}),
+    ],                                
+)
+
+def test_validateInvItem(dictionary,expected):
+                    
+    errDict = validateInvItem(dictionary)        
+    assert errDict == expected    
+
+@pytest.mark.parametrize(
+    "dictionary,expected,printout",        
+    [({'product_id': {1: 1, 2: 2, 3: 3}, 
+       'name': {1: 'Pen', 2: 'Pencil', 3: 'Eraser'}, 
+       'description': {1: 'Ball Pointed, Black Ink', 2: 'Mechanical, 0.3mm', 3: 'White'}, 
+       'unit_price': {1: 3, 2: 5.0, 3: 2}},
+      {'product_id': {}, 'name': {}, 'description': {}, 'unit_price': {}, 'MissingField': {}, 'errorCount': 0},
+      []),
+
+     ({'product_id': {1: 1, 2: 2, 3: "A"}, 
+       'name': {1: None, 2: 'Pencil', 3: None}, 
+       'description': {1: 'Ball Pointed, Black Ink', 2: 'Mechanical, 0.3mm', 3: 'White'},},
+      {'product_id': {3: "Incorrect Data Type, Expected: <class 'int'>, Received: <class 'str'>\n"}, 
+       'name': {1: 'Empty Value\n', 3: 'Empty Value\n'}, 'description': {}, 
+       'MissingField': {'unit_price': 'unit_price'}, 'errorCount': 4},
+       ["Error in column", "Row: ", "Empty Value", "MissingField", "Error Count:"]),      
+    ],                                    
+)
+
+def test_validateProduct(dictionary,expected,printout,capsys):
+                    
+    errDict = validateProduct(dictionary)    
+    printError(errDict)    
+    captured = capsys.readouterr()
+
+    assert errDict == expected
+    for value in printout:
+        assert value in captured.out

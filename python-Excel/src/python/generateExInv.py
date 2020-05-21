@@ -1,4 +1,5 @@
 from openpyxl import Workbook, load_workbook
+import datetime
 import os
 # Design the spreadsheet so that you can create invoices from the data. 
 # There will be 4 worksheets in this design. Design the data so it is “Normalized”. 
@@ -148,47 +149,159 @@ def loadWStoDictionary(ws, fields):
     
     return nested_dict
 
-def validateCustomer(dictionary):
-    fields = ["customer_id", "first_name", "last_name", "phone", "address", "city", "province", "postal_code"]    
+def validateDictionary(dictionary, fields):
     missingField = {}
     errDict = {}
+    errCount = 0
 
-    # Check all the fields exists in the dictionary and no empty field
+    # Check all the fields exists in the dictionary
     i = 1
-    for field in fields:
-        if not(field in dictionary.keys()):
-            missingField[field] = field        
+    for field, funcType in fields.items():        
+        if not(field in dictionary.keys()):            
+            missingField[field] = field
+            errCount += 1       
         else:
-            # Ensure no empty field
+            # Check empty field of each column (title) by row
             for key, rows in dictionary.items():
                 if (key == field):
                     errRow = {}                    
                     for row, value in rows.items():
                         if (value == None):
-                            errRow[row] = "Empty Value"
+                            errRow[row] = "Empty Value\n"
+                            errCount += 1
+                        else:   
+                            # Validate basic data type
+                            msg = checkType(value, funcType["type"])
+
+                            # Validate conditions applied to specific title
+                            for func in funcType["func"]:
+                                msg = func(value)
+
+                            # Only save message if there is error, 
+                            # only count one error per cell value regardless 
+                            # how many violations in one value
+                            if (len(msg) > 0):
+                                errRow[row] = msg
+                                errCount += 1
+
                     errDict[field] = errRow                                   
         i+=1
     
-    errDict["MissingField"] = missingField    
+    errDict["MissingField"] = missingField
+    errDict["errorCount"] = errCount    
         
     return errDict
 
+def checkType(value, expected_type):    
+
+    if (type(value) is expected_type):
+        return ""
+    elif (expected_type == float):
+        if (type(value) is int):
+            return ""
+        else:
+            return f"Incorrect Data Type, Expected: {expected_type}, Received: {type(value)}\n"
+    else:
+        return f"Incorrect Data Type, Expected: {expected_type}, Received: {type(value)}\n"
+
+def checkPostalCode(value):
+    postalcode = value.replace(" ", "")
+    errMsg = ""
+
+    if not (len(postalcode) == 6):
+        errMsg = "Incorrect Postal Format\n"
+    else:
+        if not (postalcode[0].isalpha()):
+            errMsg = "Incorrect Postal Format\n"
+        elif not (postalcode[1].isdigit()):
+            errMsg = "Incorrect Postal Format\n"
+        elif not (postalcode[2].isalpha()):
+            errMsg = "Incorrect Postal Format\n"
+        elif not (postalcode[3].isdigit()):
+            errMsg = "Incorrect Postal Format\n"
+        elif not (postalcode[4].isalpha()):
+            errMsg = "Incorrect Postal Format\n"
+        elif not (postalcode[5].isdigit()):
+            errMsg = "Incorrect Postal Format\n"                                
+
+    return errMsg       
+
+def checkPhone(value):
+    errMsg = ""
+    phone = str(value).replace(" ", "")
+    phone = phone.replace("-", "")
+    phone = phone.replace("(", "")
+    phone = phone.replace(")", "")
+    if not (phone.isdigit()):
+        errMsg = "Incorrect Phone Format\n"
+    elif not (len(phone) == 10):
+        errMsg = "Incorrect Phone Format\n"    
+
+    return errMsg
+
+def validateCustomer(dictionary):
+    
+    fields = {"customer_id": {"func": [], "type": int},
+              "first_name": {"func": [], "type": str},
+              "last_name": {"func": [], "type": str},
+              "phone": {"func": [checkPhone], "type": str},
+              "address": {"func": [], "type": str},
+              "city": {"func": [], "type": str},
+              "province": {"func": [], "type": str},
+              "postal_code": {"func": [checkPostalCode], "type": str}}
+
+    errMsg = validateDictionary(dictionary, fields)
+
+    return errMsg
 
 def validateInv(dictionary):
-    fields = ["invoice_id", "customer_id", "invoice_date"]
 
-    return
+    fields = {"invoice_id": {"func": [], "type": int},
+              "customer_id": {"func": [], "type": int},
+              "invoice_date": {"func": [], "type": datetime.datetime}}
+
+    errMsg = validateDictionary(dictionary, fields)
+
+    return errMsg
 
 def validateInvItem(dictionary):
-    fields = ["invoice_line_Item_id", "invoice_id", "product_id", "item_ref", "quantity"]
 
-    return
+    fields = {"invoice_line_Item_id": {"func": [], "type": int},
+              "invoice_id": {"func": [], "type": int},
+              "product_id": {"func": [], "type": int},
+              "item_ref": {"func": [], "type": str},
+              "quantity": {"func": [], "type": int}}
+
+    errMsg = validateDictionary(dictionary, fields)
+
+    return errMsg
 
 def validateProduct(dictionary):
-    fields = ["product_id", "name", "description", "unit_price"]
 
-    return
+    fields = {'product_id': {"func": [], "type": int}, 
+              'name': {"func": [], "type": str}, 
+              'description': {"func": [], "type": str}, 
+              'unit_price': {"func": [], "type": float}} 
 
+    errMsg = validateDictionary(dictionary, fields)    
+
+    return errMsg
+
+def printError(errMsg):
+    if (errMsg["errorCount"] > 0):
+        for key, value in errMsg.items():
+            if ((key != "MissingField") & (key != "errorCount")):
+                if(value):                
+                    print(f"\nError in column: [{key}]")
+                    for row, msg in value.items():
+                        print(f"          Row: [{row}]: ")
+                        print(f"                        {msg}")
+        if (errMsg["MissingField"]):
+            print(f"MissingField: \n")                        
+            for key, value in errMsg["MissingField"].items():
+                print(f"        {key}\n")
+
+        print(f"Error Count: {errMsg['errorCount']}")
 
 # Merge
 # Write python code to merge all the other groups’ data into a single well-formatted workbook 
