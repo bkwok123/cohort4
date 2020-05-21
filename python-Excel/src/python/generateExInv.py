@@ -165,7 +165,8 @@ def validateCustomer(dictionary):
                     errRow = {}                    
                     for row, value in rows.items():
                         if (value == None):
-                            errRow[row] = "Empty Value"
+                            errRow[row] = "Empty Value"                       
+
                     errDict[field] = errRow                                   
         i+=1
     
@@ -173,6 +174,55 @@ def validateCustomer(dictionary):
         
     return errDict
 
+def checkEmpty(value):
+    if (value == None):
+        return "Empty Value"
+    else:
+        return ""
+
+def checkType(value, expected_type):
+    if (type(value) is expected_type):
+        return ""
+    else:
+        print (f"Incorrect Data Type, Expected: {expected_type}, Received: {type(value)}")
+        return f"Incorrect Data Type, Expected: {expected_type}, Received: {type(value)}"
+
+def checkPostalCode(value):
+    postalcode = value.replace(" ", "")
+    errMsg = ""
+
+    if not (len(postalcode) == 6):
+        errMsg = "Incorrect Postal Format"
+    else:
+        if not (postalcode[0].isalpha()):
+            errMsg = "Incorrect Postal Format"
+        elif not (postalcode[1].isdigit()):
+            errMsg = "Incorrect Postal Format"
+        elif not (postalcode[2].isalpha()):
+            errMsg = "Incorrect Postal Format"
+        elif not (postalcode[3].isdigit()):
+            errMsg = "Incorrect Postal Format"
+        elif not (postalcode[4].isalpha()):
+            errMsg = "Incorrect Postal Format"
+        elif not (postalcode[5].isdigit()):
+            errMsg = "Incorrect Postal Format"                                
+
+    return errMsg       
+
+def checkPhone(value):
+    errMsg = ""
+    phone = value.replace(" ", "")
+    phone = phone.replace("-", "")
+    phone = phone.replace("(", "")
+    phone = phone.replace(")", "")
+    if not (phone.isdigit()):
+        errMsg = "Incorrect Phone Format"
+    elif not (len(phone) == 10):
+        errMsg = "Incorrect Phone Format"
+
+    print(errMsg)
+
+    return errMsg
 
 def validateInv(dictionary):
     fields = ["invoice_id", "customer_id", "invoice_date"]

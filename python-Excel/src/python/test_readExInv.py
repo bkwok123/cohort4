@@ -3,7 +3,7 @@ import os
 import datetime
 from pathlib import Path
 from openpyxl import load_workbook
-from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateCustomer
+from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateCustomer, checkType, checkPostalCode, checkPhone
 
 @pytest.fixture
 def dirpath():
@@ -158,3 +158,26 @@ def test_validateCustomer(dictionary,expected):
     print(errDict)
     assert errDict == expected
                               
+def test_checkType():    
+    assert checkType(123, int) == ""                            
+    assert checkType("123", int) == "Incorrect Data Type, Expected: <class 'int'>, Received: <class 'str'>"
+    assert checkType("123", str) == ""                            
+    assert checkType("ABC", str) == ""                            
+    assert checkType("ABC", int) == "Incorrect Data Type, Expected: <class 'int'>, Received: <class 'str'>"
+    assert checkType(12.3, float) == ""
+    assert checkType("12.3", float) == "Incorrect Data Type, Expected: <class 'float'>, Received: <class 'str'>"
+
+def test_checkPostalCode():    
+    assert checkPostalCode("123") == "Incorrect Postal Format"  
+    assert checkPostalCode("123567") == "Incorrect Postal Format"  
+    assert checkPostalCode("1a3a6a") == "Incorrect Postal Format"  
+    assert checkPostalCode("a2a5a7") == ""  
+    assert checkPostalCode("a2a 5a7") == ""
+
+def test_checkPhone():
+    assert checkPhone("4031234567") == ""      
+    assert checkPhone("403 -123 -4567") == ""
+    assert checkPhone("(403)123-4567") == ""
+    assert checkPhone("(403)123-45678") == "Incorrect Phone Format"
+    assert checkPhone("(403)123-45A7") == "Incorrect Phone Format"
+    assert checkPhone("(403)abc-45A7") == "Incorrect Phone Format"
