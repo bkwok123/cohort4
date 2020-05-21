@@ -107,46 +107,86 @@ def validateInvInput(dirpath, filename):
     
     return valid_status
 
+# Load worksheet into a nested dictionary
+# Key: title
+# Value: = rows_dictionary (Key1: Row Number, Value1: cell value)
 def loadWStoDictionary(ws, fields):
     titleIndex = {}
-    dictionary = {}   
+    dictionary = {}
+    buffer_dict = {}
+    nested_dict = {}   
 
-    try:
-        # Map the title index
-        for field in fields:        
-            col_index = 1
-            for col in ws[1]:
-                if col.value == field:                
-                    titleIndex[col_index] = field
-                col_index += 1
+    # Map the title index
+    for field in fields:        
+        col_index = 1
+        for col in ws[1]:
+            if col.value == field:                
+                titleIndex[col_index] = field
+            col_index += 1
 
-        # Load the data into dictionary
-        row_index = 1    
-        for row in ws.values:
-            col_index = 1
-            for value in row:            
-                if((col_index in titleIndex.keys()) & (row_index!=1)):
-                    key1 = titleIndex[col_index]
-                    key2 = row_index - 1 
-                    dictionary[key1, key2] = value
-                col_index += 1
+    # Load the data into dictionary
+    row_index = 1    
+    for row in ws.values:
+        col_index = 1
+        for value in row:            
+            if((col_index in titleIndex.keys()) & (row_index!=1)):
+                key1 = titleIndex[col_index]                
+                key2 = row_index - 1 
+                dictionary[key1, key2] = value
+            col_index += 1
 
-            row_index += 1
-    except:
-        pass
+        row_index += 1
 
-    return dictionary
+    # Convert the dictionary into nested dictionary
+    for title in titleIndex.values():
+        buffer_dict = {}
+        for key, value in dictionary.items():
+            (key1, key2) = key
+            if (title == key1):                
+                buffer_dict[key2] = value
+        nested_dict[title] = buffer_dict    
+    
+    return nested_dict
 
 def validateCustomer(dictionary):
-    return
+    fields = ["customer_id", "first_name", "last_name", "phone", "address", "city", "province", "postal_code"]    
+    missingField = {}
+    errDict = {}
+
+    # Check all the fields exists in the dictionary and no empty field
+    i = 1
+    for field in fields:
+        if not(field in dictionary.keys()):
+            missingField[field] = field        
+        else:
+            # Ensure no empty field
+            for key, rows in dictionary.items():
+                if (key == field):
+                    errRow = {}                    
+                    for row, value in rows.items():
+                        if (value == None):
+                            errRow[row] = "Empty Value"
+                    errDict[field] = errRow                                   
+        i+=1
+    
+    errDict["MissingField"] = missingField    
+        
+    return errDict
+
 
 def validateInv(dictionary):
+    fields = ["invoice_id", "customer_id", "invoice_date"]
+
     return
 
 def validateInvItem(dictionary):
+    fields = ["invoice_line_Item_id", "invoice_id", "product_id", "item_ref", "quantity"]
+
     return
 
 def validateProduct(dictionary):
+    fields = ["product_id", "name", "description", "unit_price"]
+
     return
 
 
