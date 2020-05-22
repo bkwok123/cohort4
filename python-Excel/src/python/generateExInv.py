@@ -1,5 +1,6 @@
 from openpyxl import Workbook, load_workbook
 import datetime
+from pathlib import Path
 import os
 # Design the spreadsheet so that you can create invoices from the data. 
 # There will be 4 worksheets in this design. Design the data so it is “Normalized”. 
@@ -40,6 +41,82 @@ import os
 # ●	3 - 4 invoices per client
 # ●	1 - 5 items per invoice
 # ●	about $15,000 of invoices per month
+def createInvoice():
+    dirpath = input("Enter folder path for Excel Template or type (N) to use default path: ")
+    if (dirpath.casefold() == "N".casefold()):
+        dirpath = Path("C:/code/cohort4/python-Excel")
+        print("Use default path: ", dirpath)
+    infile = input("Enter invoice template name or type (N) to use default filename: ")
+    if (infile.casefold() == "N".casefold()):
+        infile = "Python Excel Invoice.xlsx"
+        print("Use default input file: ", infile)
+
+    wb = validateInvInput(dirpath, infile)
+    if wb["Validation"] == False:
+        print("Error in Loading, check input file.")
+    else:
+        try:   
+            inv = input("Enter an invoice number for printing: ")
+            # Search for inovice number in the workbook
+            if int(inv) in wb["WB"]["Invoice"]["invoice_id"].values():
+                print(f"Invoice number: {inv} found")
+
+                # Cross reference worsheets in workbook to generate invoice
+                ##################### Need a unique value check too
+                query = inner_join(wb["WB"]["Invoice"], wb["WB"]["Customer"],"customer_id", "invoice_id", int(inv))
+                # query = inner_join(wb["WB"]["Invoice"], wb["WB"]["Customer"],"customer_id")
+
+            else:
+                print(f"Invoice number: {inv} NOT found")
+            
+        except ValueError:
+            print(f"Invoice number must be number")
+
+    return
+
+def inner_join(Ldict, Rdict, joinCol, condCol=None, condValue=None): 
+    # print("Ldict", Ldict, "\n")
+    # print(Ldict[joinCol])
+    # print("Rdict", Rdict, "\n")
+    # print(Rdict[joinCol])
+    IntersectKeys = {}    
+    for Lkey, Lvalue in Ldict[joinCol].items():
+        for Rkey, Rvalue in Rdict[joinCol].items():            
+            if (Lvalue == Rvalue):
+                IntersectKeys[Lkey] = Rkey
+    print("IntersectKeys", IntersectKeys, "\n")
+
+    # Fetch matched columns from left table
+    newdict = {}    
+    for LColTitle, LCol in Ldict.items():
+        newLCol = {}
+        for row in IntersectKeys.keys():            
+            newLCol[row] = LCol[row]
+        newdict[LColTitle] = newLCol
+    # print("newdict", newdict, "\n")
+    
+    # Fetch matched columns from right table
+    for RColTitle, RCol in Rdict.items():
+        newRCol = {}
+        for Lrow, Rrow in IntersectKeys.items():            
+            newRCol[Lrow] = RCol[Rrow]
+        newdict[RColTitle] = newRCol
+    print("newdict", newdict, "\n")
+
+    # if (condCol !=None & condValue != None):
+
+    
+    return newdict 
+
+
+# function to return key for any value 
+def get_key(val, dictionary): 
+    for key, value in dictionary.items(): 
+         if val == value: 
+             return key 
+  
+    return None    
+
 def generateExInv(dirpath, outfilePrefix, invoice):
 
     create_status = False
@@ -90,14 +167,16 @@ def validateInvInput(dirpath, filename):
             msg = msg.strip(" ,")
             print(f"Missing worksheets: {msg}")
         else:
-            # No error, load and verify each worksheet
+            # No workbook error, load and verify each worksheet
             for wsname in wsNames:
+                print("===================================================")
                 print(f"Loading worksheets: ", wsname)
                 dictionary[wsname] = loadWStoDictionary(wb[wsname], wsfields[wsname].keys())                
                 errDict[wsname] = validateDictionary(dictionary[wsname], wsfields[wsname])                                
                 if (errDict[wsname]["errorCount"]):
                     printError(errDict[wsname])
                     valid_status = False
+            print("===================================================")
                                                 
     except: # catch *all* exceptions
         valid_status = False

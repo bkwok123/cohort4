@@ -3,7 +3,7 @@ import os
 import datetime
 from pathlib import Path
 from openpyxl import load_workbook
-from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateDictionary, checkType, checkPostalCode, checkPhone, validateCustomer, validateInv, validateInvItem, validateProduct, printError
+from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateDictionary, checkType, checkPostalCode, checkPhone, validateCustomer, validateInv, validateInvItem, validateProduct, printError, createInvoice
 
 @pytest.fixture
 def dirpath():
@@ -82,6 +82,11 @@ def test_validateInvInput(monkeypatch, capsys, dirpath, infile):
     assert "WB" in wbDict.keys()
     assert "Error" in wbDict.keys()
     assert "Validation" in wbDict.keys()
+    assert "Customer" in wbDict["WB"]
+    assert "Invoice" in wbDict["WB"]
+    assert "Invoice Line Item" in wbDict["WB"]
+    assert "Product" in wbDict["WB"]
+
     if (valid_status == False):
         assert "Error Count: " in captured.out
     if (missing_ws == False):
@@ -247,3 +252,6 @@ def test_printError(dictionary,expected,printout,capsys):
     assert errDict == expected
     for value in printout:
         assert value in captured.out
+
+def test_createInvoice():
+    createInvoice()        
