@@ -67,46 +67,46 @@ def generateExInv(dirpath, outfilePrefix, invoice):
 # to handle ANY input format.
 def validateInvInput(dirpath, filename):
 
-    valid_status = False
-    ws1_exist = False
-    ws2_exist = False
-    ws3_exist = False
-    ws4_exist = False    
+    valid_status = True  
     missingSheets = []
+    wsNames = ["Customer", "Invoice", "Invoice Line Item", "Product"]
+    wsfields = getFields()
+    dictionary = {}
+    errDict = {}
+    wbDict = {}
 
     try:
         path = os.path.join(dirpath, filename)
         wb = load_workbook(path)
 
-        if "Customer" in wb.sheetnames:
-            ws1_exist = True
-        else:
-            missingSheets.append("Customer")            
-        if "Invoice" in wb.sheetnames:
-            ws2_exist = True
-        else:
-            missingSheets.append("Invoice")               
-        if "Invoice Line Item" in wb.sheetnames:
-            ws3_exist = True
-        else:
-            missingSheets.append("Invoice Line Item")             
-        if "Product" in wb.sheetnames:
-            ws4_exist = True
-        else:
-            missingSheets.append("Product")  
-
-        valid_status = ws1_exist & ws2_exist & ws3_exist & ws4_exist
+        for wsname in wsNames:
+            if not wsname in wb.sheetnames:
+                valid_status &= False
+                missingSheets.append(wsname)            
 
         if(valid_status == False):
             for wsname in missingSheets:
                 msg = f"{wsname} ,"
             msg = msg.strip(" ,")
-            print(f"Missing worksheets: {msg}")            
-
+            print(f"Missing worksheets: {msg}")
+        else:
+            # No error, load and verify each worksheet
+            for wsname in wsNames:
+                print(f"Loading worksheets: ", wsname)
+                dictionary[wsname] = loadWStoDictionary(wb[wsname], wsfields[wsname].keys())                
+                errDict[wsname] = validateDictionary(dictionary[wsname], wsfields[wsname])                                
+                if (errDict[wsname]["errorCount"]):
+                    printError(errDict[wsname])
+                    valid_status = False
+                                                
     except: # catch *all* exceptions
-        pass
+        valid_status = False
     
-    return valid_status
+    wbDict["WB"] = dictionary
+    wbDict["Error"] = errDict
+    wbDict["Validation"] = valid_status
+
+    return wbDict
 
 # Load worksheet into a nested dictionary
 # Key: title
@@ -287,6 +287,44 @@ def validateProduct(dictionary):
 
     return errMsg
 
+def getFields():
+    wbFields = {}
+
+    fields = {"customer_id": {"func": [], "type": int},
+              "first_name": {"func": [], "type": str},
+              "last_name": {"func": [], "type": str},
+              "phone": {"func": [checkPhone], "type": str},
+              "address": {"func": [], "type": str},
+              "city": {"func": [], "type": str},
+              "province": {"func": [], "type": str},
+              "postal_code": {"func": [checkPostalCode], "type": str}}
+
+    wbFields["Customer"] = fields
+
+    fields = {"invoice_id": {"func": [], "type": int},
+              "customer_id": {"func": [], "type": int},
+              "invoice_date": {"func": [], "type": datetime.datetime}}
+
+    wbFields["Invoice"] = fields              
+
+    fields = {"invoice_line_Item_id": {"func": [], "type": int},
+              "invoice_id": {"func": [], "type": int},
+              "product_id": {"func": [], "type": int},
+              "item_ref": {"func": [], "type": str},
+              "quantity": {"func": [], "type": int}}
+
+    wbFields["Invoice Line Item"] = fields              
+
+    fields = {'product_id': {"func": [], "type": int}, 
+              'name': {"func": [], "type": str}, 
+              'description': {"func": [], "type": str}, 
+              'unit_price': {"func": [], "type": float}} 
+    
+    wbFields["Product"] = fields
+
+    return wbFields
+
+
 def printError(errMsg):
     if (errMsg["errorCount"] > 0):
         for key, value in errMsg.items():
@@ -303,7 +341,11 @@ def printError(errMsg):
 
         print(f"Error Count: {errMsg['errorCount']}")
 
+
 # Merge
 # Write python code to merge all the other groups’ data into a single well-formatted workbook 
 # that matches your existing data model. If you are the first group, create a second one and merge it.  
 # Validate the new workbook and create some invoices.
+
+if __name__ == '__main__':
+    print("--- Starting", __file__)

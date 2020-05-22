@@ -73,11 +73,17 @@ def test_validateInvInput(monkeypatch, capsys, dirpath, infile):
         if "Product" in wb.sheetnames:
             ws4_exist = True               
 
-    valid_status = validateInvInput(dirpath, infile)
+    wbDict = validateInvInput(dirpath, infile)
+    valid_status = wbDict["Validation"]
     missing_ws = ws1_exist & ws2_exist & ws3_exist & ws4_exist
+    
     captured = capsys.readouterr()
 
-    assert valid_status == input_exist & missing_ws
+    assert "WB" in wbDict.keys()
+    assert "Error" in wbDict.keys()
+    assert "Validation" in wbDict.keys()
+    if (valid_status == False):
+        assert "Error Count: " in captured.out
     if (missing_ws == False):
         assert "Missing worksheets: " in captured.out
         if (ws1_exist == False):
@@ -166,7 +172,7 @@ def test_checkPhone():
        'province': {1: 'AB', 2: 'AB', 3: 'NS'}},
       {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value\n'}, 
        'phone': {1: 'Incorrect Phone Format\n'}, 'address': {}, 'province': {}, 
-       'MissingField': {'city': 'city', 'postal_code': 'postal_code'}, 'errorCount': 2}),
+       'MissingField': {'city': 'city', 'postal_code': 'postal_code'}, 'errorCount': 4}),
 
      ({"invoice_id": {"func": [], "type": int},
       "customer_id": {"func": [], "type": int},
@@ -209,72 +215,6 @@ def test_validateDictionary(fields,dictionary,expected):
     assert errDict == expected
 
 @pytest.mark.parametrize(
-    "dictionary,expected",    
-    [({'customer_id': {1: 1, 2: 2, 3: 3}, 
-       'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
-       'last_name': {1: 'Doe', 2: 'Smith', 3: 'Gee'}, 
-       'phone': {1: 4031234567, 2: 7081234567, 3: 9051234567}, 
-       'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Test Dr'}, 
-       'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Halifax'}, 
-       'province': {1: 'AB', 2: 'AB', 3: 'NS'}, 
-       'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'A1B1C1'}},        
-      {'customer_id': {}, 'first_name': {}, 'last_name': {}, 
-       'phone': {}, 'address': {}, 'city': {}, 'province': {}, 'postal_code': {}, 
-       'MissingField': {}, 'errorCount': 0}),
-
-     ({'customer_id': {1: 1, 2: 2, 3: 3}, 
-       'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
-       'last_name': {1: 'Doe', 2: 'Smith', 3: None}, 
-       'phone': {1: 4031234567, 2: 7081234567, 3: 9051234567}, 
-       'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Test Dr'}, 
-       'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Halifax'}, 
-       'province': {1: 'AB', 2: 'AB', 3: 'NS'}, 
-       'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'A1B1C1'}},        
-      {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value\n'}, 
-       'phone': {}, 'address': {}, 'city': {}, 'province': {}, 'postal_code': {}, 
-       'MissingField': {}, 'errorCount': 1}),       
-    ],                                
-)
-
-def test_validateCustomer(dictionary,expected):                
-
-    errDict = validateCustomer(dictionary)        
-    assert errDict == expected
-                                       
-@pytest.mark.parametrize(
-    "dictionary,expected",        
-    [({'invoice_id': {1: 1, 2: 2, 3: 3}, 
-       'customer_id': {1: 1, 2: 2, 3: 1}, 
-       'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 
-                       2: datetime.datetime(2020, 5, 19, 0, 0), 
-                       3: datetime.datetime(2020, 5, 19, 0, 0)}},
-      {'invoice_id': {}, 'customer_id': {}, 'invoice_date': {}, 'MissingField': {}, 'errorCount': 0}),
-    ],                                
-)
-
-def test_validateInv(dictionary,expected):
-                    
-    errDict = validateInv(dictionary)        
-    assert errDict == expected
-
-@pytest.mark.parametrize(
-    "dictionary,expected",        
-    [({'invoice_line_Item_id': {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}, 
-       'invoice_id': {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 3}, 
-       'product_id': {1: 1, 2: 2, 3: 3, 4: 2, 5: 3, 6: 2}, 
-       'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3', 4: 'Item 1', 5: 'Item 2', 6: 'Item 1'}, 
-       'quantity': {1: 3, 2: 1, 3: 1, 4: 3, 5: 2, 6: 4}},
-      {'invoice_line_Item_id': {}, 'invoice_id': {}, 'product_id': {}, 'item_ref': {}, 'quantity': {},
-       'MissingField': {}, 'errorCount': 0}),
-    ],                                
-)
-
-def test_validateInvItem(dictionary,expected):
-                    
-    errDict = validateInvItem(dictionary)        
-    assert errDict == expected    
-
-@pytest.mark.parametrize(
     "dictionary,expected,printout",        
     [({'product_id': {1: 1, 2: 2, 3: 3}, 
        'name': {1: 'Pen', 2: 'Pencil', 3: 'Eraser'}, 
@@ -293,9 +233,14 @@ def test_validateInvItem(dictionary,expected):
     ],                                    
 )
 
-def test_validateProduct(dictionary,expected,printout,capsys):
-                    
-    errDict = validateProduct(dictionary)    
+def test_printError(dictionary,expected,printout,capsys):
+
+    fields = {'product_id': {"func": [], "type": int}, 
+              'name': {"func": [], "type": str}, 
+              'description': {"func": [], "type": str}, 
+              'unit_price': {"func": [], "type": float}} 
+
+    errDict = validateDictionary(dictionary, fields) 
     printError(errDict)    
     captured = capsys.readouterr()
 
