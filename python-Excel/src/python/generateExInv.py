@@ -2,45 +2,7 @@ from openpyxl import Workbook, load_workbook
 import datetime
 from pathlib import Path
 import os
-# Design the spreadsheet so that you can create invoices from the data. 
-# There will be 4 worksheets in this design. Design the data so it is “Normalized”. 
-# (If you have not seen Larry’s lecture on SQL, ask him). The sheets should be:
 
-# ●	customers (one row for each customer)
-# ●	invoices (one row for each invoice)
-# ●	invoice line items (one row for each product on the invoice)
-# ●	product (one item for each product that you sell)
-
-# Create a python program that will relate the data in the 4 tables and create an invoice. 
-# The invoice does not need to be fancy. Just start with minimal sample data at first.
-
-# Development Requirements
-
-# ●	load the data from the worksheet into memory
-# ●	use dictionaries to store the customers, invoices, line items, and products
-# ●	have your program ask the user for the invoice to print
-# ●	as always use the TDD approach
-
-# The design should allow for (but do not code or develop reports as follows:
-
-# ●	total invoiced amount to each client
-# ●	the invoiced amount each day
-# ●	invoices by client
-
-# Only develop the code to create an Invoice given an existing invoice ID. 
-# Use the KISS approach. No PANDAS. Hard code or enter an invoice to be generated. 
-# Your output can be in the easiest format for you.
-
-
-# Exercise - Populate the data
-
-# Using the same design and template worksheet as the other students / groups, 
-# add more sample data that will represent one month of data. Each group takes a different month. 
-# There should be:
-# ●	10 - 15 clients (use 5ish clients that are the same as another group)
-# ●	3 - 4 invoices per client
-# ●	1 - 5 items per invoice
-# ●	about $15,000 of invoices per month
 def createInvoice():
     dirpath = input("Enter folder path for Excel Template or type (N) to use default path: ")
     if (dirpath.casefold() == "N".casefold()):
@@ -61,10 +23,12 @@ def createInvoice():
             if int(inv) in wb["WB"]["Invoice"]["invoice_id"].values():
                 print(f"Invoice number: {inv} found")
 
-                # Cross reference worsheets in workbook to generate invoice
-                ##################### Need a unique value check too
-                query = inner_join(wb["WB"]["Invoice"], wb["WB"]["Customer"],"customer_id", "invoice_id", int(inv))
-                # query = inner_join(wb["WB"]["Invoice"], wb["WB"]["Customer"],"customer_id")
+                # Cross reference worsheets in workbook to generate invoice                
+                query1 = inner_join(wb["WB"]["Invoice"], wb["WB"]["Customer"],"customer_id", "invoice_id", int(inv))                
+                query2 = inner_join(query1, wb["WB"]["Invoice Line Item"],"invoice_id")
+                query3 = inner_join(query2, wb["WB"]["Product"],"product_id")                
+                
+                generateExInv(dirpath, "Excel Invoice", query3)
 
             else:
                 print(f"Invoice number: {inv} NOT found")
@@ -75,55 +39,103 @@ def createInvoice():
     return
 
 def inner_join(Ldict, Rdict, joinCol, condCol=None, condValue=None): 
-    # print("Ldict", Ldict, "\n")
-    # print(Ldict[joinCol])
-    # print("Rdict", Rdict, "\n")
-    # print(Rdict[joinCol])
-    IntersectKeys = {}    
+
+    # Generate an intersected rows
+    IntersectKeys = {}
+    r = 1    
     for Lkey, Lvalue in Ldict[joinCol].items():
         for Rkey, Rvalue in Rdict[joinCol].items():            
             if (Lvalue == Rvalue):
-                IntersectKeys[Lkey] = Rkey
-    print("IntersectKeys", IntersectKeys, "\n")
+                IntersectKeys[r] = (Lkey, Rkey)
+                r += 1
 
     # Fetch matched columns from left table
     newdict = {}    
     for LColTitle, LCol in Ldict.items():
-        newLCol = {}
-        for row in IntersectKeys.keys():            
-            newLCol[row] = LCol[row]
+        newLCol = {}        
+        for key, LRrow in IntersectKeys.items():                        
+            Lrow, Rrow = LRrow            
+            newLCol[key] = LCol[Lrow]            
         newdict[LColTitle] = newLCol
-    # print("newdict", newdict, "\n")
     
-    # Fetch matched columns from right table
+    # Fetch matched columns from right table    
     for RColTitle, RCol in Rdict.items():
         newRCol = {}
-        for Lrow, Rrow in IntersectKeys.items():            
-            newRCol[Lrow] = RCol[Rrow]
+        for key, LRrow in IntersectKeys.items():
+            Lrow, Rrow = LRrow            
+            newRCol[key] = RCol[Rrow]
         newdict[RColTitle] = newRCol
-    print("newdict", newdict, "\n")
 
-    # if (condCol !=None & condValue != None):
+    # Applied filter condition
+    if ((condCol !=None) & (condValue != None)):        
+        filterdict = {key: value for (key, value) in newdict[condCol].items() if value == condValue}
+        condDict = {}
+        for col, rows in newdict.items():
+            newCol = {}
+            for row in filterdict.keys():                
+                newCol[row] = rows[row]
+            condDict[col] = newCol
+        return condDict
+        
+    return newdict  
 
-    
-    return newdict 
-
-
-# function to return key for any value 
-def get_key(val, dictionary): 
-    for key, value in dictionary.items(): 
-         if val == value: 
-             return key 
-  
-    return None    
-
-def generateExInv(dirpath, outfilePrefix, invoice):
+def generateExInv(dirpath, outfilePrefix, data):
 
     create_status = False
-    wb = Workbook()
+    wb = Workbook()    
 
     try:
+        invoice = data["invoice_id"][1]
+
         path = os.path.join(dirpath, f"{outfilePrefix} {invoice}.xlsx")
+        ws = wb.active
+
+        # Generate header information
+        ws['A1'] = "Invoice Date:"
+        ws['B1'] = data["invoice_date"][1]
+        ws['A2'] = "Invoice Number:"
+        ws['B2'] = invoice
+        ws['E1'] = "Billed to:"
+        ws['F1'] = f"{data['first_name'][1]} {data['last_name'][1]}"
+        ws['F2'] = data["phone"][1]
+        ws['F3'] = data["address"][1]
+        ws['F4'] = f"{data['city'][1]}, {data['province'][1]}"
+        ws['F5'] = data["postal_code"][1]
+        ws['B8'] = "Name"
+        ws['C8'] = "Description"
+        ws['D8'] = "Qty"
+        ws['E8'] = "Price"
+        ws['F8'] = "Amount"
+
+        # Generate line items
+        offset = 8
+        amt = {}        
+        for row, value in data["item_ref"].items():
+            ws[f"A{row+offset}"] = value
+        for row, value in data["name"].items():
+            ws[f"B{row+offset}"] = value
+        for row, value in data["description"].items():
+            ws[f"C{row+offset}"] = value
+        for row, value in data["quantity"].items():
+            ws[f"D{row+offset}"] = value
+            amt[row] = value
+        for row, value in data["unit_price"].items():
+            ws[f"E{row+offset}"] = value
+            amt[row] = amt[row]*value
+        for row, value in amt.items():
+            ws[f"F{row+offset}"] = value
+
+        offset = offset + len(data["item_ref"]) + 2        
+        subtotal = sum(amt.values())
+        gst = subtotal*0.05
+        total = subtotal + gst
+        ws[f"E{offset}"] = "Subtotal"
+        ws[f"F{offset}"] = subtotal
+        ws[f"E{offset+1}"] = "GST"
+        ws[f"F{offset+1}"] = gst
+        ws[f"E{offset+2}"] = "Total"
+        ws[f"F{offset+2}"] = total
+
         wb.save(path)
         create_status = True
     except: # catch *all* exceptions
@@ -167,7 +179,7 @@ def validateInvInput(dirpath, filename):
             msg = msg.strip(" ,")
             print(f"Missing worksheets: {msg}")
         else:
-            # No workbook error, load and verify each worksheet
+            # No workbook error, load and verify each worksheet            
             for wsname in wsNames:
                 print("===================================================")
                 print(f"Loading worksheets: ", wsname)
@@ -175,7 +187,7 @@ def validateInvInput(dirpath, filename):
                 errDict[wsname] = validateDictionary(dictionary[wsname], wsfields[wsname])                                
                 if (errDict[wsname]["errorCount"]):
                     printError(errDict[wsname])
-                    valid_status = False
+                    valid_status = False                    
             print("===================================================")
                                                 
     except: # catch *all* exceptions
@@ -241,6 +253,7 @@ def validateDictionary(dictionary, fields):
             errCount += 1       
         else:
             # Check empty field of each column (title) by row
+            ##################### Need a unique value check for certain columns too
             for key, rows in dictionary.items():
                 if (key == field):
                     errRow = {}                    
@@ -403,7 +416,6 @@ def getFields():
 
     return wbFields
 
-
 def printError(errMsg):
     if (errMsg["errorCount"] > 0):
         for key, value in errMsg.items():
@@ -428,3 +440,4 @@ def printError(errMsg):
 
 if __name__ == '__main__':
     print("--- Starting", __file__)
+    createInvoice()

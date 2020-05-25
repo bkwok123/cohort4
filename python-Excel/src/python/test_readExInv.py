@@ -3,7 +3,8 @@ import os
 import datetime
 from pathlib import Path
 from openpyxl import load_workbook
-from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateDictionary, checkType, checkPostalCode, checkPhone, validateCustomer, validateInv, validateInvItem, validateProduct, printError, createInvoice
+from testfixtures import TempDirectory
+from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateDictionary, checkType, checkPostalCode, checkPhone, validateCustomer, validateInv, validateInvItem, validateProduct, printError, createInvoice, inner_join
 
 @pytest.fixture
 def dirpath():
@@ -34,20 +35,45 @@ def setup(request):
 #################################################################
 # Exercise - Populate the data
 #################################################################    
-def test_generateExInv(monkeypatch, dirpath, outfilePrefix):    
+def test_generateExInv(dirpath, outfilePrefix):    
 
-    outfile = outfilePrefix
+    data = {'invoice_id': {1: 1, 2: 1, 3: 1}, 'customer_id': {1: 1, 2: 1, 3: 1}, 
+    'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 2: datetime.datetime(2020, 4, 18, 0, 0), 3: datetime.datetime(2020, 4, 18, 0, 0)}, 
+    'first_name': {1: 'John', 2: 'John', 3: 'John'}, 'last_name': {1: 'Doe', 2: 'Doe', 3: 'Doe'}, 
+    'phone': {1: 4031234567, 2: 4031234567, 3: 4031234567}, 
+    'address': {1: '123 Fake Street', 2: '123 Fake Street', 3: '123 Fake Street'}, 
+    'city': {1: 'Calgary', 2: 'Calgary', 3: 'Calgary'}, 
+    'province': {1: 'AB', 2: 'AB', 3: 'AB'}, 
+    'postal_code': {1: 'T1X1N1', 2: 'T1X1N1', 3: 'T1X1N1'}, 
+    'invoice_line_Item_id': {1: 1, 2: 2, 3: 3}, 'product_id': {1: 1, 2: 2, 3: 3}, 
+    'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3'}, 
+    'quantity': {1: 3, 2: 1, 3: 1}, 
+    'name': {1: 'Pen', 2: 'Pencil', 3: 'Eraser'}, 
+    'description': {1: 'Ball Pointed, Black Ink', 2: 'Mechanical, 0.3mm', 3: 'White'}, 
+    'unit_price': {1: 3, 2: 5, 3: 2}}
 
-    # https://docs.pytest.org/en/latest/reference.html?highlight=monkeypatch#_pytest.monkeypatch.MonkeyPatch.undo
-    # https://docs.python.org/3/library/builtins.html
-    with monkeypatch.context() as m:
-        m.setattr('builtins.input', lambda x: 1)               
-        i = input("Enter an invoice number for printing: ")
-        create_status = generateExInv(dirpath,outfile,i)
-        outfile = f"{outfile} {i}.xlsx"
-        
-    assert os.path.isfile(os.path.join(dirpath, outfile)) == True
+    outfile = f"{outfilePrefix} 1.xlsx"
+
+    with TempDirectory() as d:      
+        create_status = generateExInv(d.path,outfilePrefix,data)        
+        filename = os.path.join(d.path, outfile)
+        existEX = os.path.exists(filename)
+        wb = load_workbook(filename)
+        ws = wb.active       
+        d.listdir()      
+
+    assert existEX == True
     assert create_status == True
+    assert ws['A1'].value == "Invoice Date:"
+    assert ws['B1'].value == datetime.datetime(2020, 4, 18, 0, 0)
+    assert ws['A2'].value == "Invoice Number:"  
+    assert ws['B2'].value == 1
+    assert ws['E1'].value == "Billed to:"
+    assert ws['F1'].value == "John Doe"
+
+    assert ws['A9'].value == "Item 1"
+    assert ws['B9'].value == "Pen"
+    assert ws['C9'].value == "Ball Pointed, Black Ink"
 
 #################################################################
 # Exercise - Validate the data
@@ -253,5 +279,75 @@ def test_printError(dictionary,expected,printout,capsys):
     for value in printout:
         assert value in captured.out
 
-def test_createInvoice():
-    createInvoice()        
+def test_inner_join():
+    Ldict = {'invoice_id': {1: 1, 2: 2, 3: 3}, 'customer_id': {1: 1, 2: 2, 3: 1}, 
+             'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 2: datetime.datetime(2020, 5, 19, 0, 0), 3: datetime.datetime(2020, 5, 19, 0, 0)}}
+    Rdict = {'customer_id': {1: 1, 2: 2, 3: 3}, 'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
+             'last_name': {1: 'Doe', 2: 'Smith', 3:'OK'}, 'phone': {1: 4031234567, 2: 7081234567, 3: 7081234567}, 
+             'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Fake Avenue'}, 
+             'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Edmonton'}, 'province': {1: 'AB', 2: 'AB', 3: 'AB'}, 
+             'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'D1Z1X1'}}    
+
+    expected = {'invoice_id': {1: 1, 2: 2, 3: 3}, 'customer_id': {1: 1, 2: 2, 3: 1}, 
+                'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 2: datetime.datetime(2020, 5, 19, 0, 0), 3: datetime.datetime(2020, 5, 19, 0, 0)}, 
+                'first_name': {1: 'John', 2: 'Jane', 3: 'John'}, 'last_name': {1: 'Doe', 2: 'Smith', 3: 'Doe'}, 
+                'phone': {1: 4031234567, 2: 7081234567, 3: 4031234567}, 'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '123 Fake Street'}, 
+                'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Calgary'}, 'province': {1: 'AB', 2: 'AB', 3: 'AB'}, 
+                'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'T1X1N1'}}
+
+    result = inner_join(Ldict, Rdict, "customer_id")                
+
+    assert expected == result
+
+    expected = {'invoice_id': {1: 1}, 'customer_id': {1: 1}, 'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0)}, 'first_name': {1: 'John'},
+                'last_name': {1: 'Doe'}, 'phone': {1: 4031234567}, 'address': {1: '123 Fake Street'}, 
+                'city': {1: 'Calgary'}, 'province': {1: 'AB'}, 'postal_code': {1: 'T1X1N1'}}
+
+    result = inner_join(Ldict, Rdict, "customer_id", "invoice_id", 1)
+
+    assert expected == result
+
+    Ldict = {'invoice_id': {1: 1}, 'customer_id': {1: 1}, 'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0)}, 
+             'first_name': {1: 'John'}, 'last_name': {1: 'Doe'}, 'phone': {1: 4031234567}, 
+             'address': {1: '123 Fake Street'}, 'city': {1: 'Calgary'}, 'province': {1:'AB'}, 
+             'postal_code': {1: 'T1X1N1'}}
+
+    Rdict = {'invoice_line_Item_id': {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}, 'invoice_id': {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 3}, 
+             'product_id': {1: 1, 2: 2, 3: 3, 4: 2, 5: 3, 6: 2}, 
+             'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3', 4: 'Item 1', 5: 'Item 2', 6: 'Item 1'}, 
+             'quantity': {1: 3, 2: 1, 3: 1, 4: 3, 5: 2, 6: 4}}
+
+    expected = {'invoice_id': {1: 1, 2: 1, 3: 1}, 'customer_id': {1: 1, 2: 1, 3: 1}, 
+                'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 2: datetime.datetime(2020, 4, 18, 0, 0), 3: datetime.datetime(2020, 4, 18, 0, 0)}, 
+                'first_name': {1: 'John', 2: 'John', 3: 'John'}, 'last_name': {1: 'Doe', 2: 'Doe', 3: 'Doe'}, 
+                'phone': {1: 4031234567, 2: 4031234567, 3: 4031234567}, 
+                'address': {1: '123 Fake Street', 2: '123 Fake Street', 3: '123 Fake Street'}, 
+                'city': {1: 'Calgary', 2: 'Calgary', 3: 'Calgary'}, 'province': {1: 'AB', 2: 'AB', 3: 'AB'}, 
+                'postal_code': {1: 'T1X1N1', 2: 'T1X1N1', 3: 'T1X1N1'}, 'invoice_line_Item_id': {1: 1, 2: 2, 3: 3}, 
+                'product_id': {1: 1, 2: 2, 3: 3}, 'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3'}, 
+                'quantity': {1: 3, 2: 1, 3: 1}}
+
+    result = inner_join(Ldict, Rdict, "invoice_id")
+
+    assert expected == result
+
+def fake_input(the_prompt):
+    prompt_to_return_val = {
+        'Enter folder path for Excel Template or type (N) to use default path: ': 'N',
+        'Enter invoice template name or type (N) to use default filename: ': 'N',
+        'Enter an invoice number for printing: ': 1,
+    }
+    val = prompt_to_return_val[the_prompt]
+    return val
+
+def test_createInvoice(monkeypatch, dirpath, outfilePrefix):
+
+    # https://docs.pytest.org/en/latest/reference.html?highlight=monkeypatch#_pytest.monkeypatch.MonkeyPatch.undo
+    # https://docs.python.org/3/library/builtins.html
+    # https://stackoverflow.com/questions/56498487/how-can-i-test-a-loop-with-multiple-input-calls
+    with monkeypatch.context() as m:
+        m.setattr('builtins.input', fake_input)               
+        createInvoice()
+
+    expected_file = os.path.join(dirpath, f"{outfilePrefix} 1.xlsx")
+    assert os.path.isfile(expected_file) == True
