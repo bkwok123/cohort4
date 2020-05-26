@@ -4,17 +4,17 @@ import datetime
 from pathlib import Path
 from openpyxl import load_workbook
 from testfixtures import TempDirectory
-from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateDictionary, checkType, checkPostalCode, checkPhone, validateCustomer, validateInv, validateInvItem, validateProduct, printError, createInvoice, inner_join
+from generateExInv import generateExInv, validateInvInput, loadWStoDictionary, validateDictionary, checkType, checkPostalCode, checkPhone, printError, createInvoice, inner_join, merge_input_template
 
 @pytest.fixture
 def dirpath():
-    return Path("C:/code/cohort4/python-Excel")
+    return Path("C:/code/cohort4/python-Excel/template")
 @pytest.fixture    
 def outfilePrefix():
     return "Excel Invoice"
 @pytest.fixture    
 def infile():
-    return "Python Excel Invoice.xlsx"
+    return "Merge_template.xlsx"
 
 @pytest.fixture(params=[
         {"fields": ["customer_id", "first_name", "last_name", "phone", "address", "city", "province", "postal_code"],
@@ -340,14 +340,31 @@ def fake_input(the_prompt):
     val = prompt_to_return_val[the_prompt]
     return val
 
-def test_createInvoice(monkeypatch, dirpath, outfilePrefix):
+def test_createInvoice(monkeypatch, dirpath, outfilePrefix, infile):
 
     # https://docs.pytest.org/en/latest/reference.html?highlight=monkeypatch#_pytest.monkeypatch.MonkeyPatch.undo
     # https://docs.python.org/3/library/builtins.html
     # https://stackoverflow.com/questions/56498487/how-can-i-test-a-loop-with-multiple-input-calls
     with monkeypatch.context() as m:
         m.setattr('builtins.input', fake_input)               
-        createInvoice()
+        createInvoice(dirpath, infile)
 
     expected_file = os.path.join(dirpath, f"{outfilePrefix} 1.xlsx")
     assert os.path.isfile(expected_file) == True
+
+def test_merge_input_template(monkeypatch, dirpath, infile, capsys):
+
+    with monkeypatch.context() as m:
+        m.setattr('builtins.input', lambda x: "N")                       
+        status = merge_input_template(dirpath, infile)
+        captured = capsys.readouterr()
+    
+    if (status["Validation"] == True):
+        assert len(status["errMsg"]) == 0
+        assert os.path.isfile(os.path.join(dirpath, infile)) == True
+    else:
+        for msg in status["errMsg"]:
+            assert "contains error, check file" in msg
+
+    assert "Merging: " in captured.out
+    assert "Loading worksheets: " in captured.out
