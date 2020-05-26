@@ -3,16 +3,17 @@ import datetime
 from pathlib import Path
 import os
 
-def createInvoice():
+def createInvoice(directory, file):
     dirpath = input("Enter folder path for Excel Template or type (N) to use default path: ")
     if (dirpath.casefold() == "N".casefold()):
-        dirpath = Path("C:/code/cohort4/python-Excel")
+        dirpath = directory
         print("Use default path: ", dirpath)
     infile = input("Enter invoice template name or type (N) to use default filename: ")
     if (infile.casefold() == "N".casefold()):
-        infile = "Python Excel Invoice.xlsx"
+        infile = file
         print("Use default input file: ", infile)
 
+    # Load and validate input Excel template
     wb = validateInvInput(dirpath, infile)
     if wb["Validation"] == False:
         print("Error in Loading, check input file.")
@@ -331,54 +332,6 @@ def checkPhone(value):
 
     return errMsg
 
-def validateCustomer(dictionary):
-    
-    fields = {"customer_id": {"func": [], "type": int},
-              "first_name": {"func": [], "type": str},
-              "last_name": {"func": [], "type": str},
-              "phone": {"func": [checkPhone], "type": str},
-              "address": {"func": [], "type": str},
-              "city": {"func": [], "type": str},
-              "province": {"func": [], "type": str},
-              "postal_code": {"func": [checkPostalCode], "type": str}}
-
-    errMsg = validateDictionary(dictionary, fields)
-
-    return errMsg
-
-def validateInv(dictionary):
-
-    fields = {"invoice_id": {"func": [], "type": int},
-              "customer_id": {"func": [], "type": int},
-              "invoice_date": {"func": [], "type": datetime.datetime}}
-
-    errMsg = validateDictionary(dictionary, fields)
-
-    return errMsg
-
-def validateInvItem(dictionary):
-
-    fields = {"invoice_line_Item_id": {"func": [], "type": int},
-              "invoice_id": {"func": [], "type": int},
-              "product_id": {"func": [], "type": int},
-              "item_ref": {"func": [], "type": str},
-              "quantity": {"func": [], "type": int}}
-
-    errMsg = validateDictionary(dictionary, fields)
-
-    return errMsg
-
-def validateProduct(dictionary):
-
-    fields = {'product_id': {"func": [], "type": int}, 
-              'name': {"func": [], "type": str}, 
-              'description': {"func": [], "type": str}, 
-              'unit_price': {"func": [], "type": float}} 
-
-    errMsg = validateDictionary(dictionary, fields)    
-
-    return errMsg
-
 def getFields():
     wbFields = {}
 
@@ -432,12 +385,95 @@ def printError(errMsg):
 
         print(f"Error Count: {errMsg['errorCount']}")
 
-
 # Merge
 # Write python code to merge all the other groups’ data into a single well-formatted workbook 
 # that matches your existing data model. If you are the first group, create a second one and merge it.  
 # Validate the new workbook and create some invoices.
+def merge_input_template(directory, file):
 
+    valid_merge_status = True
+    errmsg = []
+
+    dirpath = input("Enter folder path for Excel Template or type (N) to use default path: ")
+    if (dirpath.casefold() == "N".casefold()):
+        dirpath = directory
+        print("Use default path: ", dirpath)
+
+    # Remove the previous merged template if exists
+    templatefile = os.path.join(dirpath, file)
+    if (os.path.isfile(templatefile)):
+        os.remove(templatefile)
+
+    for filename in os.listdir(dirpath):
+        if filename.endswith(".xlsx"):
+            print(f"================== Merging: {filename} =======================")
+            dictionary = validateInvInput(dirpath, filename)
+            if dictionary["Validation"] == True:
+                valid_merge_status = valid_merge_status & True
+                
+                create_template(dirpath, "Merge_template.xlsx", dictionary["WB"])
+            else:
+                msg = F"{filename} contains error, check file"
+                errmsg.append(msg)
+                print(msg)
+                valid_merge_status = valid_merge_status & False
+    
+    return {"errMsg": errmsg, "Validation": valid_merge_status}
+
+def create_template(dirpath, filename, dictionary):
+    filename = os.path.join(dirpath, filename)
+    if (os.path.isfile(filename)):        
+        wb = load_workbook(filename)
+
+        # Loop through worksheet
+        for wsname, ws_dict in dictionary.items():
+            ws = wb[wsname]                        
+            col = 1
+            # Determine the number of records based on the first column (primary key id)                    
+            row_offset = len(ws["A"])
+            # Loop through columns
+            for col_title, rows in ws_dict.items():                
+                # Loop through non-title rows
+                for rownum, value in rows.items():
+                    ws.cell(row=rownum+row_offset, column=col).value = value
+
+                    # ws.cell(row=rownum+10, column=col).value = "TEST"
+
+                col += 1
+
+        wb.save(filename)                
+          
+    else:            
+        wb = Workbook()
+        row_offset = 1
+
+        # Loop through worksheet
+        for wsname, ws_dict in dictionary.items():
+            ws = wb.create_sheet(wsname)
+            col = 1                                    
+            # Loop through columns
+            for col_title, rows in ws_dict.items():
+                
+                # Create title
+                ws.cell(row=1, column=col).value = col_title
+
+                # Loop through non-title rows
+                for rownum, value in rows.items():
+                    ws.cell(row=rownum+row_offset, column=col).value = value
+
+                col += 1
+
+        ws = wb['Sheet']
+        wb.remove(ws)
+        wb.save(filename)
+
+    return 
+
+# Main program code to execute the functions
 if __name__ == '__main__':
     print("--- Starting", __file__)
-    createInvoice()
+    defaultPath = Path("C:/code/cohort4/python-Excel/template")
+    defaultTemplatefile = os.path.join(defaultPath, "Merge_template.xlsx")
+
+    merge_input_template(defaultPath, defaultTemplatefile)
+    createInvoice(defaultPath, defaultTemplatefile)
