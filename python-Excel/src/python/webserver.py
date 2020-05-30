@@ -7,7 +7,7 @@ import generateExInv
 from pathlib import Path
 
 app = Flask(__name__)
-app.secret_key = os.urandom(16)
+app.secret_key = os.urandom(16) # Requires for session to encryt and decryt cookie
 CORS(app, supports_credentials=True)
 
 # Define global variables for each point to use
