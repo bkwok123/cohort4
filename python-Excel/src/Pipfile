@@ -7,9 +7,12 @@ verify_ssl = true
 pytest = "*"
 pylint = "*"
 testfixtures = "*"
+flask-testing = "*"
 
 [packages]
 openpyxl = "*"
+flask = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.8"
