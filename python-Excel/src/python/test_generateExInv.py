@@ -37,20 +37,15 @@ def setup(request):
 #################################################################    
 def test_generateExInv(dirpath, outfilePrefix):    
 
-    data = {'invoice_id': {1: 1, 2: 1, 3: 1}, 'customer_id': {1: 1, 2: 1, 3: 1}, 
-    'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 2: datetime.datetime(2020, 4, 18, 0, 0), 3: datetime.datetime(2020, 4, 18, 0, 0)}, 
-    'first_name': {1: 'John', 2: 'John', 3: 'John'}, 'last_name': {1: 'Doe', 2: 'Doe', 3: 'Doe'}, 
-    'phone': {1: 4031234567, 2: 4031234567, 3: 4031234567}, 
-    'address': {1: '123 Fake Street', 2: '123 Fake Street', 3: '123 Fake Street'}, 
-    'city': {1: 'Calgary', 2: 'Calgary', 3: 'Calgary'}, 
-    'province': {1: 'AB', 2: 'AB', 3: 'AB'}, 
-    'postal_code': {1: 'T1X1N1', 2: 'T1X1N1', 3: 'T1X1N1'}, 
-    'invoice_line_Item_id': {1: 1, 2: 2, 3: 3}, 'product_id': {1: 1, 2: 2, 3: 3}, 
-    'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3'}, 
-    'quantity': {1: 3, 2: 1, 3: 1}, 
-    'name': {1: 'Pen', 2: 'Pencil', 3: 'Eraser'}, 
-    'description': {1: 'Ball Pointed, Black Ink', 2: 'Mechanical, 0.3mm', 3: 'White'}, 
-    'unit_price': {1: 3, 2: 5, 3: 2}}
+    data = {1: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0), 
+            'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'city': 'Calgary', 'province': 'AB', 'postal_code': 'T1X1N1', 
+            'invoice_line_Item_id': 1, 'product_id': 1, 'item_ref': 'Item 1', 'quantity': 3, 'name': 'Pen', 'description': 'Ball Pointed, Black Ink', 'unit_price': 3}, 
+            2: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0), 
+            'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'city': 'Calgary', 'province': 'AB', 'postal_code': 'T1X1N1', 
+            'invoice_line_Item_id': 2, 'product_id': 2, 'item_ref': 'Item 2', 'quantity': 1, 'name': 'Pencil', 'description': 'Mechanical, 0.3mm', 'unit_price': 5}, 
+            3: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0), 
+            'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'city': 'Calgary', 'province': 'AB', 'postal_code': 'T1X1N1', 
+            'invoice_line_Item_id': 3, 'product_id': 3, 'item_ref': 'Item 3', 'quantity': 1, 'name': 'Eraser', 'description': 'White', 'unit_price': 2}}
 
     outfile = f"{outfilePrefix} 1.xlsx"
 
@@ -137,7 +132,7 @@ def test_loadWStoDictionary(dirpath, infile, setup):
         print(dictionary)
 
         for field in setup["fields"]:
-            assert field in dictionary.keys()
+            assert field in dictionary[1].keys()
 
 def test_checkType():    
     assert checkType(123, int) == ""                            
@@ -175,17 +170,10 @@ def test_checkPhone():
        "city": {"func": [], "type": str},
        "province": {"func": [], "type": str},
        "postal_code": {"func": [checkPostalCode], "type": str}},
-      {'customer_id': {1: 1, 2: 2, 3: 3}, 
-       'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
-       'last_name': {1: 'Doe', 2: 'Smith', 3: None}, 
-       'phone': {1: 4031234567, 2: 7081234567, 3: 9051234567}, 
-       'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Test Dr'}, 
-       'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Halifax'}, 
-       'province': {1: 'AB', 2: 'AB', 3: 'NS'}, 
-       'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'A1B1C1'}},        
-      {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value\n'}, 
-       'phone': {}, 'address': {}, 'city': {}, 'province': {}, 'postal_code': {}, 
-       'MissingField': {}, 'errorCount': 1}),
+      {1: {'customer_id': 1, 'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'city': 'Calgary', 'province': 'AB', 'postal_code': 'T1X1N1'}, 
+       2: {'customer_id': 2, 'first_name': 'Jane', 'last_name': None, 'phone': 7081234567, 'address': '456 Fake Avenue', 'city': 'Edmonton', 'province': 'AB', 'postal_code': 'D1Z1X1'}, 
+       3: {'customer_id': 3, 'first_name': 'Noname', 'last_name': 'OK', 'phone': 7081234567, 'address': '456 Fake Avenue', 'city': 'Edmonton', 'province': 'AB', 'postal_code': 'D1Z1X1'}},
+      {'rowErrorMsg': {2: 'last_name:\n Empty Value\n'}, 'MissingField': {}, 'errorCount': 1}),
 
      ({"customer_id": {"func": [], "type": int},
        "first_name": {"func": [], "type": str},
@@ -195,72 +183,41 @@ def test_checkPhone():
        "city": {"func": [], "type": str},
        "province": {"func": [], "type": str},
        "postal_code": {"func": [checkPostalCode], "type": str}},
-      {'customer_id': {1: 1, 2: 2, 3: 3}, 
-       'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
-       'last_name': {1: 'Doe', 2: 'Smith', 3: None}, 
-       'phone': {1: "403AB34567", 2: 7081234567, 3: 9051234567}, 
-       'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Test Dr'},  
-       'province': {1: 'AB', 2: 'AB', 3: 'NS'}},
-      {'customer_id': {}, 'first_name': {}, 'last_name': {3: 'Empty Value\n'}, 
-       'phone': {1: 'Incorrect Phone Format\n'}, 'address': {}, 'province': {}, 
+      {1: {'customer_id': "a", 'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'province': 'AB'}, 
+       2: {'customer_id': 2, 'first_name': 'Jane', 'last_name': None, 'phone': 7081234567, 'address': '456 Fake Avenue', 'province': 'AB'}, 
+       3: {'customer_id': 3, 'first_name': 'Noname', 'last_name': 'OK', 'phone': 7081234567, 'address': '456 Fake Avenue', 'province': 'AB'}},       
+      {'rowErrorMsg': {1: "customer_id:\n Incorrect Data Type, Expected: <class 'int'>, Received: <class 'str'>\n", 2: 'last_name:\n Empty Value\n'}, 
        'MissingField': {'city': 'city', 'postal_code': 'postal_code'}, 'errorCount': 4}),
 
      ({"invoice_id": {"func": [], "type": int},
       "customer_id": {"func": [], "type": int},
       "invoice_date": {"func": [], "type": datetime.datetime}},
-     {'invoice_id': {1: 1, 2: 2, 3: 3}, 
-      'customer_id': {1: 1, 2: 2, 3: 1}, 
-      'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 
-                       2: datetime.datetime(2020, 5, 19, 0, 0), 
-                       3: datetime.datetime(2020, 5, 19, 0, 0)}},
-     {'invoice_id': {}, 'customer_id': {}, 'invoice_date': {}, 'MissingField': {}, 'errorCount': 0}),
-
-     ({"invoice_line_Item_id": {"func": [], "type": int},
-       "invoice_id": {"func": [], "type": int},
-       "product_id": {"func": [], "type": int},
-       "item_ref": {"func": [], "type": str},
-       "quantity": {"func": [], "type": int}},
-      {'invoice_line_Item_id': {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}, 
-       'invoice_id': {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 3}, 
-       'product_id': {1: 1, 2: 2, 3: 3, 4: 2, 5: 3, 6: 2}, 
-       'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3', 4: 'Item 1', 5: 'Item 2', 6: 'Item 1'}, 
-       'quantity': {1: 3, 2: 1, 3: 1, 4: 3, 5: 2, 6: 4}},
-      {'invoice_line_Item_id': {}, 'invoice_id': {}, 'product_id': {}, 'item_ref': {}, 'quantity': {},
-       'MissingField': {}, 'errorCount': 0}),
-
-     ({'product_id': {"func": [], "type": int}, 
-       'name': {"func": [], "type": str}, 
-       'description': {"func": [], "type": str}, 
-       'unit_price': {"func": [], "type": float}},                  
-      {'product_id': {1: 1, 2: 2, 3: 3}, 
-       'name': {1: 'Pen', 2: 'Pencil', 3: 'Eraser'}, 
-       'description': {1: 'Ball Pointed, Black Ink', 2: 'Mechanical, 0.3mm', 3: 'White'}, 
-       'unit_price': {1: 3, 2: 5.0, 3: 2}},
-      {'product_id': {}, 'name': {}, 'description': {}, 'unit_price': {}, 'MissingField': {}, 'errorCount': 0})
+      {1: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0)}, 
+       2: {'invoice_id': 2, 'customer_id': 2, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0)}, 
+       3: {'invoice_id': 3, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0)}},
+      {'rowErrorMsg': {}, 'MissingField': {}, 'errorCount': 0}),       
     ],                                
 )
 
 def test_validateDictionary(fields,dictionary,expected):                
 
-    errDict = validateDictionary(dictionary, fields)            
+    errDict = validateDictionary(dictionary, fields)  
+    print(errDict)          
     assert errDict == expected
 
 @pytest.mark.parametrize(
     "dictionary,expected,printout",        
-    [({'product_id': {1: 1, 2: 2, 3: 3}, 
-       'name': {1: 'Pen', 2: 'Pencil', 3: 'Eraser'}, 
-       'description': {1: 'Ball Pointed, Black Ink', 2: 'Mechanical, 0.3mm', 3: 'White'}, 
-       'unit_price': {1: 3, 2: 5.0, 3: 2}},
-      {'product_id': {}, 'name': {}, 'description': {}, 'unit_price': {}, 'MissingField': {}, 'errorCount': 0},
+    [({1: {'product_id': 1, 'name': 'Pen', 'description': 'Ball Pointed, Black Ink', 'unit_price': 3}, 
+       2: {'product_id': 2, 'name': 'Pencil', 'description': 'Mechanical, 0.3mm', 'unit_price': 5.0}, 
+       3: {'product_id': 3, 'name': 'Eraser', 'description': 'White', 'unit_price': 2}},
+      {'rowErrorMsg': {}, 'MissingField': {}, 'errorCount': 0},
       []),
 
-     ({'product_id': {1: 1, 2: 2, 3: "A"}, 
-       'name': {1: None, 2: 'Pencil', 3: None}, 
-       'description': {1: 'Ball Pointed, Black Ink', 2: 'Mechanical, 0.3mm', 3: 'White'},},
-      {'product_id': {3: "Incorrect Data Type, Expected: <class 'int'>, Received: <class 'str'>\n"}, 
-       'name': {1: 'Empty Value\n', 3: 'Empty Value\n'}, 'description': {}, 
-       'MissingField': {'unit_price': 'unit_price'}, 'errorCount': 4},
-       ["Error in column", "Row: ", "Empty Value", "MissingField", "Error Count:"]),      
+     ({1: {'product_id': 1, 'name': None, 'description': 'Ball Pointed, Black Ink'}, 
+       2: {'product_id': 2, 'name': 'Pencil', 'description': 'Mechanical, 0.3mm'}, 
+       3: {'product_id': "A", 'name': None, 'description': 'White'}},
+      {'rowErrorMsg': {1: 'name:\n Empty Value\n', 3: 'name:\n Empty Value\n'}, 'MissingField': {'unit_price': 'unit_price'}, 'errorCount': 4},
+      ["MissingField:", "Row", "Empty Value", "Error Count:"]),      
     ],                                    
 )
 
@@ -271,7 +228,7 @@ def test_printError(dictionary,expected,printout,capsys):
               'description': {"func": [], "type": str}, 
               'unit_price': {"func": [], "type": float}} 
 
-    errDict = validateDictionary(dictionary, fields) 
+    errDict = validateDictionary(dictionary, fields)
     printError(errDict)    
     captured = capsys.readouterr()
 
@@ -280,52 +237,46 @@ def test_printError(dictionary,expected,printout,capsys):
         assert value in captured.out
 
 def test_inner_join():
-    Ldict = {'invoice_id': {1: 1, 2: 2, 3: 3}, 'customer_id': {1: 1, 2: 2, 3: 1}, 
-             'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 2: datetime.datetime(2020, 5, 19, 0, 0), 3: datetime.datetime(2020, 5, 19, 0, 0)}}
-    Rdict = {'customer_id': {1: 1, 2: 2, 3: 3}, 'first_name': {1: 'John', 2: 'Jane', 3: 'Noname'}, 
-             'last_name': {1: 'Doe', 2: 'Smith', 3:'OK'}, 'phone': {1: 4031234567, 2: 7081234567, 3: 7081234567}, 
-             'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '456 Fake Avenue'}, 
-             'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Edmonton'}, 'province': {1: 'AB', 2: 'AB', 3: 'AB'}, 
-             'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'D1Z1X1'}}    
 
-    expected = {'invoice_id': {1: 1, 2: 2, 3: 3}, 'customer_id': {1: 1, 2: 2, 3: 1}, 
-                'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 2: datetime.datetime(2020, 5, 19, 0, 0), 3: datetime.datetime(2020, 5, 19, 0, 0)}, 
-                'first_name': {1: 'John', 2: 'Jane', 3: 'John'}, 'last_name': {1: 'Doe', 2: 'Smith', 3: 'Doe'}, 
-                'phone': {1: 4031234567, 2: 7081234567, 3: 4031234567}, 'address': {1: '123 Fake Street', 2: '456 Fake Avenue', 3: '123 Fake Street'}, 
-                'city': {1: 'Calgary', 2: 'Edmonton', 3: 'Calgary'}, 'province': {1: 'AB', 2: 'AB', 3: 'AB'}, 
-                'postal_code': {1: 'T1X1N1', 2: 'D1Z1X1', 3: 'T1X1N1'}}
+    Ldict = {1: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0)}, 
+             2: {'invoice_id': 2, 'customer_id': 2, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0)}, 
+             3: {'invoice_id': 3, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0)}}
+
+    Rdict = {1: {'customer_id': 1, 'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'city': 'Calgary', 'province': 'AB', 'postal_code': 'T1X1N1'}, 
+             2: {'customer_id': 2, 'first_name': 'Jane', 'last_name': 'Smith', 'phone': 7081234567, 'address': '456 Fake Avenue', 'city': 'Edmonton', 'province': 'AB', 'postal_code': 'D1Z1X1'}, 
+             3: {'customer_id': 3, 'first_name': 'Noname', 'last_name': 'OK', 'phone': 7081234567, 'address': '456 Fake Avenue', 'city': 'Edmonton', 'province': 'AB', 'postal_code': 'D1Z1X1'}}
+
+    expected = {1: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0), 'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'city': 'Calgary', 'province': 'AB', 'postal_code': 'T1X1N1'}, 
+                2: {'invoice_id': 2, 'customer_id': 2, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0), 'first_name': 'Jane', 'last_name': 'Smith', 'phone': 7081234567, 'address': '456 Fake Avenue', 'city': 'Edmonton', 'province': 'AB', 'postal_code': 'D1Z1X1'},
+                3: {'invoice_id': 3, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0), 'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'city': 'Calgary', 'province': 'AB', 'postal_code': 'T1X1N1'}}
 
     result = inner_join(Ldict, Rdict, "customer_id")                
 
     assert expected == result
 
-    expected = {'invoice_id': {1: 1}, 'customer_id': {1: 1}, 'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0)}, 'first_name': {1: 'John'},
-                'last_name': {1: 'Doe'}, 'phone': {1: 4031234567}, 'address': {1: '123 Fake Street'}, 
-                'city': {1: 'Calgary'}, 'province': {1: 'AB'}, 'postal_code': {1: 'T1X1N1'}}
+    expected = {1: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0), 'first_name': 'John', 'last_name': 'Doe', 'phone': 4031234567, 'address': '123 Fake Street', 'city': 'Calgary', 'province': 'AB', 'postal_code': 'T1X1N1'}}
 
     result = inner_join(Ldict, Rdict, "customer_id", "invoice_id", 1)
 
     assert expected == result
 
-    Ldict = {'invoice_id': {1: 1}, 'customer_id': {1: 1}, 'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0)}, 
-             'first_name': {1: 'John'}, 'last_name': {1: 'Doe'}, 'phone': {1: 4031234567}, 
-             'address': {1: '123 Fake Street'}, 'city': {1: 'Calgary'}, 'province': {1:'AB'}, 
-             'postal_code': {1: 'T1X1N1'}}
+    Ldict = {1: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0)}, 
+             2: {'invoice_id': 2, 'customer_id': 2, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0)}, 
+             3: {'invoice_id': 3, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0)}}
 
-    Rdict = {'invoice_line_Item_id': {1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}, 'invoice_id': {1: 1, 2: 1, 3: 1, 4: 2, 5: 2, 6: 3}, 
-             'product_id': {1: 1, 2: 2, 3: 3, 4: 2, 5: 3, 6: 2}, 
-             'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3', 4: 'Item 1', 5: 'Item 2', 6: 'Item 1'}, 
-             'quantity': {1: 3, 2: 1, 3: 1, 4: 3, 5: 2, 6: 4}}
+    Rdict = {1: {'invoice_line_Item_id': 1, 'invoice_id': 1, 'product_id': 1, 'item_ref': 'Item 1', 'quantity': 3}, 
+             2: {'invoice_line_Item_id': 2, 'invoice_id': 1, 'product_id': 2, 'item_ref': 'Item 2', 'quantity': 1}, 
+             3: {'invoice_line_Item_id': 3, 'invoice_id': 1, 'product_id': 3, 'item_ref': 'Item 3', 'quantity': 1}, 
+             4: {'invoice_line_Item_id': 4, 'invoice_id': 2, 'product_id': 2, 'item_ref': 'Item 1', 'quantity': 3}, 
+             5: {'invoice_line_Item_id': 5, 'invoice_id': 2, 'product_id': 3, 'item_ref': 'Item 2', 'quantity': 2}, 
+             6: {'invoice_line_Item_id': 6, 'invoice_id': 3, 'product_id': 2, 'item_ref': 'Item 1', 'quantity': 4}}             
 
-    expected = {'invoice_id': {1: 1, 2: 1, 3: 1}, 'customer_id': {1: 1, 2: 1, 3: 1}, 
-                'invoice_date': {1: datetime.datetime(2020, 4, 18, 0, 0), 2: datetime.datetime(2020, 4, 18, 0, 0), 3: datetime.datetime(2020, 4, 18, 0, 0)}, 
-                'first_name': {1: 'John', 2: 'John', 3: 'John'}, 'last_name': {1: 'Doe', 2: 'Doe', 3: 'Doe'}, 
-                'phone': {1: 4031234567, 2: 4031234567, 3: 4031234567}, 
-                'address': {1: '123 Fake Street', 2: '123 Fake Street', 3: '123 Fake Street'}, 
-                'city': {1: 'Calgary', 2: 'Calgary', 3: 'Calgary'}, 'province': {1: 'AB', 2: 'AB', 3: 'AB'}, 
-                'postal_code': {1: 'T1X1N1', 2: 'T1X1N1', 3: 'T1X1N1'}, 'invoice_line_Item_id': {1: 1, 2: 2, 3: 3}, 
-                'product_id': {1: 1, 2: 2, 3: 3}, 'item_ref': {1: 'Item 1', 2: 'Item 2', 3: 'Item 3'}, 
-                'quantity': {1: 3, 2: 1, 3: 1}}
+    expected = {1: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0), 'invoice_line_Item_id': 1, 'product_id': 1, 'item_ref': 'Item 1', 'quantity': 3}, 
+                2: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0), 'invoice_line_Item_id': 2, 'product_id': 2, 'item_ref': 'Item 2', 'quantity': 1}, 
+                3: {'invoice_id': 1, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 4, 18, 0, 0), 'invoice_line_Item_id': 3, 'product_id': 3, 'item_ref': 'Item 3', 'quantity': 1}, 
+                4: {'invoice_id': 2, 'customer_id': 2, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0), 'invoice_line_Item_id': 4, 'product_id': 2, 'item_ref': 'Item 1', 'quantity': 3}, 
+                5: {'invoice_id': 2, 'customer_id': 2, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0), 'invoice_line_Item_id': 5, 'product_id': 3, 'item_ref': 'Item 2', 'quantity': 2}, 
+                6: {'invoice_id': 3, 'customer_id': 1, 'invoice_date': datetime.datetime(2020, 5, 19, 0, 0), 'invoice_line_Item_id': 6, 'product_id': 2, 'item_ref': 'Item 1', 'quantity': 4}}
 
     result = inner_join(Ldict, Rdict, "invoice_id")
 

@@ -20,15 +20,20 @@ def createInvoice(directory, file):
     else:
         try:   
             inv = input("Enter an invoice number for printing: ")
-            # Search for inovice number in the workbook
-            if int(inv) in wb["WB"]["Invoice"]["invoice_id"].values():
+            invIsExist = False
+            # Search for invoice number in the workbook
+            for rows in wb["WB"]["Invoice"].values():
+                if int(inv) in rows.values():
+                    invIsExist = True
+
+            if invIsExist:
                 print(f"Invoice number: {inv} found")
 
                 # Cross reference worsheets in workbook to generate invoice                
                 query1 = inner_join(wb["WB"]["Invoice"], wb["WB"]["Customer"],"customer_id", "invoice_id", int(inv))                
                 query2 = inner_join(query1, wb["WB"]["Invoice Line Item"],"invoice_id")
                 query3 = inner_join(query2, wb["WB"]["Product"],"product_id")                
-                
+
                 generateExInv(dirpath, "Excel Invoice", query3)
 
             else:
@@ -40,42 +45,27 @@ def createInvoice(directory, file):
     return
 
 def inner_join(Ldict, Rdict, joinCol, condCol=None, condValue=None): 
-
-    # Generate an intersected rows
-    IntersectKeys = {}
-    r = 1    
-    for Lkey, Lvalue in Ldict[joinCol].items():
-        for Rkey, Rvalue in Rdict[joinCol].items():            
-            if (Lvalue == Rvalue):
-                IntersectKeys[r] = (Lkey, Rkey)
-                r += 1
-
-    # Fetch matched columns from left table
-    newdict = {}    
-    for LColTitle, LCol in Ldict.items():
-        newLCol = {}        
-        for key, LRrow in IntersectKeys.items():                        
-            Lrow, Rrow = LRrow            
-            newLCol[key] = LCol[Lrow]            
-        newdict[LColTitle] = newLCol
     
-    # Fetch matched columns from right table    
-    for RColTitle, RCol in Rdict.items():
-        newRCol = {}
-        for key, LRrow in IntersectKeys.items():
-            Lrow, Rrow = LRrow            
-            newRCol[key] = RCol[Rrow]
-        newdict[RColTitle] = newRCol
+    # Fetch matched columns from both tables
+    newdict = {}
+    rowindex = 1
+    for Lrowdata in Ldict.values():        
+        for Rrowdata in Rdict.values():            
+            if(Lrowdata[joinCol] == Rrowdata[joinCol]):
+                newrow = {}
+                newrow.update(Lrowdata)
+                newrow.update(Rrowdata)
+                newdict[rowindex] = newrow        
+                rowindex +=1    
 
     # Applied filter condition
-    if ((condCol !=None) & (condValue != None)):        
-        filterdict = {key: value for (key, value) in newdict[condCol].items() if value == condValue}
+    if ((condCol !=None) & (condValue != None)):
         condDict = {}
-        for col, rows in newdict.items():
-            newCol = {}
-            for row in filterdict.keys():                
-                newCol[row] = rows[row]
-            condDict[col] = newCol
+        rowindex = 1
+        for rowdata in newdict.values():
+            if(rowdata[condCol] == condValue):
+                condDict[rowindex] = rowdata
+                rowindex += 1
         return condDict
         
     return newdict  
@@ -86,22 +76,22 @@ def generateExInv(dirpath, outfilePrefix, data):
     wb = Workbook()    
 
     try:
-        invoice = data["invoice_id"][1]
+        invoice = data[1]["invoice_id"]
 
         path = os.path.join(dirpath, f"{outfilePrefix} {invoice}.xlsx")
         ws = wb.active
 
         # Generate header information
         ws['A1'] = "Invoice Date:"
-        ws['B1'] = data["invoice_date"][1]
+        ws['B1'] = data[1]["invoice_date"]
         ws['A2'] = "Invoice Number:"
         ws['B2'] = invoice
         ws['E1'] = "Billed to:"
-        ws['F1'] = f"{data['first_name'][1]} {data['last_name'][1]}"
-        ws['F2'] = data["phone"][1]
-        ws['F3'] = data["address"][1]
-        ws['F4'] = f"{data['city'][1]}, {data['province'][1]}"
-        ws['F5'] = data["postal_code"][1]
+        ws['F1'] = f"{data[1]['first_name']} {data[1]['last_name']}"
+        ws['F2'] = data[1]["phone"]
+        ws['F3'] = data[1]["address"]
+        ws['F4'] = f"{data[1]['city']}, {data[1]['province']}"
+        ws['F5'] = data[1]["postal_code"]
         ws['B8'] = "Name"
         ws['C8'] = "Description"
         ws['D8'] = "Qty"
@@ -110,23 +100,17 @@ def generateExInv(dirpath, outfilePrefix, data):
 
         # Generate line items
         offset = 8
-        amt = {}        
-        for row, value in data["item_ref"].items():
-            ws[f"A{row+offset}"] = value
-        for row, value in data["name"].items():
-            ws[f"B{row+offset}"] = value
-        for row, value in data["description"].items():
-            ws[f"C{row+offset}"] = value
-        for row, value in data["quantity"].items():
-            ws[f"D{row+offset}"] = value
-            amt[row] = value
-        for row, value in data["unit_price"].items():
-            ws[f"E{row+offset}"] = value
-            amt[row] = amt[row]*value
-        for row, value in amt.items():
-            ws[f"F{row+offset}"] = value
+        amt = {}
+        for row, rowdata in data.items():
+            ws[f"A{row+offset}"] = rowdata["item_ref"]
+            ws[f"B{row+offset}"] = rowdata["name"]
+            ws[f"C{row+offset}"] = rowdata["description"]
+            ws[f"D{row+offset}"] = rowdata["quantity"]
+            ws[f"E{row+offset}"] = rowdata["unit_price"]
+            ws[f"F{row+offset}"] = rowdata["unit_price"] * rowdata["quantity"]
+            amt[row] = rowdata["unit_price"] * rowdata["quantity"]
 
-        offset = offset + len(data["item_ref"]) + 2        
+        offset = offset + len(data) + 2        
         subtotal = sum(amt.values())
         gst = subtotal*0.05
         total = subtotal + gst
@@ -201,13 +185,13 @@ def validateInvInput(dirpath, filename):
     return wbDict
 
 # Load worksheet into a nested dictionary
-# Key: title
-# Value: = rows_dictionary (Key1: Row Number, Value1: cell value)
+#   Result dictionary format:
+#       {Row1Key: {Col1Key: value1, Col2Key: value2}
+#       {Row2Key: {Col1Key: value3, Col2Key: value4}
 def loadWStoDictionary(ws, fields):
     titleIndex = {}
     dictionary = {}
     buffer_dict = {}
-    nested_dict = {}   
 
     # Map the title index
     for field in fields:        
@@ -220,48 +204,45 @@ def loadWStoDictionary(ws, fields):
     # Load the data into dictionary
     row_index = 1    
     for row in ws.values:
-        col_index = 1
+        col_index = 1        
         for value in row:            
             if((col_index in titleIndex.keys()) & (row_index!=1)):
-                key1 = titleIndex[col_index]                
-                key2 = row_index - 1 
-                dictionary[key1, key2] = value
+                colkey = titleIndex[col_index]                
+                buffer_dict[colkey] = value
             col_index += 1
+
+        if (row_index!=1):
+            rowkey = row_index - 1
+            dictionary[rowkey] = buffer_dict
+            buffer_dict = {}
 
         row_index += 1
 
-    # Convert the dictionary into nested dictionary
-    for title in titleIndex.values():
-        buffer_dict = {}
-        for key, value in dictionary.items():
-            (key1, key2) = key
-            if (title == key1):                
-                buffer_dict[key2] = value
-        nested_dict[title] = buffer_dict    
-    
-    return nested_dict
+    return dictionary
 
 def validateDictionary(dictionary, fields):
     missingField = {}
     errDict = {}
+    errRow = {}
     errCount = 0
-
-    # Check all the fields exists in the dictionary
-    i = 1
-    for field, funcType in fields.items():        
-        if not(field in dictionary.keys()):            
-            missingField[field] = field
-            errCount += 1       
-        else:
-            # Check empty field of each column (title) by row
-            ##################### Need a unique value check for certain columns too
-            for key, rows in dictionary.items():
-                if (key == field):
-                    errRow = {}                    
-                    for row, value in rows.items():
+          
+    # Loop through all data rows    
+    for rownum, rowdata in dictionary.items():
+        for field, funcType in fields.items():
+            if not(field in rowdata.keys()):
+                # Missing field => skip the rest of checks                
+                if not(field in missingField.keys()):
+                    missingField[field] = field
+                    errCount += 1
+            else:                
+                # No missing field => perform other value check
+                # Loop through all columns in a row                 
+                msg = ""       
+                for col_title, value in rowdata.items():                                                  
+                    ##################### Need a unique value check for certain columns too                   
+                    if (col_title == field):                                            
                         if (value == None):
-                            errRow[row] = "Empty Value\n"
-                            errCount += 1
+                            msg = "Empty Value\n"                            
                         else:   
                             # Validate basic data type
                             msg = checkType(value, funcType["type"])
@@ -270,16 +251,14 @@ def validateDictionary(dictionary, fields):
                             for func in funcType["func"]:
                                 msg = func(value)
 
-                            # Only save message if there is error, 
-                            # only count one error per cell value regardless 
-                            # how many violations in one value
-                            if (len(msg) > 0):
-                                errRow[row] = msg
-                                errCount += 1
+                        # Only save message if there is error, 
+                        # only count one error per cell value regardless 
+                        # how many violations in one value
+                        if (len(msg) > 0):
+                            errCount += 1
+                            errRow[rownum] = f"{field}:\n {msg}"                                    
 
-                    errDict[field] = errRow                                   
-        i+=1
-    
+    errDict["rowErrorMsg"] = errRow
     errDict["MissingField"] = missingField
     errDict["errorCount"] = errCount    
         
@@ -371,17 +350,14 @@ def getFields():
 
 def printError(errMsg):
     if (errMsg["errorCount"] > 0):
-        for key, value in errMsg.items():
-            if ((key != "MissingField") & (key != "errorCount")):
-                if(value):                
-                    print(f"\nError in column: [{key}]")
-                    for row, msg in value.items():
-                        print(f"          Row: [{row}]: ")
-                        print(f"                        {msg}")
         if (errMsg["MissingField"]):
-            print(f"MissingField: \n")                        
+            print(f"MissingField:")                        
             for key, value in errMsg["MissingField"].items():
-                print(f"        {key}\n")
+                print(f"   {key}\n")
+
+        if (len(errMsg["rowErrorMsg"]) > 0):
+            for key, value in errMsg["rowErrorMsg"].items():
+                print(f"Row {key}:\n {value}")
 
         print(f"Error Count: {errMsg['errorCount']}")
 
@@ -427,19 +403,16 @@ def create_template(dirpath, filename, dictionary):
 
         # Loop through worksheet
         for wsname, ws_dict in dictionary.items():
-            ws = wb[wsname]                        
-            col = 1
-            # Determine the number of records based on the first column (primary key id)                    
+            ws = wb[wsname]
             row_offset = len(ws["A"])
-            # Loop through columns
-            for col_title, rows in ws_dict.items():                
-                # Loop through non-title rows
-                for rownum, value in rows.items():
-                    ws.cell(row=rownum+row_offset, column=col).value = value
-
-                    # ws.cell(row=rownum+10, column=col).value = "TEST"
-
-                col += 1
+                        
+            # Loop through rows
+            for rownum, rowdata in ws_dict.items():
+                # Loop through columns                                
+                colindex = 1
+                for value in rowdata.values():
+                    ws.cell(row=rownum+row_offset, column=colindex).value = value
+                    colindex += 1
 
         wb.save(filename)                
           
@@ -450,18 +423,21 @@ def create_template(dirpath, filename, dictionary):
         # Loop through worksheet
         for wsname, ws_dict in dictionary.items():
             ws = wb.create_sheet(wsname)
-            col = 1                                    
-            # Loop through columns
-            for col_title, rows in ws_dict.items():
-                
-                # Create title
-                ws.cell(row=1, column=col).value = col_title
 
-                # Loop through non-title rows
-                for rownum, value in rows.items():
-                    ws.cell(row=rownum+row_offset, column=col).value = value
+            # # Create title
+            # ws.cell(row=1, column=col).value = col_title
 
-                col += 1
+            # Loop through rows
+            for rownum, rowdata in ws_dict.items():
+                # Loop through columns
+                colindex = 1                
+                for col_title, value in rowdata.items():
+                    # Create title
+                    ws.cell(row=1, column=colindex).value = col_title
+
+                    # Create non-title rows
+                    ws.cell(row=rownum+row_offset, column=colindex).value = value
+                    colindex += 1
 
         ws = wb['Sheet']
         wb.remove(ws)
