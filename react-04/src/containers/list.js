@@ -25,7 +25,8 @@ function List() {
   function randomInput(){
     const emoji = ["🍖","🥔","🥦","🥑","🍓","🥩","🍈","🛢️","🧶"];
     const rand = Math.round(Math.random()*10%8);
-    setAmount((rand+1)*10);
+    const rand2 = Math.round(Math.random()*10%8);
+    setAmount((rand2+1)*10);
     setSubject(emoji[rand]);
   }
 
