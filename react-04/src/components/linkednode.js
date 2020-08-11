@@ -9,7 +9,7 @@ function NodeHead(props) {
     <div className={props.nodecss}>
       <p>{props.subject}</p> <p>Qty: {props.amount}</p>
       <ReactSvgInjector src={trainh} className="train">
-                    <Mutate selector="path" class={props.trcss} />
+        <Mutate selector="path" class={props.trcss} />
       </ReactSvgInjector>            
     </div>
   );
@@ -20,7 +20,7 @@ function Node(props) {
     <div className={props.nodecss}>
       <p>{props.subject}</p> <p>Qty: {props.amount}</p>
       <ReactSvgInjector src={trainc1} className="train">
-                    <Mutate selector="path" class={props.trcss} />
+        <Mutate selector="path" class={props.trcss} />
       </ReactSvgInjector>      
     </div>
   );
@@ -31,7 +31,7 @@ function NodeTail(props) {
     <div className={props.nodecss}>
       <p>{props.subject}</p> <p>Qty: {props.amount}</p>
       <ReactSvgInjector src={traint} className="train" >
-                    <Mutate selector="path" class={props.trcss} />
+        <Mutate selector="path" class={props.trcss} />
       </ReactSvgInjector>       
     </div>
   );

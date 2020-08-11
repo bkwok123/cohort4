@@ -2,6 +2,7 @@ import React from 'react';
 import { Community } from '../scripts/city.js';
 import ThemeContext from '../context/ThemeContext';
 import NET from '../scripts/netcomm.js';
+import ModalBox from '../components/modalbox'
 import '../CSS/CardApp.css';
 
 class Demographics extends React.Component {
@@ -19,6 +20,7 @@ class Demographics extends React.Component {
             key: 0,
             otheme: this.context,
             cacheCitys: [],
+            modalstate: {hide: true, content: ""}
         };
     }
 
@@ -67,7 +69,12 @@ class Demographics extends React.Component {
                             <button type="button" className={`spbtn10 ${this.context.btnFG}`} onClick={(e) => this.randSettlement()}>Random</button>
                         </div>
                     </div>                
-                </div>            
+                </div>           
+
+                <ModalBox
+                    boxID="idModelAlert" hide={this.state.modalstate['hide']} onClickModalClose={(e) => this.modalCloseClick(e)}
+                    content={this.state.modalstate['content']}
+                /> 
 
                 <div className={`zone grid-wrapper frame ${this.context.card}`}>
                     {this.state.card}
@@ -133,7 +140,10 @@ class Demographics extends React.Component {
             }
             catch (error) {
                 console.error ("Failed in retrievig data: ", error);
-                window.alert("Failed to randomly generate settlement, please enter it manually.");
+
+                this.setState({
+                    modalstate: {hide: false, content: "Failed to randomly generate settlement, please enter it manually."}
+                });
             }            
         }    
 
@@ -159,7 +169,9 @@ class Demographics extends React.Component {
         }
 
         if (!isAdd) {
-            window.alert("Invalid settlement name, please enter it manually.");
+            this.setState({
+                modalstate: {hide: false, content: "Invalid settlement name, please enter it manually."}
+            });            
         }        
     }
 
@@ -186,7 +198,9 @@ class Demographics extends React.Component {
                  });                                
             }
             else {
-                window.alert("Invalid settlement name, please try again.");
+                this.setState({
+                    modalstate: {hide: false, content: "Invalid settlement name, please try again."}
+                });                
             }
         }
     }    
@@ -197,14 +211,16 @@ class Demographics extends React.Component {
         let cards = this.state.card.slice(); 
 
         if (currentCity === null || currentCity === "") {
-
-            window.alert("Invalid Settlement to Remove.");
+            this.setState({
+                modalstate: {hide: false, content: "Invalid Settlement to Remove."}
+            });                            
             return;     
         }
         else {
             if(!place.isNameExisting(currentCity)) {
-
-                window.alert("Invalid Settlement to Remove.");
+                this.setState({
+                    modalstate: {hide: false, content: "Invalid Settlement to Remove."}
+                });                                            
                 return;
             }
             else {
@@ -284,7 +300,7 @@ class Demographics extends React.Component {
         let key = this.state.key+1; 
 
         if(currentCity !== "None"){
-                
+
             let index = place.return_index(currentCity);
             place.citys[index].movedIn(this.state.inputAmt);
 
@@ -293,7 +309,7 @@ class Demographics extends React.Component {
             }
 
             for (let i=0; i<place.citys.length; i++) {                        
-                this.addCard(cards, place.citys[i].name, "Population: " + place.citys[index].population);
+                this.addCard(cards, place.citys[i].name, "Population: " + place.citys[i].population);
             }
 
             // Maintain Page State
@@ -323,7 +339,7 @@ class Demographics extends React.Component {
             }
 
             for (let i=0; i<place.citys.length; i++) {                        
-                this.addCard(cards, place.citys[i].name, "Population: " + place.citys[index].population);
+                this.addCard(cards, place.citys[i].name, "Population: " + place.citys[i].population);
             }
 
             // Maintain Page State
@@ -353,6 +369,34 @@ class Demographics extends React.Component {
                 key: key,
             });       
         }       
+    }
+
+    modalCloseClick (e) {
+        const modal = document.getElementById("idModelAlert");
+        modal.setAttribute("class", "modalhide");
+        e.stopPropagation();
+
+        this.setState({
+                modalstate: {hide: true, content: ""}
+        });
+    }    
+}
+
+class NewLocation extends React.Component {
+    render() {
+        return (
+            <div className="modalcontent">
+                <label>Settlement Name:</label>
+                <input type="Text" id="idSettlementName" defaultValue="Calgary"></input>
+                <label>Latitude:</label>
+                <input type="number" id="idLatitude" defaultValue="0"></input>
+                <label>Longitude:</label>
+                <input type="number" id="idLongitude" defaultValue="0"></input>                
+                <label>Population:</label>
+                <input type="number" id="idPopulation" defaultValue="0"></input> 
+                <button onClick={(e) => this.props.onClick(e)}>Save</button>
+            </div>
+        );
     }
 }
 

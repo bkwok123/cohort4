@@ -1,3 +1,15 @@
+// To deploy React app in Github:
+// https://create-react-app.dev/docs/deployment/#github-pages-https-pagesgithubcom
+// Step 1: Add homepage to package.json (e.g. "homepage": "https://myusername.github.io",)
+// Step 2: npm install --save gh-pages
+// Step 3: Add the following scripts in your package.json
+//          "scripts": {
+//                     "predeploy": "npm run build",
+//                     "deploy": "gh-pages -d build",
+//                     "start": "react-scripts start",
+//                     "build": "react-scripts build",
+//                      }
+// Step 4: npm run deploy
 import React from 'react';
 import ThemeContext, { themes }  from '../context/ThemeContext';
 import Home from '../components/Home';

@@ -82,7 +82,7 @@ class Bank extends React.Component {
     }    
 
     modalCloseClick (e) {
-        const modal = e.target.parentNode.parentNode;
+        const modal = document.getElementById("idModelAlert");
         modal.setAttribute("class", "modalhide");
         e.stopPropagation();
 
@@ -164,29 +164,9 @@ class Bank extends React.Component {
     }
 
     createAccount() {
-        const name = window.prompt("Enter Account Name: ","Saving");
-        const holder = this.state.user;   
-        let cards = this.state.card.slice();         
-            
-        if (name !== null && name !== "") {
-            if(!holder.isNameExisting(name)) {
-
-                holder.add_account(name,0);
-                this.addCard(cards, name, "Balance: $" + 0);
-
-                // Maintain Page State
-                this.setState({currentAccount: name,
-                               user: holder,
-                               list: [],
-                               card: cards,
-                            });                
-            }
-            else {               
-                this.setState({
-                    modalstate: {hide: false, content: "Invalid account name, please try again."}
-                });                
-            }
-        }
+        this.setState({
+            modalstate: {hide: false, content: <NewAccount onClick={(e) => this.saveAccountName(e)}/>}
+        });         
     }
 
     removeAccount() {    
@@ -226,49 +206,67 @@ class Bank extends React.Component {
     renameAccount() {  
         const holder = this.state.user;
         const currentAccount = this.state.currentAccount;   
-        let cards = [];
 
         if (currentAccount === null || currentAccount === "") {            
             this.setState({
-                modalstate: {hide: false, content: "Invalid Account to Rename."}
+                modalstate: {hide: false, content: "Invalid account name, please try again."}
             });            
             return;     
         }
         else {
             if(!holder.isNameExisting(currentAccount)) {
                 this.setState({
-                    modalstate: {hide: false, content: "Invalid Account to Rename."}
+                    modalstate: {hide: false, content: "Invalid account name, please try again."}
                 });                
                 return;                
             }
-            else {
-                let name = window.prompt("Enter New Name for the Account: ");
-
-                if(!holder.isNameExisting(name) && (name !== null) && (name !== "")) {
-                    holder.rename_account(currentAccount, name);
-
-                    for (let i=0; i<holder.accounts.length; i++) {                        
-                        this.addCard(cards, holder.accounts[i].accountName, "Balance: $" + holder.accounts[i].startingBalance);
-                    }
-
-                    // Maintain Page State
-                    this.setState({currentAccount: name,
-                        user: holder,
-                        list: [],
-                        card: cards,
-                    });    
-                      
-                    return;
-                }
-                else {
-                    this.setState({
-                        modalstate: {hide: false, content: "Invalid Account to Rename."}
-                    });                    
-                    return;
-                }                                                          
+            else {              
+                this.setState({
+                    modalstate: {hide: false, content: <RenamedAccount onClick={(e) => this.saveAccountName(e)}/>}
+                });                                                        
             }
         }     
     }
+
+    saveAccountName(e) {
+        const holder = this.state.user;
+        const currentAccount = this.state.currentAccount;   
+        let cards = [];
+
+        const name = document.getElementById("idAcountName").value;
+        const balanceInput = document.getElementById("idAcountBalance");
+
+        if(!holder.isNameExisting(name) && (name !== null) && (name !== "")) {
+            if(balanceInput) {
+                holder.add_account(name, balanceInput.value);
+            }            
+            else {
+                holder.rename_account(currentAccount, name);
+            }
+            
+
+            for (let i=0; i<holder.accounts.length; i++) {                        
+                this.addCard(cards, holder.accounts[i].accountName, "Balance: $" + holder.accounts[i].startingBalance);
+            }
+
+            this.modalCloseClick(e);
+
+            // Maintain Page State
+            this.setState({currentAccount: name,
+                user: holder,
+                list: [],
+                card: cards,
+            });    
+              
+            return;
+        }
+        else {
+            this.setState({
+                modalstate: {hide: false, content: "Invalid account name, please try again."}
+            });                    
+            return;
+        }
+    }    
 
     sumBalance() {
         const holder = this.state.user;
@@ -384,6 +382,32 @@ class Bank extends React.Component {
                 key: key,
             });       
         }       
+    }
+}
+
+class NewAccount extends React.Component {
+    render() {
+        return (
+            <div className="modalcontent">
+                <label>Account Name:</label>
+                <input type="Text" id="idAcountName" defaultValue="Saving"></input>
+                <label>Account Balance:</label>
+                <input type="number" id="idAcountBalance" defaultValue="0"></input>
+                <button onClick={(e) => this.props.onClick(e)}>Save</button>
+            </div>
+        );
+    }
+}
+
+class RenamedAccount extends React.Component {
+    render() {
+        return (
+            <div className="modalcontent">
+                <label>Account Name:</label>
+                <input type="Text" id="idAcountName"></input>
+                <button onClick={(e) => this.props.onClick(e)}>Save</button>
+            </div>
+        );
     }
 }
 
