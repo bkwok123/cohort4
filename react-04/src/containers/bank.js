@@ -1,6 +1,7 @@
 import React from 'react';
 import { AccountController } from '../scripts/account.js';
 import ThemeContext from '../context/ThemeContext';
+import ModalBox from '../components/modalbox'
 import '../CSS/CardApp.css';
 
 class Bank extends React.Component {
@@ -17,6 +18,7 @@ class Bank extends React.Component {
             inputAmt: 0,
             key: 0,
             otheme: this.context,
+            modalstate: {hide: true, content: ""}
         };
     }     
 
@@ -67,6 +69,11 @@ class Bank extends React.Component {
                     </div>
                 </div>            
 
+                <ModalBox
+                    boxID="idModelAlert" hide={this.state.modalstate['hide']} onClickModalClose={(e) => this.modalCloseClick(e)}
+                    content={this.state.modalstate['content']}
+                />                                                
+
                 <div className={`zone grid-wrapper frame ${this.context.card}`}>
                     {this.state.card}
                 </div>
@@ -74,10 +81,20 @@ class Bank extends React.Component {
         );
     }    
 
+    modalCloseClick (e) {
+        const modal = e.target.parentNode.parentNode;
+        modal.setAttribute("class", "modalhide");
+        e.stopPropagation();
+
+        this.setState({
+                modalstate: {hide: true, content: ""}
+        });
+    }
+
     inputChg (e){
         this.setState({
             inputAmt: e.target.value
-          });        
+        });        
     }
 
     cardClick(e) {
@@ -139,7 +156,9 @@ class Bank extends React.Component {
         }
 
         if (!isAdd) {
-            window.alert("Failed to randomly generate account, please enter it manually.");
+            this.setState({
+                modalstate: {hide: false, content: "Failed to randomly generate account, please enter it manually."}
+            });
         }
 
     }
@@ -162,8 +181,10 @@ class Bank extends React.Component {
                                card: cards,
                             });                
             }
-            else {
-                window.alert("Invalid account name, please try again.");
+            else {               
+                this.setState({
+                    modalstate: {hide: false, content: "Invalid account name, please try again."}
+                });                
             }
         }
     }
@@ -174,14 +195,16 @@ class Bank extends React.Component {
         let cards = this.state.card.slice(); 
 
         if (currentAccount === null || currentAccount === "") {
-
-            window.alert("Invalid Account to Remove.");
+            this.setState({
+                modalstate: {hide: false, content: "Invalid Account to Remove."}
+            });            
             return;     
         }
         else {
-            if(!holder.isNameExisting(currentAccount)) {
-
-                window.alert("Invalid Account to Remove.");
+            if(!holder.isNameExisting(currentAccount)) {                
+                this.setState({
+                    modalstate: {hide: false, content: "Invalid Account to Remove."}
+                });                
                 return;
             }
             else {
@@ -205,16 +228,18 @@ class Bank extends React.Component {
         const currentAccount = this.state.currentAccount;   
         let cards = [];
 
-        if (currentAccount === null || currentAccount === "") {
-
-            window.alert("Invalid Account to Rename.");
+        if (currentAccount === null || currentAccount === "") {            
+            this.setState({
+                modalstate: {hide: false, content: "Invalid Account to Rename."}
+            });            
             return;     
         }
         else {
             if(!holder.isNameExisting(currentAccount)) {
-
-                window.alert("Invalid Account to Rename.");
-                return;
+                this.setState({
+                    modalstate: {hide: false, content: "Invalid Account to Rename."}
+                });                
+                return;                
             }
             else {
                 let name = window.prompt("Enter New Name for the Account: ");
@@ -236,7 +261,9 @@ class Bank extends React.Component {
                     return;
                 }
                 else {
-                    window.alert("Invalid Account to Rename.");
+                    this.setState({
+                        modalstate: {hide: false, content: "Invalid Account to Rename."}
+                    });                    
                     return;
                 }                                                          
             }

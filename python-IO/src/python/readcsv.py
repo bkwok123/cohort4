@@ -58,6 +58,7 @@ def readcsv(dirpath, filename):
             key2 = bufferKeyValue[colKeyValue["SECTOR"]]
             value1 = bufferKeyValue[colKeyValue["RES_CNT"]]
             
+            # Roman: use get method for the dictionary instead of use try except to check the non-existing key
             try:
                 temp = resultKeyValue[(key1, key2)]
             except KeyError:
