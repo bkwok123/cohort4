@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/cohort4/static/css/main.325febed.chunk.css",
-    "main.js": "/cohort4/static/js/main.31bbabb7.chunk.js",
-    "main.js.map": "/cohort4/static/js/main.31bbabb7.chunk.js.map",
+    "main.js": "/cohort4/static/js/main.a2978cbb.chunk.js",
+    "main.js.map": "/cohort4/static/js/main.a2978cbb.chunk.js.map",
     "runtime-main.js": "/cohort4/static/js/runtime-main.39a1909d.js",
     "runtime-main.js.map": "/cohort4/static/js/runtime-main.39a1909d.js.map",
     "static/js/2.3968282d.chunk.js": "/cohort4/static/js/2.3968282d.chunk.js",
     "static/js/2.3968282d.chunk.js.map": "/cohort4/static/js/2.3968282d.chunk.js.map",
     "index.html": "/cohort4/index.html",
-    "precache-manifest.cf1a7b081849e1098c86f3ec2d35db63.js": "/cohort4/precache-manifest.cf1a7b081849e1098c86f3ec2d35db63.js",
+    "precache-manifest.e53972fb68022175eb7c21aaa0c018e5.js": "/cohort4/precache-manifest.e53972fb68022175eb7c21aaa0c018e5.js",
     "service-worker.js": "/cohort4/service-worker.js",
     "static/css/main.325febed.chunk.css.map": "/cohort4/static/css/main.325febed.chunk.css.map",
     "static/js/2.3968282d.chunk.js.LICENSE.txt": "/cohort4/static/js/2.3968282d.chunk.js.LICENSE.txt",
@@ -33,6 +33,6 @@
     "static/js/runtime-main.39a1909d.js",
     "static/js/2.3968282d.chunk.js",
     "static/css/main.325febed.chunk.css",
-    "static/js/main.31bbabb7.chunk.js"
+    "static/js/main.a2978cbb.chunk.js"
   ]
 }
