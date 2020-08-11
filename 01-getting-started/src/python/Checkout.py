@@ -11,6 +11,7 @@ class Checkout:
         self.discounts = {}
         self.items = {}
 
+    # First argument (self) is only convention, not program defined or reserved keyword
     def addDiscount(self, item, nbrOfItems, price):
         discount = self.Discount(nbrOfItems, price)
         self.discounts[item] = discount
