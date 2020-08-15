@@ -176,20 +176,28 @@ class Demographics extends React.Component {
     }
 
     createSettlement() {
-        const name = window.prompt("Enter Settlement Name: ","Calgary");
-        const place = this.state.community;   
-        let cards = this.state.card.slice();                      
-            
+        this.setState({
+            modalstate: {hide: false, content: <NewLocation onClick={(e) => this.saveSettlement(e)}/>}
+        });
+    }    
+
+    saveSettlement(e) {
+        const place = this.state.community;
+        let cards = this.state.card.slice();
+        const name = document.getElementById("idSettlementName").value;
+        const latitude = document.getElementById("idLatitude").value;
+        const longitude = document.getElementById("idLongitude").value;
+        const population = document.getElementById("idPopulation").value;
+
         if (name !== null && name !== "") {
 
             if(!place.isNameExisting(name)) {
-                const latitude = window.prompt("Enter latitude: ", 0);
-                const longitude = window.prompt("Enter longitude: ", 0);
-                const population = window.prompt("Enter population: ", 0);
 
                 place.createCity(name, latitude, longitude, population);
                 this.addCard(cards, name, "Population: " + population);
 
+                this.modalCloseClick(e);
+                
                 // Maintain Page State
                 this.setState({currentCity: name,
                     community: place,
@@ -203,7 +211,7 @@ class Demographics extends React.Component {
                 });                
             }
         }
-    }    
+    }
 
     deleteSettlement() {
         const currentCity = this.state.currentCity; 
