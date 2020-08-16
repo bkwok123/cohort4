@@ -197,7 +197,7 @@ class Demographics extends React.Component {
                 this.addCard(cards, name, "Population: " + population);
 
                 this.modalCloseClick(e);
-                
+
                 // Maintain Page State
                 this.setState({currentCity: name,
                     community: place,
@@ -391,18 +391,20 @@ class Demographics extends React.Component {
 }
 
 class NewLocation extends React.Component {
+    static contextType = ThemeContext;
+    
     render() {
         return (
-            <div className="modalcontent">
-                <label>Settlement Name:</label>
-                <input type="Text" id="idSettlementName" defaultValue="Calgary"></input>
-                <label>Latitude:</label>
-                <input type="number" id="idLatitude" defaultValue="0"></input>
-                <label>Longitude:</label>
-                <input type="number" id="idLongitude" defaultValue="0"></input>                
-                <label>Population:</label>
-                <input type="number" id="idPopulation" defaultValue="0"></input> 
-                <button onClick={(e) => this.props.onClick(e)}>Save</button>
+            <div className={`modalcontent mcGridLoc ${this.context.selectChd}`}>
+                <label className="mcL1">Settlement Name:</label>
+                <input type="Text" id="idSettlementName" defaultValue="Calgary" className={`mcI1 ${this.context.btnFG}`}></input>
+                <label className="mcL2">Latitude:</label>
+                <input type="number" id="idLatitude" defaultValue="0" className={`mcI2 ${this.context.btnFG}`}></input>
+                <label className="mcL3">Longitude:</label>
+                <input type="number" id="idLongitude" defaultValue="0" className={`mcI3 ${this.context.btnFG}`}></input>                
+                <label className="mcL4">Population:</label>
+                <input type="number" id="idPopulation" defaultValue="0" className={`mcI4 ${this.context.btnFG}`}></input> 
+                <button className={`mcB1 ${this.context.btnFG}`} onClick={(e) => this.props.onClick(e)}>Save</button>
             </div>
         );
     }

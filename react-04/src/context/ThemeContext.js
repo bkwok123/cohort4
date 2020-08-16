@@ -4,6 +4,8 @@ export const themes = {
     light: {
       foreground: 'ThemeLightFG',
       background: 'ThemeLightBG',
+      modalBG: 'ThemeLightBG',
+      modalMC: 'ThemeLightMC',
       btnFG: 'ThemeLightBtnFG',
       btnBG: 'ThemeLightBtnBG',
       container: 'ThemeLightBox',
@@ -27,6 +29,8 @@ export const themes = {
     dark: {
       foreground: 'ThemeDarkFG',
       background: 'ThemeDarkBG',
+      modalBG: 'ThemeDarkFG',
+      modalMC: 'ThemeDarkMC',   
       btnFG: 'ThemeDarkBtnFG',
       btnBG: 'ThemeDarkBtnBG',
       container: 'ThemeDarkBox',      

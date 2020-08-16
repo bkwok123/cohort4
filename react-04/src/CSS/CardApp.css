@@ -127,21 +127,65 @@
  *  Grid Panel
  **********************************************************************/
  .modalcontent {
-    display: flex;
     align-items: center;
     justify-content: center;
+    size: 80%;
 }
+
+.mcGridLoc {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(3vw, auto));
+    grid-template-rows: 2.5vw 2.5vw 2.5vw;
+    grid-template-areas: "l1 l2 l3 l4"
+                         "i1 i2 i3 i4"
+                         "b1 b1 b1 b1";
+}
+
+.mcGridBank1 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(3vw, auto));
+    grid-template-rows: 2.5vw 2.5vw;
+    grid-template-areas: "l1 l2"
+                         "i1 i2"
+                         "b1 b1";
+}
+
+.mcGridBank2 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(3vw, auto));
+    grid-template-rows: 2.5vw 2.5vw;
+    grid-template-areas: "l1"
+                         "i1"
+                         "b1";
+}
+
+.mcL1 {grid-area: l1;}
+.mcL2 {grid-area: l2;}
+.mcL3 {grid-area: l3;}
+.mcL4 {grid-area: l4;}
+.mcI1 {grid-area: i1;}
+.mcI2 {grid-area: i2;}
+.mcI3 {grid-area: i3;}
+.mcI4 {grid-area: i4;}
+.mcB1 {
+    grid-area: b1;
+    justify-self: center;
+}
+
 
 .modalcontent > button {
     width: calc(7vw + 7vh);
     margin: calc(0.25vw + 0.25vh);
     font-size: calc(0.6vw + 0.6vh);
     border-radius: 0.5vw;
-    transition: all 0.3s linear;
 }
 
 .modalcontent > label {
     margin: calc(0.25vw + 0.25vh);
+    width: calc(7vw + 7vh);
+    margin: calc(0.25vw + 0.25vh);
+    font-size: calc(0.6vw + 0.6vh);
+    border-radius: 0.5vw;    
 }
 
 .modalcontent > input {
