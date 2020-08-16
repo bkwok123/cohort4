@@ -79,7 +79,3 @@ test('Does that lookup_prov function work?', () => {
     expect(functions.lookup_prov({menu1:"shrimp", menu2:"chicken"},"menu1")).toEqual("shrimp");
     expect(functions.lookup_prov({menu1:"shrimp", menu2:"chicken", menu3:"beef"},"menu3")).toEqual("beef");
 });
-
-// test('Does that isEven function work?', () => {
-//     expect(functions.isEven(2)).toBe(true);
-// });
