@@ -133,6 +133,15 @@
     fill: blue;
 }
 
+.ThemeLightMC{
+    color: #aaa;
+}
+
+.ThemeLightMC:hover,
+.ThemeLightMC:focus {
+    color: black;
+}
+
 /* ################################################################################
  DARK Theme
 ################################################################################ */
@@ -271,4 +280,13 @@
 
 .ThemeDarkActf{
     fill: red;
+}
+
+.ThemeDarkMC{
+    color: #61dafb;
+}
+
+.ThemeDarkMC:hover,
+.ThemeDarkMC:focus {
+    color: #282c34;
 }

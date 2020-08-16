@@ -386,26 +386,30 @@ class Bank extends React.Component {
 }
 
 class NewAccount extends React.Component {
+    static contextType = ThemeContext;
+
     render() {
         return (
-            <div className="modalcontent">
-                <label>Account Name:</label>
-                <input type="Text" id="idAcountName" defaultValue="Saving"></input>
-                <label>Account Balance:</label>
-                <input type="number" id="idAcountBalance" defaultValue="0"></input>
-                <button onClick={(e) => this.props.onClick(e)}>Save</button>
+            <div className={`modalcontent mcGridBank1 ${this.context.selectChd}`}>
+                <label className="mcL1">Account Name:</label>
+                <input type="Text" id="idAcountName" defaultValue="Saving" className={`mcI1 ${this.context.btnFG}`}></input>
+                <label className="mcL2">Account Balance:</label>
+                <input type="number" id="idAcountBalance" defaultValue="0" className={`mcI2 ${this.context.btnFG}`}></input>
+                <button className={`mcB1 ${this.context.btnFG}`} onClick={(e) => this.props.onClick(e)}>Save</button>
             </div>
         );
     }
 }
 
 class RenamedAccount extends React.Component {
+    static contextType = ThemeContext;
+
     render() {
         return (
-            <div className="modalcontent">
-                <label>Account Name:</label>
-                <input type="Text" id="idAcountName"></input>
-                <button onClick={(e) => this.props.onClick(e)}>Save</button>
+            <div className={`modalcontent mcGridBank2 ${this.context.selectChd}`}>
+                <label className="mcL1">Account Name:</label>
+                <input type="Text" id="idAcountName" className={`mcI1 ${this.context.btnFG}`}></input>
+                <button className={`mcB1 ${this.context.btnFG}`} onClick={(e) => this.props.onClick(e)}>Save</button>
             </div>
         );
     }

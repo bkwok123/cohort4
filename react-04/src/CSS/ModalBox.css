@@ -1,3 +1,7 @@
+:root {
+  --modal-top-loc: 30vh;
+}
+
 /* The Modal (background) */
 .modalhide {
     display: none; /* Hidden by default */
@@ -18,24 +22,23 @@
 
 /* Modal Content Box */
 .modal-content {
-  background-color: #fefefe;
-  margin: 30vh auto; /* 30vh from the top and centered */
-  padding: 50px;
-  border: 1px solid #888;
+  margin: var(--modal-top-loc) auto; /* 30vh from the top and centered */
+  padding: 10vh;
+  border: 1px solid;
   width: 80%; /* Could be more or less, depending on screen size */
 }
 
 /* The Close Button */
 .close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
+  position: absolute;
+  top: var(--modal-top-loc);
+  right: 6vw;
+  font-size: calc(1vw + 1vh);
   font-weight: bold;
 }
 
 .close:hover,
 .close:focus {
-  color: black;
   text-decoration: none;
   cursor: pointer;
 }
