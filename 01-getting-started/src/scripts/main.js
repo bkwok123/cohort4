@@ -19,7 +19,7 @@ let provincecode = {
 };
 
 idDictionariesLookup.addEventListener('click', (() => {
-    idDictionariesMsg.textContent = functions.lookup_prov(provincecode,idDictionariesInput.value);
+    idDictionariesMsg.textContent = functions.lookup_prov(provincecode,idDictionariesInput.value.toUpperCase());
 }));
 
 idNumber.addEventListener('change', (() => {

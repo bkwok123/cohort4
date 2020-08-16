@@ -118,10 +118,6 @@ const functions = {
     lookup_prov: (provincelist, provincecode) => {
         return Object.values(provincelist).find(value => provincelist[provincecode] === value);
     },
-
-    // isEven: (num) => {
-    //     return false;
-    // }
 };
 
 export default functions;
