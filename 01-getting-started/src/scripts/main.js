@@ -29,10 +29,16 @@ idNumber.addEventListener('change', (() => {
 
 // Calculator event listener
 idCalculatorContainer.addEventListener("click", ((e) =>{
-    // Prevent passing result as input by clicking the result div
-    if(e.target.id !== "idCalResult") {
+    // Prevent passing result as input by clicking outside any button
+    if((e.target.id !== "idCalResult") && (e.target.id !== "idCalculatorContainer") && (e.target.id.length !== 0)) {
         idCalResult.textContent = calculate(e.target.textContent)["display"];
-        idCalHistory.textContent = idCalHistory.textContent + e.target.textContent
+
+        if(e.target.textContent === "CE") {
+            idCalHistory.textContent = "";
+        }
+        else {
+            idCalHistory.textContent = idCalHistory.textContent + e.target.textContent;
+        }
     }        
 }));
 

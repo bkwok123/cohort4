@@ -27,6 +27,12 @@ const calculate = ((input) => {
                     case "/":
                     case "%":
                         break;
+                    case ".":
+                        if (!input1.includes(".")) {
+                            input1=input;    
+                        }
+                        console.log(". case 1");
+                        break;
                     default:                    
                         input1=input;
                 }
@@ -45,7 +51,14 @@ const calculate = ((input) => {
                     case "%":
                         display=input1+input;
                         input1=functions.convertpercentage(input1);                        
-                        break;                                                        
+                        break;
+                    case ".":
+                        if (!input1.includes(".")) {
+                            input1=input1+input; 
+                        }
+                        display=input1;
+                        console.log(". case 2");
+                        break;
                     default:             
                         input1=input1+input;
                         display=input1;
@@ -61,7 +74,14 @@ const calculate = ((input) => {
                     case "x":
                     case "/":
                         operator=input;
-                        break;                                                      
+                        break;
+                    case ".":
+                        if (!input2.includes(".")) {
+                            input2=input; 
+                        }
+                        display=input2;
+                        console.log(". case 3");                                                                              
+                        break;
                     default:                    
                         input2=input;
                         display=input2;
@@ -71,25 +91,40 @@ const calculate = ((input) => {
                 switch (input) {
                     case "=":
                         result=functions.calculate(Number(input1), Number(input2), operator);
-                        input1=result
+                        result = Math.round((result) * 1e14) / 1e14
+                        console.log("input1 1:", input1);
+                        console.log("input2 1:", input2);                        
+                        console.log("result 1:", result);
+                        input1=String(result);
                         operator="";
                         input2=""
-                        display=result;
+                        display=String(result);
                         break;
                     case "+":
                     case "-":
                     case "x":
                     case "/":
                         result=functions.calculate(Number(input1), Number(input2), operator);
-                        input1=result
+                        result = Math.round((result) * 1e14) / 1e14
+                        console.log("input1 2:", input1);
+                        console.log("input2 2:", input2);
+                        console.log("result 2:", result);
+                        input1=String(result)
                         operator=input;
                         input2=""
-                        display=result;
+                        display=String(result);
                         break;
                     case "%":
                         display=input2+input;
                         input2=functions.convertpercentage(input2);                        
-                        break;                                                                              
+                        break;
+                    case ".":
+                        if (!input2.includes(".")) {
+                            input2=input2+input; 
+                        }
+                        display=input2;     
+                        console.log(". case 3");                                                                              
+                        break;                                                                                                                         
                     default:                    
                         input2=input2+input;
                         display=input2;
